@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 
 
     # Aplicaciones
+    'administration',
 ]
 
 MIDDLEWARE = [
