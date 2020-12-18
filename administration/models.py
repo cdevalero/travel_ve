@@ -1,16 +1,63 @@
 from typing import Tuple
 from django.db import models
+from django.db.models.deletion import CASCADE
+from compositefk.fields import CompositeForeignKey
+
+#TEST MODEL
+'''
+class Test_Departamentos(models.Model):
+
+    deptno = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=30)
+    loc = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.nombre
+    
+    class Meta:
+        db_table = 'departamentos'
+        ordering = ['deptno']
+
+class Test_Empleados(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='Id', null=False)
+    cedula = models.IntegerField(verbose_name='cedula', null=False)
+    nombre = models.CharField(verbose_name='Nombre', max_length=30, null=False)
+    apellido = models.CharField(verbose_name='Apellido', max_length=30, null=False)
+    id_dept = models.ForeignKey(Test_Departamentos,on_delete=CASCADE, verbose_name='id_dept', null=False, db_column='id_dept')
+    salario = models.IntegerField(verbose_name='Salario', null=True, blank=True)
+    cargo = models.CharField(verbose_name='Cargo', null=True, blank=True, max_length=30)
+    comision = models.IntegerField(verbose_name='Comision', null=True, blank=True)
+    id_jefe = models.IntegerField()
+    id_ced_jefe = models.IntegerField()
+
+    jefe = CompositeForeignKey('self', on_delete=CASCADE, to_fields={'id': 'id_jefe', 'cedula': 'id_ced_jefe'})
+
+    def __str__(self):
+        return str(self.id) + ', ' + str(self.cedula)
+    
+    class Meta:
+
+        unique_together = [('id', 'cedula'),]
+
+        db_table = 'empleados'
+        verbose_name = 'Empleado'
+        verbose_name_plural = 'Empleados'
+        ordering = ['id']
+'''
+
+
+
+#Proyecto  
 
 class Bancos(models.Model):
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=30)
 
     def __str__(self):
         return self.nombre
 
     class Meta:
         db_table = 'bancos'
-        verbose_name = 'Banco'
-        verbose_name_plural = 'Bancos'
         ordering = ['id']
 
 class Clientes(models.Model):
@@ -18,30 +65,27 @@ class Clientes(models.Model):
         ('natural','Natural'),
         ('juridico','Juridico'),
     )
-    doc_identidad_rif = models.IntegerField(primary_key=True, verbose_name='Doc Identidad o RIF', null=False)
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    tipo = models.CharField(max_length=10, choices=PERSONA, null=False, verbose_name='Tipo')
+    doc_identidad_rif = models.IntegerField()
+    nombre = models.CharField(max_length=30)
+    tipo = models.CharField(max_length=10, choices=PERSONA)
 
     def __str__(self):
         return str(self.doc_identidad_rif)
 
     class Meta:
         db_table = 'clientes'
-        verbose_name = 'Cliente'
-        verbose_name_plural = 'Clientes'
         ordering = ['doc_identidad_rif']
 
 class Areas_de_interes(models.Model):
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30, unique=True)
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=30, unique=True)
+    descripcion = models.TextField(max_length=255)
 
     def __str__(self):
         return self.nombre
 
     class Meta:
         db_table = 'areas_de_interes'
-        verbose_name = 'Area de interes'
-        verbose_name_plural = 'Areas de interes'
         ordering = ['id']
 
 class Paices(models.Model):
@@ -60,19 +104,18 @@ class Paices(models.Model):
         ('europa','Europa'),
         ('america','America'),
     )
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    region = models.CharField(max_length=15, choices=REGIONES, null=False, verbose_name='Región')
-    continente = models.CharField(max_length=15, choices=CONTINENTES, null=False, verbose_name='Continentes')
-    nacionalidad = models.CharField(null=False, verbose_name='Nacionalidad', max_length=60)
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField( max_length=30)
+    region = models.CharField(max_length=15, choices=REGIONES)
+    continente = models.CharField(max_length=15, choices=CONTINENTES)
+    nacionalidad = models.CharField(max_length=60)
+    descripcion = models.TextField(max_length=255)
 
     def __str__(self):
         return self.nombre
 
     class Meta:
         db_table = 'paices'
-        verbose_name = 'Pais'
-        verbose_name_plural = 'Paices'
         ordering = ['id']
 
 class Rallies(models.Model):
@@ -80,21 +123,20 @@ class Rallies(models.Model):
         ('individual','Individual'),
         ('pareja','Pareja'),
     )
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    costo_participante = models.IntegerField(verbose_name='Costo por Participante', null=False)
-    f_inicio = models.DateField(verbose_name='Fecha Inicio', null=False)
-    f_fin = models.DateField(verbose_name='Fecha Fin', null=False)
-    tipo = models.CharField(max_length=15, choices=CATEGORIA, null=False, verbose_name='Tipo')
-    duracion = models.IntegerField(null=False, verbose_name='Duracion')
-    total_cupo_participante = models.IntegerField(verbose_name='Total cupo por participante', null=False)
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=30)
+    costo_participante = models.IntegerField()
+    f_inicio = models.DateField()
+    f_fin = models.DateField()
+    tipo = models.CharField(max_length=15, choices=CATEGORIA)
+    duracion = models.IntegerField()
+    total_cupo_participante = models.IntegerField()
 
     def __str__(self):
         return self.nombre
 
     class Meta:
         db_table = 'rallies'
-        verbose_name = 'Rally'
-        verbose_name_plural = 'Rallies'
         ordering = ['id']
 
 class Premios(models.Model):
@@ -103,17 +145,19 @@ class Premios(models.Model):
         (2,'2do'),
         (3,'3ro'),
     )
-    id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, null=False, related_name='id_rally', primary_key=True)
-    posicion = models.IntegerChoices(choices=PREMIO, null=False, verbose_name='Posicion')
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    id = models.IntegerField(primary_key=True)
+    id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_rally')
+    posicion = models.IntegerField(choices=PREMIO)
+    descripcion = models.TextField(max_length=255)
 
     def __str__(self):
         return 'Rally: ' + self.id_rally + ', ' + 'Posicion: ' + str(self.posicion)
 
     class Meta:
+
+        unique_together = [('id', 'id_rally')]
+
         db_table = 'premios'
-        verbose_name = 'Premio'
-        verbose_name_plural = 'Premios'
         ordering = ['id']
 
 class Ciudades(models.Model):
@@ -121,72 +165,90 @@ class Ciudades(models.Model):
         ('localidad','Localidad'),
         ('ciudad','Ciudad'),
     )
-    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais', primary_key=True)
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    tipo = models.CharField(choices=DESTINO, null=False, verbose_name='tipo', max_length=15)
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    id = models.IntegerField(primary_key=True)
+    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, related_name='id_pais')
+    nombre = models.CharField(max_length=30)
+    tipo = models.CharField(choices=DESTINO, max_length=15)
+    descripcion = models.TextField(max_length=255)
 
     def __str__(self):
         return self.nombre
 
     class Meta:
+
+        unique_together = [('id', 'id_pais')]
+
         db_table = 'ciudades'
-        verbose_name = 'Ciudad'
-        verbose_name_plural = 'Ciudades'
         ordering = ['id']
 
 class Atracciones(models.Model):
-    id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad', primary_key=True)
-    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais', primary_key=True)
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    id = models.IntegerField(primary_key=True)
+    id_ciudad = models.IntegerField()
+    id_pais = models.IntegerField()
+    nombre = models.CharField(max_length=30)
+    descripcion = models.TextField(max_length=255)
+
+    lugar = CompositeForeignKey(Ciudades, on_delete=CASCADE, to_fields={'id': 'id_ciudad', 'id_pais': 'id_pais'})
 
     def __str__(self):
         return self.nombre
 
     class Meta:
+
+        unique_together = [('id_ciudad', 'id_pais', 'id')]
+
         db_table = 'atracciones'
-        verbose_name = 'Atraccion'
-        verbose_name_plural = 'Atracciones'
         ordering = ['id']
 
 class Circuitos(models.Model):
-    orden = models.IntegerField(primary_key=True, verbose_name='Orden', null=False)
-    id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad', primary_key=True)
-    id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, null=False, related_name='id_rally', primary_key=True)
-    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais', primary_key=True)
-    nombre = models.CharField(null=False, verbose_name='Nombre', max_length=30)
-    descripcion = models.TextField(verbose_name='Descripción', null=False, max_length=255)
+    orden = models.IntegerField()
+    id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, null=False, related_name='id_rally_cir')
+    id_ciudad = models.IntegerField()
+    id_pais = models.IntegerField()
+    maxdias = models.IntegerField()
+
+    lugar = CompositeForeignKey(Ciudades, on_delete=CASCADE, to_fields={'id': 'id_ciudad', 'id_pais': 'id_pais'})
 
     def __str__(self):
-        return self.nombre
+        return str(self.orden) + '- ' + self.id_rally + ' c: ' + str(self.id_ciudad) + ' p: ' + str(self.id_pais)
 
     class Meta:
+
+        unique_together = [('orden', 'id_rally', 'id_ciudad', 'id_pais')]
+
         db_table = 'circuitos'
-        verbose_name = 'Circuito'
-        verbose_name_plural = 'Circuitos'
         ordering = ['orden']
 
 class ART_CIR(models.Model):
-    id_atraccion = models.ForeignKey(Atracciones, on_delete=models.CASCADE, null=False, related_name='id_atraccion', primary_key=True)
-    id_ciudad_at = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad atraccion', primary_key=True)
-    id_pais_at = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais atraccion', primary_key=True)
-    id_circuito = models.ForeignKey(Circuitos, on_delete=models.CASCADE, null=False, related_name='id_circuito', primary_key=True)
-    id_rally_cir = models.ForeignKey(Rallies, on_delete=models.CASCADE, null=False, related_name='id_rally circuito', primary_key=True)
-    id_ciudad_cir = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad circuito', primary_key=True)
-    id_pais_cir = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais circuito', primary_key=True)
-    orden = models.IntegerField(verbose_name='Orden', null=True, blank = True)
+    id_atraccion = models.IntegerField()
+    id_ciudad_at = models.IntegerField()
+    id_pais_at = models.IntegerField()
+    id_circuito = models.IntegerField()
+    id_rally_cir = models.IntegerField()
+    id_ciudad_cir = models.IntegerField()
+    id_pais_cir = models.IntegerField()
+    orden = models.IntegerField(null=True, blank = True)
+
+    lugar = CompositeForeignKey(Atracciones, on_delete=CASCADE, to_fields={'id': 'id_atraccion','id_ciudad': 'id_ciudad_at', 'id_pais': 'id_pais_at'})
+    recorrido = CompositeForeignKey(Circuitos, on_delete=CASCADE, to_fields={'orden': 'id_circuito', 'id_rally': 'id_rally_cir', 'id_ciudad': 'id_ciudad_cir', 'id_pais': 'id_pais_cir'})
 
     def __str__(self):
-        return 'Atraccion: ' + self.id_atraccion + ', ' + 'Circuito: ' + self.id_circuito
+        return str(self.id_atraccion) + str(self.id_ciudad_at) + str(self.id_pais_at) + str(self.id_circuito) + str(self.id_rally_cir) + str(self.id_ciudad_cir) + str(self.id_pais_cir)
 
 
     class Meta:
+
+        unique_together = [('id_atraccion', 'id_ciudad_at', 'id_pais_at', 'id_circuito', 'id_rally_cir', 'id_ciudad_cir', 'id_pais_cir')]
+
         db_table = 'art_cir'
-        verbose_name = 'ART_CIR'
-        verbose_name_plural = 'ART_CIR'
         ordering = ['id_atraccion']
 
+
+
+
+
+
+'''
 class Agencias_de_viajes(models.Model):
     OPERACION = (
         ('T','Tour Operator'),
@@ -282,8 +344,8 @@ class Alojamientos(models.Model):
 
 class Proveedores(models.Model):
     CATEGORIA = (
-        ('exclusivo','Exclusivo')
-        ('multiagencias','Multiagencias')
+        ('exclusivo','Exclusivo'),
+        ('multiagencias','Multiagencias'),
     )
     id_alojamiento = models.ForeignKey(Alojamientos, on_delete=models.CASCADE, null=False, related_name='id_alojamiento')
     nombre = models.IntegerField(verbose_name='Nombre', null=True, blank = True)
@@ -370,3 +432,97 @@ class Especializaciones(models.Model):
         verbose_name = 'Especializacion'
         verbose_name_plural = 'Especializaciones'
         ordering = ['id']
+
+class Precio_paquetes(models.Model):
+    f_inicio = models.DateField(verbose_name='Fecha Inicio', null=False, primary_key=True)
+    id_paquete = models.ForeignKey(Paquetes, on_delete=models.CASCADE, null=False, related_name='id_paquete', primary_key=True)
+    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, null=False, related_name='id_agencia', primary_key=True)
+    f_fin = models.DateField(verbose_name='Fecha fin', null=True, blank=True)
+    valor = models.IntegerField(verbose_name='Valor', null=True, blank=True)
+
+    def __str__(self):
+        return self.f_inicio + '-' + self.id_paquete + '-' + self.id_agencia
+
+
+    class Meta:
+        db_table = 'precio_paquetes'
+        verbose_name = 'Precio de paquete'
+        verbose_name_plural = 'Precio de paquetes'
+        ordering = ['f_inicio']
+
+class Calendarios_anuales(models.Model):
+    f_salida = models.DateField(verbose_name='Fecha Salida', null=False, primary_key=True)
+    id_paquete = models.ForeignKey(Paquetes, on_delete=models.CASCADE, null=False, related_name='id_paquete', primary_key=True)
+    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, null=False, related_name='id_agencia', primary_key=True)
+    descripcion = models.TextField(verbose_name='Descripcion', max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.f_salida + '-' + self.id_paquete + '-' + self.id_agencia
+
+
+    class Meta:
+        db_table = 'calendarios_anuales'
+        verbose_name = 'Calendario anual'
+        verbose_name_plural = 'Calendarios anuales'
+        ordering = ['f_salida']
+
+class Descuentos(models.Model):
+    DESCUENTO = (
+        ('descnino','Descuento niño'),
+        ('adultos','Adultos'),
+        ('general','General'),
+        ('viajerosgratis','Viaje gratis'),
+        ('otro','Otro'),
+    )
+    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, null=False, related_name='id_agencia', primary_key=True)
+    f_inicio = models.DateField(verbose_name='Fecha Inicio', null=False)
+    tipo = models.CharField(max_length=20, choices=DESCUENTO, null=False, verbose_name='Tipo')
+    f_fin = models.DateField(verbose_name='Fecha Fin', null=True, blank=True)
+    cant_per_gratis = models.IntegerField(verbose_name='Cantidad de personas gratis', null=True, blank=True)
+    porcentaje = models.IntegerField(verbose_name='%', null=True, blank=True)
+
+    def __str__(self):
+        return self.id_agencia
+
+    class Meta:
+        db_table = 'descuentos'
+        verbose_name = 'Descuento'
+        verbose_name_plural = 'Descuentos'
+        ordering = ['id']
+
+class Intinerarios(models.Model):
+    orden = models.IntegerField(verbose_name='Orden', primary_key=True, null=False)
+    id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad', primary_key=True)
+    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais', primary_key=True)
+    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, null=False, related_name='id_agencia', primary_key=True)
+    id_paquete = models.ForeignKey(Paquetes, on_delete=models.CASCADE, null=False, related_name='id_paquete', primary_key=True)
+    tiempo_estadia = models.IntegerField(verbose_name='Tiempo de estadia', null=False)
+
+    def __str__(self):
+        return str(self.orden) + '- ' + self.id_paquete + '-' + self.id_agencia + ' ' + self.id_ciudad + ', ' + self.id_pais
+
+
+    class Meta:
+        db_table = 'intinerarios'
+        verbose_name = 'Intinerario'
+        verbose_name_plural = 'Intinerarios'
+        ordering = ['orden']
+
+class INT_ATR(models.Model):
+    id_intinerario = models.ForeignKey(Intinerarios, on_delete=models.CASCADE, null=False, related_name='id_intinerario', primary_key=True)
+    id_atraccion = models.ForeignKey(Atracciones, on_delete=models.CASCADE, null=False, related_name='id_atraccion', primary_key=True)
+    id_ciudad = models.ForeignKey(Ciudades, on_delete=models.CASCADE, null=False, related_name='id_ciudad', primary_key=True)
+    id_pais = models.ForeignKey(Paices, on_delete=models.CASCADE, null=False, related_name='id_pais', primary_key=True)
+    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, null=False, related_name='id_agencia', primary_key=True)
+    id_paquete = models.ForeignKey(Paquetes, on_delete=models.CASCADE, null=False, related_name='id_paquete', primary_key=True)
+    orden_visita = models.IntegerField(verbose_name='Tiempo de visita', null=False)
+
+    def __str__(self):
+        return  self.id_intinerario + ' -> ' + self.id_atraccion
+
+    class Meta:
+        db_table = 'INT_ATR'
+        verbose_name = 'INT_ATR'
+        verbose_name_plural = 'INT_ATR'
+        ordering = ['id_intinerario']
+'''
