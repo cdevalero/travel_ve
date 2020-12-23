@@ -1,0 +1,121 @@
+{% extends 'base_admin.html' %}
+
+
+{% block title %}
+    Agencia de Viajes
+{% endblock title %}
+
+{% block content_admin %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Agencia de Viajes</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="" class="btn btn-primary">Nuevo +</a>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        id
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Nombre
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Tipo de operacion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Alcance geografico
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Web
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Telefono
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Calle/Av
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Ciudad
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Pais
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Descripcion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Opciones
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if obj %}
+                                {% for pice in obj %}
+                                    <tr>
+                                        <td>{{pice.id_agencia}}</td>
+                                        <td>{{pice.nombre}}</td>
+                                        <td>{{pice.tipo_de_operacion}}</td>
+                                        <td>{{pice.alcance_geografico}}</td>
+                                        <td>{{pice.web}}</td>
+                                        <td>{{pice.telefono}}</td>
+                                        <td>{{pice.calle_av}}</td>
+                                        <td>{{pice.id_ciudad}}</td>
+                                        <td>{{pice.id_pais}}</td>
+                                        <td>{{pice.descripcion}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                                <a href="" class="offset-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content_admin %}
