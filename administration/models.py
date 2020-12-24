@@ -178,7 +178,7 @@ class Circuitos(models.Model):
         db_table = 'cgr_circuitos'
         ordering = ['orden_circuito']
 
-class ART_CIR(models.Model):
+class ATR_CIR(models.Model):
     id_atraccion = models.IntegerField(primary_key=True)
     id_ciudad_at = models.IntegerField()
     id_pais_at = models.IntegerField()
@@ -199,7 +199,7 @@ class ART_CIR(models.Model):
 
         unique_together = [('id_atraccion', 'id_ciudad_at', 'id_pais_at', 'id_circuito', 'id_rally_cir', 'id_ciudad_cir', 'id_pais_cir')]
 
-        db_table = 'cgr_art_cir'
+        db_table = 'cgr_atr_cir'
         ordering = ['id_atraccion']
 
 class Agencias_de_viajes(models.Model):
@@ -397,7 +397,7 @@ class Especializaciones(models.Model):
         db_table = 'cgr_especializaciones'
         ordering = ['id_especializacion']
 
-class Precio_paquetes(models.Model):
+class Precios_paquetes(models.Model):
     f_inicio = models.DateField(primary_key=True)
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
@@ -414,7 +414,7 @@ class Precio_paquetes(models.Model):
 
         unique_together = [('f_inicio', 'id_paquete', 'id_agencia')]
 
-        db_table = 'cgr_precio_paquetes'
+        db_table = 'cgr_precios_paquetes'
         ordering = ['f_inicio']
 
 class Calendarios_anuales(models.Model):
@@ -481,7 +481,7 @@ class Intinerarios(models.Model):
         db_table = 'cgr_intinerarios'
         ordering = ['orden']
 
-class INT_ATR(models.Model):
+class ITN_ATR(models.Model):
     id_intinerario = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
@@ -503,10 +503,10 @@ class INT_ATR(models.Model):
 
         unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_atraccion', 'id_ciudad_at', 'id_pais_at')]
 
-        db_table = 'cgr_int_atr'
+        db_table = 'cgr_itn_atr'
         ordering = ['id_intinerario']
 
-class Detalle_servicios(models.Model):
+class Detalles_servicios(models.Model):
     BOLETO = {
         ('boleto_avion', 'Boleto de avion'),
         ('boleto_tren', 'Boleto de tren'),
@@ -536,7 +536,7 @@ class Detalle_servicios(models.Model):
         unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_detalle_servicio')]
 
         db_table = 'cgr_Detalle_servicios'
-        ordering = ['id_detalle_servicio']
+        ordering = ['id_detalles_servicio']
 
 class ALO_DET(models.Model):
     id_detalle_servicio = models.IntegerField(primary_key=True)
@@ -547,7 +547,7 @@ class ALO_DET(models.Model):
     id_pais = models.IntegerField()
     id_alojamiento = models.ForeignKey(Alojamientos, on_delete=models.CASCADE, related_name='id_clientes_ALO', db_column='id_alojamiento')
 
-    detalle = CompositeForeignKey(Detalle_servicios, on_delete=CASCADE, to_fields={'id_detalle_servicio': 'id_detalle_servicio','id_intinerario': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
+    detalle = CompositeForeignKey(Detalles_servicios, on_delete=CASCADE, to_fields={'id_detalle_servicio': 'id_detalle_servicio','id_intinerario': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
 
 
     def __str__(self):
@@ -560,7 +560,7 @@ class ALO_DET(models.Model):
         db_table = 'cgr_alo_det'
         ordering = ['id_detalle_servicio']
 
-class Instrumento_de_pago(models.Model):
+class Instrumentos_de_pago(models.Model):
     INSTRUMENTO = {
         ('TDC', 'Tarjeta de Credito'),
         ('TDD', 'Tarjeta de Debito'),
@@ -582,7 +582,7 @@ class Instrumento_de_pago(models.Model):
 
         unique_together = [('id_instrumento', 'doc_identidad_cliente')]
 
-        db_table = 'cgr_instrumento_de_pago'
+        db_table = 'cgr_instrumentos_de_pago'
         ordering = ['id_instrumento']
 
 class Paquetes_contrato(models.Model):
@@ -620,7 +620,7 @@ class Formas_de_pago(models.Model):
     id_paquete_contrato = models.ForeignKey(Paquetes_contrato, on_delete=models.CASCADE, related_name='id_paquete_contrato', db_column='numero_factura')
     tipo_forma_de_pago = models.CharField(max_length=30, choices=TRAMITES, null=True, blank=True)
 
-    pago_instrumento = CompositeForeignKey(Instrumento_de_pago, on_delete=CASCADE, to_fields={'id_instrumento': 'id_instrumento','doc_identidad_cliente': 'id_cliente'})
+    pago_instrumento = CompositeForeignKey(Instrumentos_de_pago, on_delete=CASCADE, to_fields={'id_instrumento': 'id_instrumento','doc_identidad_cliente': 'id_cliente'})
 
     def __str__(self):
         return str(self.id_instrumento)
