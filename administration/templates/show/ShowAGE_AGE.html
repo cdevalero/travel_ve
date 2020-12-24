@@ -10,7 +10,7 @@
         <h1 class="h3 mb-2 text-gray-800">Agencia-Socios</h1>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="" class="btn btn-primary">Nuevo +</a>
+                <a href="{% url 'Add_AGE_AGE' %}" class="btn btn-primary">Nuevo +</a>
             </div>
             <div class="card-body">
                 {% if messages %}
@@ -65,10 +65,10 @@
                                         <td>{{pice.f_fin}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="">
+                                                <a href="{% url 'Delete_AGE_AGE' pice.id_agencia %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="" class="offset-1">
+                                                <a href="{% url 'Edit_AGE_AGE' pice.id_agencia %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

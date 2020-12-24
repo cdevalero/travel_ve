@@ -515,7 +515,7 @@ class Detalles_servicios(models.Model):
         ('alojamiento', 'Alojamiento'),
         ('otro', 'otros'),
     }
-    id_detalle_servicio = models.IntegerField(primary_key=True)
+    id_detalles_servicio = models.IntegerField(primary_key=True)
     id_intinerario = models.IntegerField()
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
@@ -529,11 +529,11 @@ class Detalles_servicios(models.Model):
 
 
     def __str__(self):
-        return str(self.id_detalle_servicio) + '-' + str(self.id_intinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
+        return str(self.id_detalles_servicio) + '-' + str(self.id_intinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
 
     class Meta:
 
-        unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_detalle_servicio')]
+        unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_detalles_servicio')]
 
         db_table = 'cgr_Detalle_servicios'
         ordering = ['id_detalles_servicio']
@@ -547,7 +547,7 @@ class ALO_DET(models.Model):
     id_pais = models.IntegerField()
     id_alojamiento = models.ForeignKey(Alojamientos, on_delete=models.CASCADE, related_name='id_clientes_ALO', db_column='id_alojamiento')
 
-    detalle = CompositeForeignKey(Detalles_servicios, on_delete=CASCADE, to_fields={'id_detalle_servicio': 'id_detalle_servicio','id_intinerario': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
+    detalle = CompositeForeignKey(Detalles_servicios, on_delete=CASCADE, to_fields={'id_detalles_servicio': 'id_detalle_servicio','id_intinerario': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
 
 
     def __str__(self):

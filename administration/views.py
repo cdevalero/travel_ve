@@ -166,3 +166,330 @@ def Show_Puntuaciones(request):
 
 #ADD
 
+def Add_Bancos(request):
+    pass
+
+def Add_Clientes(request):
+    pass
+
+def Add_Areas_de_interes(request):
+    pass
+
+def Add_Paises(request):
+    pass
+
+def Add_Rallies(request):
+    pass
+
+def Add_Premios(request):
+    pass
+
+def Add_Ciudades(request):
+    pass
+
+def Add_Atracciones(request):
+    pass
+
+def Add_Circuitos(request):
+    pass
+
+def Add_ATR_CIR(request):
+    pass
+
+def Add_Agencia_de_viajes(request):
+    pass
+
+def Add_AGE_AGE(request):
+    pass
+
+def Add_Cupos(request):
+    pass
+
+def Add_Registro_clientes(request):
+    pass
+
+def Add_Alojamientos(request):
+    pass
+
+def Add_Proveedores(request):
+    pass
+
+def Add_PRO_AGE(request):
+    pass
+
+def Add_Asesores_de_viajes(request):
+    pass
+
+def Add_Paquetes(request):
+    pass
+
+def Add_Especializaciones(request):
+    pass
+
+def Add_Precios_paquetes(request):
+    pass
+
+def Add_Calendarios_anuales(request):
+    pass
+
+def Add_Descuentos(request):
+    pass
+
+def Add_Intinerarios(request):
+    pass
+
+def Add_ITN_ATR(request):
+    pass
+
+def Add_Detalles_servicios(request):
+    pass
+
+def Add_ALO_DET(request):
+    pass
+
+def Add_Instrumentos_de_pago(request):
+    pass
+
+def Add_Paquetes_contrato(request):
+    pass
+
+def Add_Formas_de_pago(request):
+    pass
+
+def Add_Viajeros(request):
+    pass
+
+def Add_PAI_VIA(request):
+    pass
+
+def Add_Registro_viajeros(request):
+    pass
+
+def Add_Detalle_viajeros(request):
+    pass
+
+def Add_Participantes(request):
+    pass
+
+def Add_Puntuaciones(request):
+    pass
+
+#Delete
+
+def Delete_Bancos(request, id):
+    pass
+
+def Delete_Clientes(request, id):
+    pass
+
+def Delete_Areas_de_interes(request, id):
+    pass
+
+def Delete_Paises(request, id):
+    pass
+
+def Delete_Rallies(request, id):
+    pass
+
+def Delete_Premios(request, id):
+    pass
+
+def Delete_Ciudades(request, id):
+    pass
+
+def Delete_Atracciones(request, id):
+    pass
+
+def Delete_Circuitos(request, id):
+    pass
+
+def Delete_ATR_CIR(request, id):
+    pass
+
+def Delete_Agencia_de_viajes(request, id):
+    pass
+
+def Delete_AGE_AGE(request, id):
+    pass
+
+def Delete_Cupos(request, id):
+    pass
+
+def Delete_Registro_clientes(request, id):
+    pass
+
+def Delete_Alojamientos(request, id):
+    pass
+
+def Delete_Proveedores(request, id):
+    pass
+
+def Delete_PRO_AGE(request, id):
+    pass
+
+def Delete_Asesores_de_viajes(request, id):
+    pass
+
+def Delete_Paquetes(request, id):
+    pass
+
+def Delete_Especializaciones(request, id):
+    pass
+
+def Delete_Precios_paquetes(request, id):
+    pass
+
+def Delete_Calendarios_anuales(request, id):
+    pass
+
+def Delete_Descuentos(request, id):
+    pass
+
+def Delete_Intinerarios(request, id):
+    pass
+
+def Delete_ITN_ATR(request, id):
+    pass
+
+def Delete_Detalles_servicios(request, id):
+    pass
+
+def Delete_ALO_DET(request, id):
+    pass
+
+def Delete_Instrumentos_de_pago(request, id):
+    pass
+
+def Delete_Paquetes_contrato(request, id):
+    pass
+
+def Delete_Formas_de_pago(request, id):
+    pass
+
+def Delete_Viajeros(request, id):
+    pass
+
+def Delete_PAI_VIA(request, id):
+    pass
+
+def Delete_Registro_viajeros(request, id):
+    pass
+
+def Delete_Detalle_viajeros(request, id):
+    pass
+
+def Delete_Participantes(request, id):
+    pass
+
+def Delete_Puntuaciones(request, id):
+    pass
+
+#Edit
+
+def Edit_Bancos(request, id):
+    pass
+
+def Edit_Clientes(request, id):
+    pass
+
+def Edit_Areas_de_interes(request, id):
+    pass
+
+def Edit_Paises(request, id):
+    pass
+
+def Edit_Rallies(request, id):
+    pass
+
+def Edit_Premios(request, id):
+    pass
+
+def Edit_Ciudades(request, id):
+    pass
+
+def Edit_Atracciones(request, id):
+    pass
+
+def Edit_Circuitos(request, id):
+    pass
+
+def Edit_ATR_CIR(request, id):
+    pass
+
+def Edit_Agencia_de_viajes(request, id):
+    pass
+
+def Edit_AGE_AGE(request, id):
+    pass
+
+def Edit_Cupos(request, id):
+    pass
+
+def Edit_Registro_clientes(request, id):
+    pass
+
+def Edit_Alojamientos(request, id):
+    pass
+
+def Edit_Proveedores(request, id):
+    pass
+
+def Edit_PRO_AGE(request, id):
+    pass
+
+def Edit_Asesores_de_viajes(request, id):
+    pass
+
+def Edit_Paquetes(request, id):
+    pass
+
+def Edit_Especializaciones(request, id):
+    pass
+
+def Edit_Precios_paquetes(request, id):
+    pass
+
+def Edit_Calendarios_anuales(request, id):
+    pass
+
+def Edit_Descuentos(request, id):
+    pass
+
+def Edit_Intinerarios(request, id):
+    pass
+
+def Edit_ITN_ATR(request, id):
+    pass
+
+def Edit_Detalles_servicios(request, id):
+    pass
+
+def Edit_ALO_DET(request, id):
+    pass
+
+def Edit_Instrumentos_de_pago(request, id):
+    pass
+
+def Edit_Paquetes_contrato(request, id):
+    pass
+
+def Edit_Formas_de_pago(request, id):
+    pass
+
+def Edit_Viajeros(request, id):
+    pass
+
+def Edit_PAI_VIA(request, id):
+    pass
+
+def Edit_Registro_viajeros(request, id):
+    pass
+
+def Edit_Detalle_viajeros(request, id):
+    pass
+
+def Edit_Participantes(request, id):
+    pass
+
+def Edit_Puntuaciones(request, id):
+    pass
