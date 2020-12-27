@@ -1,0 +1,121 @@
+{% extends 'base_admin.html' %}
+
+
+{% block title %}
+    Especializaciones
+{% endblock title %}
+
+{% block content_admin %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Especializacion</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="{% url 'Add_Especializaciones' %}" class="btn btn-primary">Nuevo +</a>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Especializacion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Area de Interes
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Atraccion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Ciudad
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Pais
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Agencia
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Paquete
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Agencia-Paquete
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Asesor
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Comentario
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Opciones
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if obj %}
+                                {% for pice in obj %}
+                                    <tr>
+                                        <td>{{pice.id_especializacion}}</td>
+                                        <td>{{pice.id_areas_de_interes}}</td>
+                                        <td>{{pice.id_atraccion}}</td>
+                                        <td>{{pice.id_ciudad}}</td>
+                                        <td>{{pice.id_pais}}</td>
+                                        <td>{{pice.id_agencia}}</td>
+                                        <td>{{pice.id_paquete}}</td>
+                                        <td>{{pice.id_agencia_paquete}</td>
+                                        <td>{{pice.id_asesor}}</td>
+                                        <td>{{pice.comentarios}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{% url 'Delete_Especializaciones' pice.id_especializacion %}">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                                <a href="{% url 'Edit_Especializaciones' pice.id_especializacion %}" class="offset-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content_admin %}
