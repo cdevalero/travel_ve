@@ -1,0 +1,109 @@
+{% extends 'base_admin.html' %}
+
+
+{% block title %}
+    Participantes
+{% endblock title %}
+
+{% block content_admin %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Participante</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="{% url 'Add_Participantes' %}" class="btn btn-primary">Nuevo +</a>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Participante
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Rally
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Viajero Agencia
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Viajero
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        CLiente Agencia 
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Cliente 
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Equipo
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Posicion 
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Opciones
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if obj %}
+                                {% for pice in obj %}
+                                    <tr>
+                                        <td>{{pice.id_partipante}}</td>
+                                        <td>{{pice.id_rally}}</td>
+                                        <td>{{pice.id_via_agencia}}</td>
+                                        <td>{{pice.id_via_viajero}}</td>
+                                        <td>{{pice.id_cli_agencia}}</td>
+                                        <td>{{pice.id_cli_cliente}}</td>
+                                        <td>{{pice.equipo}}</td>
+                                        <td>{{pice.posicion}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{% url 'Delete_Participantes' pice.id_partipante %}">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                                <a href="{% url 'Edit_Participantes' pice.id_partipante %}" class="offset-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content_admin %}

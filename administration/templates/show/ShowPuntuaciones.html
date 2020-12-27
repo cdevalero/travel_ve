@@ -1,0 +1,97 @@
+{% extends 'base_admin.html' %}
+
+
+{% block title %}
+    Puntuaciones
+{% endblock title %}
+
+{% block content_admin %}
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">Puntuacion</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <a href="{% url 'Add_Puntuaciones' %}" class="btn btn-primary">Nuevo +</a>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    <div class="row mt-3 mb-3">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Puntuacion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Rally
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Pais
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Ciudad
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Atraccion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Paquete Contrato
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
+                                        Opciones
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if obj %}
+                                {% for pice in obj %}
+                                    <tr>
+                                        <td>{{pice.id_puntuacion}}</td>
+                                        <td>{{pice.id_rally}}</td>
+                                        <td>{{pice.id_pais}}</td>
+                                        <td>{{pice.id_ciudad}}</td>
+                                        <td>{{pice.id_atraccion}}</td>
+                                        <td>{{pice.id_paquete_contrato}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{% url 'Delete_Puntuaciones' pice.id_puntuacion %}">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                                <a href="{% url 'Edit_Puntuaciones' pice.id_puntuacion %}" class="offset-1">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content_admin %}
