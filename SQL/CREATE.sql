@@ -12,16 +12,9 @@ CREATE TABLE cgr_bancos
 	CONSTRAINT pk_bancos PRIMARY KEY (id_banco)
 );
 
-CREATE SEQUENCE cgr_secuencia_clientes
-	start with 1
-	increment 1
-	minvalue 1
-	maxvalue 1000
-;
-
 CREATE TABLE cgr_clientes
 (
-	doc_identidad_o_rif numeric NOT NULL DEFAULT nextval('cgr_secuencia_clientes'::regclass),
+	doc_identidad_o_rif numeric NOT NULL,
 	nombre_cliente varchar(75) NOT NULL,
 	tipo_cliente varchar(10) NOT NULL,
 	primer_apellido varchar(30) DEFAULT '',
@@ -140,15 +133,9 @@ CREATE TABLE cgr_atracciones
 	CONSTRAINT fk_id_ciudad_atraccion_id_pais_ciudad_atraccion FOREIGN KEY (id_ciudad, id_pais) REFERENCES cgr_ciudades(id_ciudad,id_pais) ON DELETE CASCADE
 );
 
-CREATE SEQUENCE cgr_secuencia_circuitos
-	start with 1
-	increment 1
-	minvalue 1
-	maxvalue 100
-;
 CREATE TABLE cgr_circuitos
 (
-	orden_circuito numeric NOT NULL DEFAULT nextval('cgr_secuencia_circuitos'::regclass),
+	orden_circuito numeric NOT NULL,
 	id_rally numeric NOT NULL,
 	id_ciudad numeric NOT NULL,
 	id_pais numeric NOT NULL,
@@ -386,16 +373,9 @@ CREATE TABLE cgr_descuentos
 	CONSTRAINT fk_agencias_de_viajes FOREIGN KEY (id_agencia) REFERENCES cgr_agencias_de_viajes(id_agencia) ON DELETE CASCADE
 );
 
-CREATE SEQUENCE cgr_secuencia_itinerarios
-	start with 1
-	increment 1
-	minvalue 1
-	maxvalue 100
-;
-
 CREATE TABLE cgr_itinerarios
 (
-	orden numeric NOT NULL DEFAULT nextval('cgr_secuencia_itinerarios'::regclass),
+	orden numeric NOT NULL,
 	id_paquete numeric NOT NULL,
 	id_agencia numeric NOT NULL,
 	id_ciudad numeric NOT NULL,

@@ -154,28 +154,100 @@ def Show_Puntuaciones(request):
 #ADD
 
 def Add_Bancos(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Bancos(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_bancos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_bancos')
+    form = Form_Bancos()
+    return render(request, 'create_edit/AddBancos.html',{'form':form})
 
 def Add_Clientes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Clientes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Clientes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Clientes')
+    form = Form_Clientes()
+    return render(request, 'create_edit/AddClientes.html',{'form':form})
 
 def Add_Areas_de_interes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Areas_de_interes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Areas_de_interes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Areas_de_interes')
+    form = Form_Areas_de_interes()
+    return render(request, 'create_edit/AddAreas_de_interes.html',{'form':form})
 
 def Add_Paises(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Paises(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_paises')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_paises')
+    form = Form_Paises()
+    return render(request, 'create_edit/AddPaises.html',{'form':form})
 
 def Add_Rallies(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Rallies(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_rallies')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_rallies')
+    form = Form_Rallies()
+    return render(request, 'create_edit/AddRallies.html',{'form':form})
 
 def Add_Premios(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Premios(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_premios')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_premios')
+    form = Form_Premios()
+    return render(request, 'create_edit/AddPremios.html',{'form':form})
 
 def Add_Ciudades(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Ciudades(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Ciudades')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Ciudades')
+    form = Form_Ciudades()
+    return render(request, 'create_edit/AddCiudades.html',{'form':form})
 
 def Add_Atracciones(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Atracciones(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Atracciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Atracciones')
+    form = Form_Atracciones()
+    return render(request, 'create_edit/AddAtracciones.html',{'form':form})
 
 def Add_Circuitos(request):
     pass

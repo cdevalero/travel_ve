@@ -7,7 +7,7 @@ from django.db.models.fields import IntegerField
 #Proyecto  
 
 class Bancos(models.Model):
-    id_banco = models.IntegerField(primary_key=True)
+    id_banco = models.AutoField(primary_key=True)
     nombre_banco = models.CharField(max_length=30)
 
     def __str__(self):
@@ -36,7 +36,7 @@ class Clientes(models.Model):
         ordering = ['doc_identidad_o_rif']
 
 class Areas_de_interes(models.Model):
-    id_areas_de_interes = models.IntegerField(primary_key=True)
+    id_areas_de_interes = models.AutoField(primary_key=True)
     nombre_area_de_interes = models.CharField(max_length=30, unique=True)
     descripcion_area_de_interes = models.TextField(max_length=255)
 
@@ -63,7 +63,7 @@ class Paises(models.Model):
         ('Europa','Europa'),
         ('America','America'),
     )
-    id_pais = models.IntegerField(primary_key=True)
+    id_pais = models.AutoField(primary_key=True)
     nombre_pais = models.CharField( max_length=30)
     region_pais = models.CharField(max_length=15, choices=REGIONES)
     continente_pais = models.CharField(max_length=15, choices=CONTINENTES)
@@ -82,7 +82,7 @@ class Rallies(models.Model):
         ('individual','Individual'),
         ('pareja','Pareja'),
     )
-    id_rally = models.IntegerField(primary_key=True)
+    id_rally = models.AutoField(primary_key=True)
     nombre_rally = models.CharField(max_length=30)
     costo_participante = models.IntegerField()
     f_inicio = models.DateField()
@@ -104,7 +104,7 @@ class Premios(models.Model):
         (2,'2do'),
         (3,'3ro'),
     )
-    id_premio = models.IntegerField(primary_key=True)
+    id_premio = models.AutoField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_rally_pre', db_column='id_rally')
     posicion = models.IntegerField(choices=PREMIO)
     descripcion_premio = models.TextField(max_length=255)
@@ -124,7 +124,7 @@ class Ciudades(models.Model):
         ('localidad','Localidad'),
         ('ciudad','Ciudad'),
     )
-    id_ciudad = models.IntegerField(primary_key=True)
+    id_ciudad = models.AutoField(primary_key=True)
     id_pais = models.ForeignKey(Paises, on_delete=DO_NOTHING ,related_name='id_pais_ciu', db_column='id_pais')
     nombre_ciudad = models.CharField(max_length=30)
     tipo_ciudad = models.CharField(choices=DESTINO, max_length=15)
@@ -141,7 +141,7 @@ class Ciudades(models.Model):
         ordering = ['id_ciudad']
 
 class Atracciones(models.Model):
-    id_atraccion = models.IntegerField(primary_key=True)
+    id_atraccion = models.AutoField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
     nombre_atraccion = models.CharField(max_length=30)
@@ -214,7 +214,7 @@ class Agencias_de_viajes(models.Model):
         ('N','Nacional'),
         ('L','Local'),
     )
-    id_agencia = models.IntegerField(primary_key=True)
+    id_agencia = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30)
     tipo_de_operacion = models.CharField(choices=OPERACION, max_length=1)
     alcance_geografico = models.CharField(choices=ALCANCE, max_length=1)
@@ -291,7 +291,7 @@ class Registro_clientes(models.Model):
         ordering = ['id_cliente']
 
 class Alojamientos(models.Model):
-    id_alojamiento = models.IntegerField(primary_key=True)
+    id_alojamiento = models.AutoField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
     nombre = models.CharField(null=True, blank = True, max_length=30)
@@ -311,7 +311,7 @@ class Proveedores(models.Model):
         ('exclusivo','Exclusivo'),
         ('multiagencias','Multiagencias'),
     )
-    id_proveedor = models.IntegerField(primary_key=True)
+    id_proveedor = models.AutoField(primary_key=True)
     id_alojamiento = models.ForeignKey(Alojamientos, on_delete=models.CASCADE, related_name='id_alojamiento_proveedor', db_column='id_alojamiento')
     nombre_proveedor = models.CharField(null=True, blank = True, max_length=30)
     tipo_proveedor = models.CharField(max_length=15, choices=CATEGORIA, verbose_name='Tipo')
@@ -344,7 +344,7 @@ class PRO_AGE(models.Model):
         ordering = ['id_agencia']
 
 class Asesores_de_viajes(models.Model):
-    id_asesor = models.IntegerField(primary_key=True)
+    id_asesor = models.AutoField(primary_key=True)
     primer_nombre = models.CharField(max_length=30)
     segundo_nombre = models.CharField(null=True, blank=True, max_length=30)
     primer_apellido = models.CharField(max_length=30)
@@ -360,7 +360,7 @@ class Asesores_de_viajes(models.Model):
         ordering = ['id_asesor']
 
 class Paquetes(models.Model):
-    id_paquete = models.IntegerField(primary_key=True)
+    id_paquete = models.AutoField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_pa', db_column='id_agencia')
     nombre_paquete = models.CharField(max_length=30)
     duracion_dias = models.IntegerField()
@@ -379,7 +379,7 @@ class Paquetes(models.Model):
         ordering = ['id_agencia']
 
 class Especializaciones(models.Model):
-    id_especializacion = models.IntegerField(primary_key=True)
+    id_especializacion = models.AutoField(primary_key=True)
     id_areas_de_interes = models.ForeignKey(Areas_de_interes, on_delete=models.CASCADE, related_name='id_area_es', db_column='id_areas_de_interes')
     id_atraccion = models.IntegerField()
     id_ciudad = models.IntegerField()
@@ -447,7 +447,7 @@ class Descuentos(models.Model):
         ('viajerosgratis','Viaje gratis'),
         ('otro','Otro'),
     )
-    id_descuento = models.IntegerField(primary_key=True)
+    id_descuento = models.AutoField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_des', db_column='id_agencia')
     f_inicio = models.DateField()
     tipo_descuento = models.CharField(max_length=20, choices=DESCUENTO)
@@ -521,7 +521,7 @@ class Detalles_servicios(models.Model):
         ('alojamiento', 'Alojamiento'),
         ('otro', 'otros'),
     }
-    id_detalle_servicio = models.IntegerField(primary_key=True)
+    id_detalle_servicio = models.AutoField(primary_key=True)
     id_itinerario = models.IntegerField()
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
@@ -573,7 +573,7 @@ class Instrumentos_de_pago(models.Model):
         ('ctabanco', 'Cuanta Bancaria'),
         ('zelle', 'Zelle'),
     }
-    id_instrumento = models.IntegerField(primary_key=True)
+    id_instrumento = models.AutoField(primary_key=True)
     doc_identidad_cliente = models.IntegerField()
     monto = models.IntegerField()
     tipo_instrumento = models.CharField(max_length=30, choices=INSTRUMENTO)
@@ -594,7 +594,7 @@ class Instrumentos_de_pago(models.Model):
         ordering = ['id_instrumento']
 
 class Paquetes_contrato(models.Model):
-    numero_factura = models.IntegerField(primary_key=True)
+    numero_factura = models.AutoField(primary_key=True)
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
     id_reg_cliente = models.IntegerField()
@@ -719,7 +719,7 @@ class Detalle_viajeros(models.Model):
         ordering = ['id_viajero']
 
 class Participantes(models.Model):
-    id_partipante = models.IntegerField(primary_key=True)
+    id_partipante = models.AutoField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_participantes_rally', db_column='id_rally')
     id_via_agencia = models.IntegerField(null=True, blank=True)
     id_via_viajero = models.IntegerField(null=True, blank=True)
@@ -742,7 +742,7 @@ class Participantes(models.Model):
         ordering = ['id_partipante']
 
 class Puntuaciones(models.Model):
-    id_puntuacion = models.IntegerField(primary_key=True)
+    id_puntuacion = models.AutoField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_puntuacion_rally', null=True, blank=True, db_column='id_rally')
     id_paquete_contrato = models.IntegerField()
     id_ciudad = models.IntegerField(null=True, blank=True)
