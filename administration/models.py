@@ -1,6 +1,6 @@
 from typing import Tuple
 from django.db import models
-from django.db.models.deletion import CASCADE
+from django.db.models.deletion import CASCADE, DO_NOTHING
 from compositefk.fields import CompositeForeignKey
 from django.db.models.fields import IntegerField
 
@@ -125,7 +125,7 @@ class Ciudades(models.Model):
         ('ciudad','Ciudad'),
     )
     id_ciudad = models.IntegerField(primary_key=True)
-    id_pais = models.ForeignKey(Paises, on_delete=models.CASCADE, related_name='id_pais_ciu', db_column='id_pais')
+    id_pais = models.ForeignKey(Paises, on_delete=DO_NOTHING ,related_name='id_pais_ciu', db_column='id_pais')
     nombre_ciudad = models.CharField(max_length=30)
     tipo_ciudad = models.CharField(choices=DESTINO, max_length=15)
     descripcion_ciudad = models.TextField(max_length=255)
@@ -254,9 +254,11 @@ class AGE_AGE(models.Model):
         ordering = ['id_agencia']
 
 class Cupos(models.Model):
-    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_cupos', db_column='id_agencia', primary_key=True)
+    id_agencia = models.IntegerField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_rally_cupos', db_column='id_rally')
     cantidad = models.IntegerField(null=True, blank = True)
+
+    agencia = CompositeForeignKey(Agencias_de_viajes, on_delete=CASCADE, to_fields={'id_agencia': 'id_agencia'})
 
     def __str__(self):
         return 'A: ' + self.id_agencia + ', ' + 'R: ' + self.id_rally
@@ -266,14 +268,16 @@ class Cupos(models.Model):
 
         unique_together = [('id_agencia', 'id_rally')]
 
-        db_table = 'cgr_cupo'
+        db_table = 'cgr_cupos'
         ordering = ['id_agencia']
 
 class Registro_clientes(models.Model):
-    id_cliente = models.ForeignKey(Clientes, on_delete=models.CASCADE, related_name='id_clientes_registro', db_column='doc_identidad_o_rif', primary_key=True)
+    id_cliente = models.IntegerField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_registro', db_column='id_agencia')
     f_registro = models.DateField()
     numero_registro = models.IntegerField()
+
+    persona = CompositeForeignKey(Clientes, on_delete=CASCADE, to_fields={'doc_identidad_o_rif': 'id_cliente'})
 
     def __str__(self):
         return 'C: ' + self.id_cliente + ', ' + 'A: ' + self.id_agencia
@@ -321,10 +325,12 @@ class Proveedores(models.Model):
         ordering = ['id_proveedor']
 
 class PRO_AGE(models.Model):
-    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_PA', db_column='id_agencia', primary_key=True)
+    id_agencia = models.IntegerField(primary_key=True)
     id_proveedor = models.ForeignKey(Proveedores, on_delete=models.CASCADE, related_name='id_proveedor_PA', db_column='id_proveedor')
     f_inicio = models.DateField()
     f_fin = models.DateField(null=True, blank = True)
+
+    agencia = CompositeForeignKey(Agencias_de_viajes, on_delete=CASCADE, to_fields={'id_agencia': 'id_agencia'})
 
     def __str__(self):
         return 'A: ' + self.id_agencia + ', ' + 'P: ' + self.id_proveedor
@@ -357,7 +363,7 @@ class Paquetes(models.Model):
     id_paquete = models.IntegerField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_pa', db_column='id_agencia')
     nombre_paquete = models.CharField(max_length=30)
-    duracion_en_dias = models.IntegerField()
+    duracion_dias = models.IntegerField()
     descripcion_turistica = models.TextField(max_length=255)
     disponible = models.BooleanField(null=True, blank=True)
     numero_personas = models.IntegerField(null=True, blank=True)
@@ -459,7 +465,7 @@ class Descuentos(models.Model):
         db_table = 'cgr_descuentos'
         ordering = ['id_descuento']
 
-class Intinerarios(models.Model):
+class Itinerarios(models.Model):
     orden = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
@@ -467,8 +473,8 @@ class Intinerarios(models.Model):
     id_paquete = models.IntegerField()
     tiempo_estadia = models.IntegerField()
 
-    paquete = CompositeForeignKey(Paquetes, on_delete=CASCADE, to_fields={'id_agencia': 'id_paquete', 'id_agencia': 'id_agencia'})
-    lugar = CompositeForeignKey(Ciudades, on_delete=CASCADE, to_fields={'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'})
+    paquete = CompositeForeignKey(Paquetes, on_delete=models.CASCADE, to_fields={'id_paquete': 'id_paquete', 'id_agencia': 'id_agencia'})
+    lugar = CompositeForeignKey(Ciudades, on_delete=models.CASCADE, to_fields={'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'}, related_name='fk2_ciudades',)
 
     def __str__(self):
         return str(self.orden) + '- ' + str(self.id_paquete) + '-' + str(self.id_agencia) + ' ' + str(self.id_ciudad) + ', ' + str(self.id_pais)
@@ -478,11 +484,11 @@ class Intinerarios(models.Model):
 
         unique_together = [('orden', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete')]
 
-        db_table = 'cgr_intinerarios'
+        db_table = 'cgr_itinerarios'
         ordering = ['orden']
 
 class ITN_ATR(models.Model):
-    id_intinerario = models.IntegerField(primary_key=True)
+    id_itinerario = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
     id_agencia = models.IntegerField()
@@ -492,19 +498,19 @@ class ITN_ATR(models.Model):
     id_pais_at = models.IntegerField()
     orden_visita = models.IntegerField()
 
-    paquete = CompositeForeignKey(Intinerarios, on_delete=CASCADE, to_fields={'orden': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
+    paquete = CompositeForeignKey(Itinerarios, on_delete=CASCADE, to_fields={'orden': 'id_itinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
     lugar = CompositeForeignKey(Atracciones, on_delete=CASCADE, to_fields={'id_atraccion': 'id_atraccion', 'id_pais': 'id_pais_at', 'id_ciudad': 'id_ciudad_at'})
 
 
     def __str__(self):
-        return  str(self.id_intinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_atraccion) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
+        return  str(self.id_itinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_atraccion) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
 
     class Meta:
 
-        unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_atraccion', 'id_ciudad_at', 'id_pais_at')]
+        unique_together = [('id_itinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_atraccion', 'id_ciudad_at', 'id_pais_at')]
 
         db_table = 'cgr_itn_atr'
-        ordering = ['id_intinerario']
+        ordering = ['id_itinerario']
 
 class Detalles_servicios(models.Model):
     BOLETO = {
@@ -515,8 +521,8 @@ class Detalles_servicios(models.Model):
         ('alojamiento', 'Alojamiento'),
         ('otro', 'otros'),
     }
-    id_detalles_servicio = models.IntegerField(primary_key=True)
-    id_intinerario = models.IntegerField()
+    id_detalle_servicio = models.IntegerField(primary_key=True)
+    id_itinerario = models.IntegerField()
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
     id_ciudad = models.IntegerField()
@@ -525,37 +531,37 @@ class Detalles_servicios(models.Model):
     descripcion = models.CharField(max_length=255)
     comida = models.BooleanField(null=True, blank=True)
 
-    paquete = CompositeForeignKey(Intinerarios, on_delete=CASCADE, to_fields={'orden': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
+    paquete = CompositeForeignKey(Itinerarios, on_delete=CASCADE, to_fields={'orden': 'id_itinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
 
 
     def __str__(self):
-        return str(self.id_detalles_servicio) + '-' + str(self.id_intinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
+        return str(self.id_detalle_servicio) + '-' + str(self.id_itinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais)
 
     class Meta:
 
-        unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_detalles_servicio')]
+        unique_together = [('id_itinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_detalle_servicio')]
 
-        db_table = 'cgr_Detalle_servicios'
-        ordering = ['id_detalles_servicio']
+        db_table = 'cgr_detalles_servicios'
+        ordering = ['id_detalle_servicio']
 
 class ALO_DET(models.Model):
     id_detalle_servicio = models.IntegerField(primary_key=True)
-    id_intinerario = models.IntegerField()
+    id_itinerario = models.IntegerField()
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
     id_alojamiento = models.ForeignKey(Alojamientos, on_delete=models.CASCADE, related_name='id_clientes_ALO', db_column='id_alojamiento')
 
-    detalle = CompositeForeignKey(Detalles_servicios, on_delete=CASCADE, to_fields={'id_detalles_servicio': 'id_detalle_servicio','id_intinerario': 'id_intinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
+    detalle = CompositeForeignKey(Detalles_servicios, on_delete=CASCADE, to_fields={'id_detalle_servicio': 'id_detalle_servicio','id_itinerario': 'id_itinerario', 'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais', 'id_agencia': 'id_agencia', 'id_paquete': 'id_paquete'})
 
 
     def __str__(self):
-        return str(self.id_detalle_servicio) + '-' +  str(self.id_intinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais) + '-' + str(self.id_alojamiento)
+        return str(self.id_detalle_servicio) + '-' +  str(self.id_itinerario) + '-' + str(self.id_agencia) + '-' + str(self.paquete) + '-' + str(self.id_ciudad) + '-' + str(self.id_pais) + '-' + str(self.id_alojamiento)
 
     class Meta:
 
-        unique_together = [('id_intinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_alojamiento', 'id_detalle_servicio')]
+        unique_together = [('id_itinerario', 'id_ciudad', 'id_pais', 'id_agencia', 'id_paquete', 'id_alojamiento', 'id_detalle_servicio')]
 
         db_table = 'cgr_alo_det'
         ordering = ['id_detalle_servicio']
@@ -568,12 +574,14 @@ class Instrumentos_de_pago(models.Model):
         ('zelle', 'Zelle'),
     }
     id_instrumento = models.IntegerField(primary_key=True)
-    doc_identidad_cliente = models.ForeignKey(Clientes, on_delete=models.CASCADE, related_name='id_doc_iden_cli_ins', db_column='doc_identidad_o_rif')
+    doc_identidad_cliente = models.IntegerField()
     monto = models.IntegerField()
     tipo_instrumento = models.CharField(max_length=30, choices=INSTRUMENTO)
     id_banco = models.ForeignKey(Bancos, on_delete=models.CASCADE, related_name='id_banco_inst', null=True, blank=True, db_column='id_banco')
     numero_zelle = models.IntegerField(null=True, blank=True)
     email_zelle = models.CharField(max_length=15, null=True, blank=True)
+
+    persona = CompositeForeignKey(Clientes, on_delete=CASCADE, to_fields={'doc_identidad_o_rif': 'doc_identidad_cliente'})
 
     def __str__(self):
         return 'id: ' + str(self.id_instrumento) + ' - ' + str(self.doc_identidad_cliente) 
@@ -597,8 +605,8 @@ class Paquetes_contrato(models.Model):
     f_emision = models.DateField()
     email_validacion = models.CharField(max_length=30)
     total_costo_calculado = models.IntegerField()
-    numero_viajeros = models.IntegerField()
-    f_viajes = models.DateField()
+    numer_de_viajeros = models.IntegerField()
+    f_viaje = models.DateField()
 
     registro = CompositeForeignKey(Registro_clientes, on_delete=CASCADE, to_fields={'id_cliente': 'id_reg_cliente','id_agencia': 'id_reg_agencia'})
     paquete = CompositeForeignKey(Paquetes, on_delete=CASCADE, to_fields={'id_agencia': 'id_paquete','id_agencia': 'id_agencia'})
@@ -617,10 +625,11 @@ class Formas_de_pago(models.Model):
     }
     id_instrumento = models.IntegerField(primary_key=True)
     id_cliente = models.IntegerField()
-    id_paquete_contrato = models.ForeignKey(Paquetes_contrato, on_delete=models.CASCADE, related_name='id_paquete_contrato', db_column='numero_factura')
+    id_paquete_contrato = models.IntegerField()
     tipo_forma_de_pago = models.CharField(max_length=30, choices=TRAMITES, null=True, blank=True)
 
     pago_instrumento = CompositeForeignKey(Instrumentos_de_pago, on_delete=CASCADE, to_fields={'id_instrumento': 'id_instrumento','doc_identidad_cliente': 'id_cliente'})
+    paquete = CompositeForeignKey(Paquetes_contrato, on_delete=CASCADE, to_fields={'numero_factura': 'id_paquete_contrato'})
 
     def __str__(self):
         return str(self.id_instrumento)
@@ -640,7 +649,7 @@ class Viajeros(models.Model):
     id_de_identidad = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
-    id_paquete_contrato = models.ForeignKey(Paquetes_contrato, on_delete=models.CASCADE, related_name='id_paquete_viajeros', db_column='numero_factura')
+    id_paquete_contrato = models.IntegerField()
     primer_nombre = models.CharField(max_length=30)
     segundo_nombre = models.CharField(max_length=30, null=True, blank=True)
     primer_apellido = models.CharField(max_length=30)
@@ -649,6 +658,7 @@ class Viajeros(models.Model):
     f_nacimiento = models.DateField()
 
     lugar = CompositeForeignKey(Ciudades, on_delete=CASCADE, to_fields={'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'})
+    paquete = CompositeForeignKey(Paquetes_contrato, on_delete=CASCADE, to_fields={'numero_factura': 'id_paquete_contrato'})
 
     def __str__(self):
         return str(self.id_de_identidad)
@@ -658,22 +668,27 @@ class Viajeros(models.Model):
         ordering = ['id_de_identidad']
 
 class PAI_VIA(models.Model):
-    id_viajero = models.ForeignKey(Viajeros, on_delete=models.CASCADE, related_name='id_viajero_via', db_column='id_de_identidad', primary_key=True)
+    id_viajero = models.IntegerField(primary_key=True)
     id_pais = models.ForeignKey(Paises, on_delete=models.CASCADE, related_name='id_pais_via', db_column='id_pais')
     nro_de_pasaporte = models.IntegerField()
+
+    viajero = CompositeForeignKey(Viajeros, on_delete=CASCADE, to_fields={'id_de_identidad': 'id_viajero'})
 
     def __str__(self):
         return self.id_viajero + ' ' + self.id_pais
 
     class Meta:
-        db_table = 'cgr_paq_via'
+        db_table = 'cgr_pai_via'
         ordering = ['id_viajero']
 
 class Registro_viajeros(models.Model):
-    id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_reg_via', db_column='id_agencia', primary_key=True)
-    id_viajero = models.ForeignKey(Viajeros, on_delete=models.CASCADE, related_name='id_viajero_reg_via', db_column='id_de_identidad')
+    id_agencia = models.IntegerField(primary_key=True)
+    id_viajero = models.IntegerField()
     f_registro = models.DateField()
     nro_registro = models.IntegerField()
+
+    viajero = CompositeForeignKey(Viajeros, on_delete=CASCADE, to_fields={'id_de_identidad': 'id_viajero'})
+    agencia = CompositeForeignKey(Agencias_de_viajes, on_delete=CASCADE, to_fields={'id_agencia': 'id_agencia'})
 
     def __str__(self):
         return self.id_agencia + ' ' + self.id_viajero
@@ -688,9 +703,10 @@ class Registro_viajeros(models.Model):
 class Detalle_viajeros(models.Model):
     id_viajero = models.IntegerField(primary_key=True)
     id_agencia = models.IntegerField()
-    id_paquete_contrato = models.ForeignKey(Paquetes_contrato, on_delete=models.CASCADE, related_name='id_paq_cont_det', db_column='numero_factura')
+    id_paquete_contrato = models.IntegerField()
 
     traveler = CompositeForeignKey(Registro_viajeros, on_delete=CASCADE, to_fields={'id_viajero': 'id_viajero', 'id_agencia': 'id_agencia'})
+    paquete = CompositeForeignKey(Paquetes_contrato, on_delete=CASCADE, to_fields={'numero_factura': 'id_paquete_contrato'})
 
     def __str__(self):
         return 'v: ' + self.id_viajero + ' a: ' + self.id_agencia + ' ' + self.id_paquete_contrato
@@ -728,11 +744,12 @@ class Participantes(models.Model):
 class Puntuaciones(models.Model):
     id_puntuacion = models.IntegerField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_puntuacion_rally', null=True, blank=True, db_column='id_rally')
-    id_paquete_contrato = models.ForeignKey(Paquetes_contrato, on_delete=models.CASCADE, related_name='id_paq_cont_puntuacion', null=True, blank=True, db_column='numero_factura')
+    id_paquete_contrato = models.IntegerField()
     id_ciudad = models.IntegerField(null=True, blank=True)
     id_pais = models.IntegerField(null=True, blank=True)
     id_atraccion = models.IntegerField(null=True, blank=True)
 
+    paquete = CompositeForeignKey(Paquetes_contrato, on_delete=CASCADE, to_fields={'numero_factura': 'id_paquete_contrato'})
     lugar = CompositeForeignKey(Atracciones, on_delete=CASCADE, to_fields={'id_atraccion': 'id_atraccion','id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'})
 
     def __str__(self):
@@ -741,51 +758,3 @@ class Puntuaciones(models.Model):
     class Meta:
         db_table = 'cgr_puntuaciones'
         ordering = ['id_puntuacion']
-
-
-
-
-
-
-
-#TEST MODEL
-'''
-class Test_Departamentos(models.Model):
-
-    deptno = models.IntegerField(primary_key=True)
-    nombre = models.CharField(max_length=30)
-    loc = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.nombre
-    
-    class Meta:
-        db_table = 'departamentos'
-        ordering = ['deptno']
-
-class Test_Empleados(models.Model):
-    id = models.IntegerField(primary_key=True, verbose_name='Id', null=False)
-    cedula = models.IntegerField(verbose_name='cedula', null=False)
-    nombre = models.CharField(verbose_name='Nombre', max_length=30, null=False)
-    apellido = models.CharField(verbose_name='Apellido', max_length=30, null=False)
-    id_dept = models.ForeignKey(Test_Departamentos,on_delete=CASCADE, verbose_name='id_dept', null=False, db_column='id_dept')
-    salario = models.IntegerField(verbose_name='Salario', null=True, blank=True)
-    cargo = models.CharField(verbose_name='Cargo', null=True, blank=True, max_length=30)
-    comision = models.IntegerField(verbose_name='Comision', null=True, blank=True)
-    id_jefe = models.IntegerField()
-    id_ced_jefe = models.IntegerField()
-
-    jefe = CompositeForeignKey('self', on_delete=CASCADE, to_fields={'id': 'id_jefe', 'cedula': 'id_ced_jefe'})
-
-    def __str__(self):
-        return str(self.id) + ', ' + str(self.cedula)
-    
-    class Meta:
-
-        unique_together = [('id', 'cedula'),]
-
-        db_table = 'empleados'
-        verbose_name = 'Empleado'
-        verbose_name_plural = 'Empleados'
-        ordering = ['id']
-'''

@@ -5,19 +5,6 @@ from .forms import *
 from django.contrib import messages
 from datetime import timedelta
 
-'''
-def Test_ShowDepartamentos(request):
-    obj = Test_Departamentos.objects.all()
-    return render(request, 'test/ShowDepartamentos.html', {'obj': obj})
-
-def Test_ShowEmpleados(request):
-    obj = Test_Empleados.objects.all()
-    return render(request, 'test/ShowEmpleados.html', {'obj': obj})
-
-def Test_Show(request):
-    return render(request, 'base_admin.html')
-'''
-
 # SHOW
 
 def Show_bancos(request):
@@ -113,7 +100,7 @@ def Show_Descuentos(request):
     return render(request, 'show/ShowDescuentos.html', {'obj': obj})
 
 def Show_Intinerarios(request):
-    obj = Intinerarios.objects.all()
+    obj = Itinerarios.objects.all()
     return render(request, 'show/ShowIntinerarios.html', {'obj': obj})
 
 def Show_ITN_ATR(request):
@@ -277,25 +264,77 @@ def Add_Puntuaciones(request):
 #Delete
 
 def Delete_Bancos(request, id):
-    pass
+    try:
+        obj = Bancos.objects.get(pk=id)
+    except Bancos.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_bancos')
+    obj.delete()
+    return redirect('Show_bancos')
 
 def Delete_Clientes(request, id):
-    pass
+    try:
+        obj = Clientes.objects.get(pk=id)
+    except Clientes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Clientes')
+    obj.delete()
+    return redirect('Show_Clientes')
 
 def Delete_Areas_de_interes(request, id):
-    pass
+    try:
+        obj = Areas_de_interes.objects.get(pk=id)
+    except Areas_de_interes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Areas_de_interes')
+    obj.delete()
+    return redirect('Show_Areas_de_interes')
 
 def Delete_Paises(request, id):
-    pass
+    try:
+        obj = Paises.objects.get(pk=id)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_paises')
+    obj.delete()
+    return redirect('Show_paises')
 
 def Delete_Rallies(request, id):
-    pass
+    try:
+        obj = Rallies.objects.get(pk=id)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_rallies')
+    obj.delete()
+    return redirect('Show_rallies')
 
-def Delete_Premios(request, id):
-    pass
+def Delete_Premios(request, id, id2):
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_rallies')
+    try:
+        obj = Premios.objects.filter(id_pais=rallie.id_rally).get(id_premio=id)
+    except Premios.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_rallies')
+    obj.delete()
+    return redirect('Show_rallies')
 
-def Delete_Ciudades(request, id):
-    pass
+def Delete_Ciudades(request, id, id2):
+    try:
+        pais = Paises.objects.get(nombre_pais=id2)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Ciudades')
+    try:
+        obj = Ciudades.objects.filter(id_pais=pais.id_pais).get(id_ciudad=id)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Ciudades')
+    obj.delete()
+    return redirect('Show_Ciudades')
 
 def Delete_Atracciones(request, id):
     pass

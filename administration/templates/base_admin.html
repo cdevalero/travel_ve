@@ -33,8 +33,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
-
+            <a class="sidebar-brand d-flex align-items-center justify-content-center">
                 <div class="sidebar-brand-text mx-3">Travel.ve</div>
             </a>
 
@@ -42,28 +41,99 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Heading -->
-            <div class="sidebar-heading">
-                Tablas
-            </div>
+            
 
             <!-- Nav Item - Tables -->
+            
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages1"
+                    aria-expanded="true" aria-controls="collapsePages1">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Agencias</span>
+                </a>
+                <div id="collapsePages1" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'Show_Agencia_de_viajes' %}">Agencias de Viajes</a>
+                        <a class="collapse-item" href="{% url 'Show_AGE_AGE' %}">Age - Age</a>
+                        <a class="collapse-item" href="{% url 'Show_Proveedores' %}">Proveedores</a>
+                        <a class="collapse-item" href="{% url 'Show_pro_age' %}">Proveedor - Agencia</a>
+                        <a class="collapse-item" href="{% url 'Show_Alojamientos' %}">Alojamientos</a>
+                        <a class="collapse-item" href="{% url 'Show_ALO_DET' %}">Alojamieto - Detalle</a>
+                        <a class="collapse-item" href="{% url 'Show_Detalles_servicios' %}">Detalle Servicios</a>
+                        <a class="collapse-item" href="{% url 'Show_bancos' %}">Bancos</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages2"
+                    aria-expanded="true" aria-controls="collapsePages2">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Paquetes</span>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapsePages2" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Datos basicos</a>
-                        <a class="collapse-item" href="register.html">Lugares de interes</a>
-                        <a class="collapse-item" href="forgot-password.html">atracciones</a>
-                        <a class="collapse-item" href="404.html">Costos</a>
-                        <a class="collapse-item" href="blank.html">Ofertas</a>
-                        <a class="collapse-item" href="404.html">Intinerarios</a>
-                        <a class="collapse-item" href="blank.html">Paquetes</a>
-                        <a class="collapse-item" href="blank.html">Tours</a>
+                        <a class="collapse-item" href="{% url 'Show_Areas_de_interes' %}">Areas de Interes</a>
+                        <a class="collapse-item" href="{% url 'Show_Asesores_de_viajes' %}">Asesores de Viaje</a>
+                        <a class="collapse-item" href="{% url 'Show_Paquetes' %}">Paquetes</a>
+                        <a class="collapse-item" href="{% url 'Show_Especializaciones' %}">Especializaciones</a>
+                        <a class="collapse-item" href="{% url 'Show_Precios_paquetes' %}">Precio Paquete</a>
+                        <a class="collapse-item" href="{% url 'Show_Calendarios_anuales' %}">Calendarios Anulaes</a>
+                        <a class="collapse-item" href="{% url 'Show_Descuentos' %}">Descuentos</a>
+                        <a class="collapse-item" href="{% url 'Show_Intinerarios' %}">Intinerarios</a>
+                        <a class="collapse-item" href="{% url 'Show_ITN_ATR' %}">Intinerario - Atraccion</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages3"
+                    aria-expanded="true" aria-controls="collapsePages3">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Rallies</span>
+                </a>
+                <div id="collapsePages3" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'Show_rallies' %}">Rallies</a>
+                        <a class="collapse-item" href="{% url 'Show_premios' %}">Premios</a>
+                        <a class="collapse-item" href="{% url 'Show_Circuitos' %}">Circuitos</a>
+                        <a class="collapse-item" href="{% url 'Show_atr_cir' %}">Atraccion - Circuito</a>
+                        <a class="collapse-item" href="{% url 'Show_Cupos' %}">Cupos</a>
+                        <a class="collapse-item" href="{% url 'Show_Participantes' %}">Paricipantes</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages4"
+                    aria-expanded="true" aria-controls="collapsePages4">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Clientes</span>
+                </a>
+                <div id="collapsePages4" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'Show_Clientes' %}">Clientes</a>
+                        <a class="collapse-item" href="{% url 'Show_Registro_clientes' %}">Registro Clientes</a>
+                        <a class="collapse-item" href="{% url 'Show_Instrumentos_de_pago' %}">Instrumentos de pago</a>
+                        <a class="collapse-item" href="{% url 'Show_Formas_de_pago' %}">Forma de pago</a>
+                        <a class="collapse-item" href="{% url 'Show_Paquetes_contrato' %}">Paquetes contratos</a>
+                        <a class="collapse-item" href="{% url 'Show_Viajeros' %}">Viajeros</a>
+                        <a class="collapse-item" href="{% url 'Show_Registro_viajeros' %}">Registro Viajeros</a>
+                        <a class="collapse-item" href="{% url 'Show_Detalle_viajeros' %}">Detalle Viajeros</a>
+                        <a class="collapse-item" href="{% url 'Show_PAI_VIA' %}">Viajero - Pais</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages5"
+                    aria-expanded="true" aria-controls="collapsePages5">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Lugares</span>
+                </a>
+                <div id="collapsePages5" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="{% url 'Show_paises' %}">Paises</a>
+                        <a class="collapse-item" href="{% url 'Show_Ciudades' %}">Ciudades / Localidades</a>
+                        <a class="collapse-item" href="{% url 'Show_Atracciones' %}">Atracciones</a>
+                        <a class="collapse-item" href="{% url 'Show_Puntuaciones' %}">Puntuaciones</a>
                     </div>
                 </div>
             </li>
