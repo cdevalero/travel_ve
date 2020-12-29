@@ -109,11 +109,11 @@ def Show_ITN_ATR(request):
 
 def Show_Detalles_servicios(request):
     obj = Detalles_servicios.objects.all()
-    return render(request, 'show/ShowDetalles_servicioes.html', {'obj': obj})
+    return render(request, 'show/ShowDetalles_servicios.html', {'obj': obj})
 
 def Show_ALO_DET(request):
     obj = ALO_DET.objects.all()
-    return render(request, 'show/ShowALO_DETs.html', {'obj': obj})
+    return render(request, 'show/ShowALO_DET.html', {'obj': obj})
 
 def Show_Instrumentos_de_pago(request):
     obj = Instrumentos_de_pago.objects.all()
