@@ -250,88 +250,366 @@ def Add_Atracciones(request):
     return render(request, 'create_edit/AddAtracciones.html',{'form':form})
 
 def Add_Circuitos(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Circuitos(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Circuitos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Circuitos')
+    form = Form_Circuitos()
+    return render(request, 'create_edit/AddCircuitos.html',{'form':form})
+
 
 def Add_ATR_CIR(request):
-    pass
+    if request.method == 'POST':
+        form = Form_ATR_CIR(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_atr_cir')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_atr_cir')
+    form = Form_ATR_CIR()
+    return render(request, 'create_edit/AddATR_CIR.html',{'form':form})
+
 
 def Add_Agencia_de_viajes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Agencia_de_viajes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Agencia_de_viajes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Agencia_de_viajes')
+    form = Form_Agencia_de_viajes()
+    return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
+
 
 def Add_AGE_AGE(request):
-    pass
+    if request.method == 'POST':
+        form = Form_AGE_AGE(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_AGE_AGE')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_AGE_AGE')
+    form = Form_AGE_AGE()
+    return render(request, 'create_edit/AddAGE_AGE.html',{'form':form})
+
 
 def Add_Cupos(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Cupos(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Cupos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Cupos')
+    form = Form_Cupos()
+    return render(request, 'create_edit/AddCupos.html',{'form':form})
+
 
 def Add_Registro_clientes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Registro_clientes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Registro_clientes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Registro_clientes')
+    form = Form_Registro_clientes()
+    return render(request, 'create_edit/AddRegistro_clientes.html',{'form':form})
+
 
 def Add_Alojamientos(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Alojamientos(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Alojamientos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Alojamientos')
+    form = Form_Alojamientos()
+    return render(request, 'create_edit/AddAlojamientos.html',{'form':form})
+
 
 def Add_Proveedores(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Proveedores(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Proveedores')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Proveedores')
+    form = Form_Proveedores()
+    return render(request, 'create_edit/AddProveedores.html',{'form':form})
+
 
 def Add_PRO_AGE(request):
-    pass
+    if request.method == 'POST':
+        form = Form_PRO_AGE(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_pro_age')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_pro_age')
+    form = Form_PRO_AGE()
+    return render(request, 'create_edit/AddPRO_AGE.html',{'form':form})
+
 
 def Add_Asesores_de_viajes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Asesores_de_viajes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Asesores_de_viajes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Asesores_de_viajes')
+    form = Form_Asesores_de_viajes()
+    return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
+
 
 def Add_Paquetes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Paquetes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Paquetes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Paquetes')
+    form = Form_Paquetes()
+    return render(request, 'create_edit/AddPaquetes.html',{'form':form})
+
 
 def Add_Especializaciones(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Especializaciones(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Especializaciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Especializaciones')
+    form = Form_Especializaciones()
+    return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
+
 
 def Add_Precios_paquetes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Precios_paquetes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Precios_paquetes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Precios_paquetes')
+    form = Form_Precios_paquetes()
+    return render(request, 'create_edit/AddPrecios_paquetes.html',{'form':form})
 
 def Add_Calendarios_anuales(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Calendarios_anuales(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Calendarios_anuales')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Calendarios_anuales')
+    form = Form_Calendarios_anuales()
+    return render(request, 'create_edit/AddCalendarios_anuales.html',{'form':form})
+
 
 def Add_Descuentos(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Descuentos(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Descuentos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Descuentos')
+    form = Form_Descuentos()
+    return render(request, 'create_edit/AddDescuentos.html',{'form':form})
+
 
 def Add_Intinerarios(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Intinerarios(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Intinerarios')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Intinerarios')
+    form = Form_Intinerarios()
+    return render(request, 'create_edit/AddIntinerarios.html',{'form':form})
+
 
 def Add_ITN_ATR(request):
-    pass
+    if request.method == 'POST':
+        form = Form_ITN_ATR(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_ITN_ATR')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_ITN_ATR')
+    form = Form_ITN_ATR()
+    return render(request, 'create_edit/AddITN_ATR.html',{'form':form})
+
 
 def Add_Detalles_servicios(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Detalles_servicios(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Detalles_servicios')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Detalles_servicios')
+    form = Form_Detalles_servicios()
+    return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
+
 
 def Add_ALO_DET(request):
-    pass
+    if request.method == 'POST':
+        form = Form_ALO_DET(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_ALO_DET')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_ALO_DET')
+    form = Form_ALO_DET()
+    return render(request, 'create_edit/AddALO_DET.html',{'form':form})
+
 
 def Add_Instrumentos_de_pago(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Instrumentos_de_pago(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Instrumentos_de_pago')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Instrumentos_de_pago')
+    form = Form_Instrumentos_de_pago()
+    return render(request, 'create_edit/AddInstrumentos_de_pago.html',{'form':form})
+
 
 def Add_Paquetes_contrato(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Paquetes_contrato(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Paquetes_contrato')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Paquetes_contrato')
+    form = Form_Paquetes_contrato()
+    return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
+
 
 def Add_Formas_de_pago(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Formas_de_pago(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Formas_de_pago')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Formas_de_pago')
+    form = Form_Formas_de_pago()
+    return render(request, 'create_edit/AddFormas_de_pago.html',{'form':form})
+
 
 def Add_Viajeros(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Viajeros(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Viajeros')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Viajeros')
+    form = Form_Viajeros()
+    return render(request, 'create_edit/AddViajeros.html',{'form':form})
+
 
 def Add_PAI_VIA(request):
-    pass
+    if request.method == 'POST':
+        form = Form_PAI_VIA(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_PAI_VIA')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_PAI_VIA')
+    form = Form_PAI_VIA()
+    return render(request, 'create_edit/AddPAI_VIA.html',{'form':form})
+
 
 def Add_Registro_viajeros(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Registro_viajeros(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Registro_viajeros')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Registro_viajeros')
+    form = Form_Registro_viajeros()
+    return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
+
 
 def Add_Detalle_viajeros(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Detalle_viajeros(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Detalle_viajeros')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Detalle_viajeros')
+    form = Form_Detalle_viajeros()
+    return render(request, 'create_edit/AddDetalle_viajeros.html',{'form':form})
+
 
 def Add_Participantes(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Participantes(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Participantes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Participantes')
+    form = Form_Participantes()
+    return render(request, 'create_edit/AddParticipantes.html',{'form':form})
 
 def Add_Puntuaciones(request):
-    pass
+    if request.method == 'POST':
+        form = Form_Puntuaciones(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Puntuaciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Puntuaciones')
+    form = Form_Puntuaciones()
+    return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
+
 
 #Delete
 
