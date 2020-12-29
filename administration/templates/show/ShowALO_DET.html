@@ -83,10 +83,10 @@
                                         <td>{{pice.id_alojamiento}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_ALO_DET' pice.id_detalle_servicio %}">
+                                                <a href="{% url 'Delete_ALO_DET' pice.id_detalle_servicio pice.id_itinerario pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais pice.id_alojamiento %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_ALO_DET' pice.id_detalle_servicio %}" class="offset-1">
+                                                <a href="{% url 'Edit_ALO_DET' pice.id_detalle_servicio pice.id_itinerario pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais pice.id_alojamiento %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

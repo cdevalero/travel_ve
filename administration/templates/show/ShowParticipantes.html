@@ -89,10 +89,10 @@
                                         <td>{{pice.posicion}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Participantes' pice.id_partipante %}">
+                                                <a href="{% url 'Delete_Participantes' pice.id_partipante pice.id_rally %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Participantes' pice.id_partipante %}" class="offset-1">
+                                                <a href="{% url 'Edit_Participantes' pice.id_partipante pice.id_rally %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

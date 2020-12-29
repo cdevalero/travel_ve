@@ -71,10 +71,10 @@
                                         <td>{{pice.maxdias}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Circuitos' pice.id_agencia %}">
+                                                <a href="{% url 'Delete_Circuitos' pice.orden_circuito pice.id_rally pice.id_ciudad pice.id_pais %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Circuitos' pice.id_agencia %}" class="offset-1">
+                                                <a href="{% url 'Edit_Circuitos' pice.orden_circuito pice.id_rally pice.id_ciudad pice.id_pais %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

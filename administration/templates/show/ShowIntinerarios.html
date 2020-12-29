@@ -77,10 +77,10 @@
                                         <td>{{pice.tiempo_estadia}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Intinerarios' pice.orden %}">
+                                                <a href="{% url 'Delete_Intinerarios' pice.orden pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Intinerarios' pice.orden %}" class="offset-1">
+                                                <a href="{% url 'Edit_Intinerarios' pice.orden pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

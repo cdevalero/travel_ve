@@ -101,10 +101,10 @@
                                         <td>{{pice.comentarios}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Especializaciones' pice.id_especializacion %}">
+                                                <a href="{% url 'Delete_Especializaciones' pice.id_especializacion id_areas_de_interes %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Especializaciones' pice.id_especializacion %}" class="offset-1">
+                                                <a href="{% url 'Edit_Especializaciones' pice.id_especializacion id_areas_de_interes %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

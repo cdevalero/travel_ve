@@ -83,10 +83,10 @@
                                         <td>{{pice.email_zelle}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Instrumentos_de_pago' pice.id_instrumento %}">
+                                                <a href="{% url 'Delete_Instrumentos_de_pago' pice.id_instrumento pice.doc_identidad_cliente %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Instrumentos_de_pago' pice.id_instrumento %}" class="offset-1">
+                                                <a href="{% url 'Edit_Instrumentos_de_pago' pice.id_instrumento pice.doc_identidad_cliente %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

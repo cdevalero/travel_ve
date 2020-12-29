@@ -88,17 +88,17 @@
                                         <td>{{pice.id_paquete}}</td>
                                         <td>{{pice.id_agencia}}</td>
                                         <td>{{pice.id_ciudad}}</td>
-                                        <td>{{pice.id_id_pais}}</td>
+                                        <td>{{pice.id_pais}}</td>
                                         <td>{{pice.id_atraccion}}</td>
                                         <td>{{pice.id_ciudad_at}}</td>
                                         <td>{{pice.id_pais_at}}</td>
                                         <td>{{pice.orden_visita}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_ITN_ATR' pice.id_itinerario %}">
+                                                <a href="{% url 'Delete_ITN_ATR' pice.id_itinerario pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais pice.id_atraccion pice.id_ciudad_at pice.id_pais_at %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_ITN_ATR' pice.id_itinerario %}" class="offset-1">
+                                                <a href="{% url 'Edit_ITN_ATR' pice.id_itinerario pice.id_paquete pice.id_agencia pice.id_ciudad pice.id_pais pice.id_atraccion pice.id_ciudad_at pice.id_pais_at %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

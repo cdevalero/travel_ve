@@ -71,10 +71,10 @@
                                         <td>{{pice.descripcion_atraccion}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Atracciones' pice.id_atraccion %}">
+                                                <a href="{% url 'Delete_Atracciones' pice.id_atraccion pice.id_ciudad pice.id_pais %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Atracciones' pice.id_atraccion %}" class="offset-1">
+                                                <a href="{% url 'Edit_Atracciones' pice.id_atraccion pice.id_ciudad pice.id_pais %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

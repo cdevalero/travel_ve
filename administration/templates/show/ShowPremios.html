@@ -65,10 +65,10 @@
                                         <td>{{pice.descripcion_premio}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_premios' pice.id_premio %}">
+                                                <a href="{% url 'Delete_premios' pice.id_premio piece.id_rally %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_premios' pice.id_premio %}" class="offset-1">
+                                                <a href="{% url 'Edit_premios' pice.id_premio piece.id_rally %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

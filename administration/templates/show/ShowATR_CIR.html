@@ -89,10 +89,10 @@
                                         <td>{{pice.orden}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_atr_cir' pice.id_atraccion %}">
+                                                <a href="{% url 'Delete_atr_cir' pice.id_atraccion pice.id_ciudad_at pice.id_pais_at pice.id_circuito pice.id_rally_cir pice.id_ciudad_cir pice.id_pais_cir %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_atr_cir' pice.id_atraccion %}" class="offset-1">
+                                                <a href="{% url 'Edit_atr_cir' pice.id_atraccion pice.id_ciudad_at pice.id_pais_at pice.id_circuito pice.id_rally_cir pice.id_ciudad_cir pice.id_pais_cir %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
