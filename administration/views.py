@@ -665,7 +665,7 @@ def Delete_Premios(request, id, id2):
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
     try:
-        obj = Premios.objects.filter(id_pais=rallie.id_rally).get(id_premio=id)
+        obj = Premios.objects.filter(id_rally=rallie.id_rally).get(id_premio=id)
     except Premios.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
@@ -686,8 +686,19 @@ def Delete_Ciudades(request, id, id2):
     obj.delete()
     return redirect('Show_Ciudades')
 
-def Delete_Atracciones(request, id):
-    pass
+def Delete_Atracciones(request, id,id2,id3):
+    try:
+        ciudad = Ciudades.objects.get(id_ciudad=id2, id_pais=id3)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Atracciones')
+    try:
+        obj = Atracciones.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=ciudad.id_pais).get(id_atraccion=id)
+    except Atracciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Atracciones')
+    obj.delete()
+    return redirect('Show_Atracciones')
 
 def Delete_Circuitos(request, id):
     pass

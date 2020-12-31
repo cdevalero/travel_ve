@@ -36,17 +36,17 @@ class Form_Premios(forms.ModelForm):
 class Form_Ciudades(forms.ModelForm):
     class Meta:
         model = Ciudades;
-        fields = ('nombre_ciudad', 'id_pais', 'tipo_ciudad', 'descripcion_ciudad')
+        fields = ('id_pais','nombre_ciudad', 'tipo_ciudad', 'descripcion_ciudad')
 
 class Form_Atracciones(forms.ModelForm):
     class Meta:
         model = Atracciones;
-        fields = ('nombre_atraccion', 'id_ciudad', 'id_pais', 'descripcion_atraccion')
+        fields = ( 'id_ciudad', 'id_pais','nombre_atraccion', 'descripcion_atraccion')
 
 class Form_Circuitos(forms.ModelForm):
     class Meta:
         model = Circuitos;
-        fields = ('orden_circuito','id_rally','id_ciudad', 'id_pais', ' maxdias')
+        fields = ('orden_circuito','id_rally','id_ciudad', 'id_pais', 'maxdias')
 
 class Form_ATR_CIR(forms.ModelForm):
     class Meta:
@@ -56,7 +56,7 @@ class Form_ATR_CIR(forms.ModelForm):
 class Form_Agencias_de_viajes(forms.ModelForm):
     class Meta:
         model = Agencias_de_viajes;
-        fields = ('nombre','id_agencia','tipo_de_operacion', 'alcance_geografico', 'web','telefono','calle_av','descripcion','id_ciudad','id_pais')
+        fields = ('nombre','tipo_de_operacion', 'alcance_geografico', 'web','telefono','calle_av','descripcion','id_ciudad','id_pais')
 
 class Form_AGE_AGE(forms.ModelForm):
     class Meta:

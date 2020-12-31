@@ -71,10 +71,10 @@
                                         <td>{{pice.segundo_apellido}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_Clientes' pice.id_agencia %}">
+                                                <a href="{% url 'Delete_Clientes' pice.doc_identidad_o_rif %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_Clientes' pice.id_agencia %}" class="offset-1">
+                                                <a href="{% url 'Edit_Clientes' pice.doc_identidad_o_rif %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>

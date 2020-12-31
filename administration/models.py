@@ -725,7 +725,7 @@ class Participantes(models.Model):
     id_via_viajero = models.IntegerField(null=True, blank=True)
     id_cli_cliente = models.IntegerField(null=True, blank=True)
     id_cli_agencia = models.IntegerField(null=True, blank=True)
-    equipo = models.BinaryField(null=True, blank=True)
+    equipo = models.BinaryField(null=True, editable=True, blank=True)
     posicion = models.IntegerField(null=True, blank=True)
 
     viajero = CompositeForeignKey(Registro_viajeros, on_delete=CASCADE, to_fields={'id_viajero': 'id_via_viajero', 'id_agencia': 'id_via_agencia'})
