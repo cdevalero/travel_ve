@@ -53,7 +53,7 @@ class Form_ATR_CIR(forms.ModelForm):
         model = ATR_CIR;
         fields = ('id_atraccion','id_ciudad_at','id_pais_at', 'id_circuito', 'id_rally_cir','id_ciudad_cir','id_pais_cir','orden')
 
-class Form_Agencias_de_viajes(forms.ModelForm):
+class Form_Agencia_de_viajes(forms.ModelForm):
     class Meta:
         model = Agencias_de_viajes;
         fields = ('nombre','tipo_de_operacion', 'alcance_geografico', 'web','telefono','calle_av','descripcion','id_ciudad','id_pais')

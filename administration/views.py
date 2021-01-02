@@ -688,53 +688,241 @@ def Delete_Ciudades(request, id, id2):
 
 def Delete_Atracciones(request, id,id2,id3):
     try:
-        ciudad = Ciudades.objects.get(id_ciudad=id2, id_pais=id3)
+        ciudad = Ciudades.objects.get(id_ciudad=id2)
     except Ciudades.DoesNotExist:        
-        messages.error(request, 'No existe la entrada')
+        messages.error(request, 'No existe la entrada1')
         return redirect('Show_Atracciones')
     try:
-        obj = Atracciones.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=ciudad.id_pais).get(id_atraccion=id)
+        pais = Paises.objects.get(id_pais=id3)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Atracciones')
+    try:
+        obj = Atracciones.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=pais.id_pais).get(id_atraccion=id)
     except Atracciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Atracciones')
     obj.delete()
     return redirect('Show_Atracciones')
 
-def Delete_Circuitos(request, id):
-    pass
+def Delete_Circuitos(request, id,id2,id3,id4):
+    try:
+        ciudad = Ciudades.objects.get(id_ciudad=id3)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Circuitos')
+    try:
+        pais = Paises.objects.get(id_pais=id4)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Circuitos')
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Circuitos')
+    try:
+        obj = Circuitos.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=pais.id_pais,id_rally=rallie.id_rally).get(orden_circuito=id)
+    except Circuitos.DoesNotExist:        
+        messages.error(request, 'No existe la 4')
+        return redirect('Show_Circuitos')
+    obj.delete()
+    return redirect('Show_Circuitos')  
 
-def Delete_ATR_CIR(request, id):
-    pass
+def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
+    try:
+        atraccion = Atracciones.objects.get(id_atraccion=id)
+    except Atracciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_atr_cir')
+    try:
+        ciudad_at = Ciudades.objects.get(id_ciudad=id2)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_atr_cir')
+    try:
+        pais_at = Paises.objects.get(id_pais=id3)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_atr_cir')
+    try:
+        circuito = Circuitos.objects.get(orden_circuito=id4)
+    except Circuitos.DoesNotExist:        
+        messages.error(request, 'No existe la entrada4')
+        return redirect('Show_atr_cir')
+    try:
+        rallie = Rallies.objects.get(id_rally=id5)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada5')
+        return redirect('Show_atr_cir')
+    try:
+        ciudad_cir = Ciudades.objects.get(id_ciudad=id6)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada6')
+        return redirect('Show_atr_cir')
+    try:
+        pais_cir = Paises.objects.get(id_pais=id7)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada7')
+        return redirect('Show_atr_cir')
+    try:
+        obj = ATR_CIR.objects.filter(id_atraccion=atraccion.id_atraccion,id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_at.id_ciudad,id_pais_cir=pais_at.id_pais).get(id_atraccion=id)
+    except ATR_CIR.DoesNotExist:        
+        messages.error(request, 'No existe la entrada8')
+        return redirect('Show_atr_cir')
+    obj.delete()
+    return redirect('Show_atr_cir')
 
 def Delete_Agencia_de_viajes(request, id):
-    pass
+    try:
+        obj = Agencias_de_viajes.objects.get(pk=id)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Agencia_de_viajes')
+    obj.delete()
+    return redirect('Show_Agencia_de_viajes')
+#----------------------------------------------------------------------
+def Delete_AGE_AGE(request, id,id2):
+    try:
+        socio = Agencias_de_viajes.objects.get(id_agencia=id2)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_AGE_AGE')
+    try:
+        agencia = Agencias_de_viajes.objects.get(id_agencia=id)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_AGE_AGE')
+    try:
+        obj = AGE_AGE.objects.filter(id_agencia=agencia.id_agencia,id_socio=socio.id_agencia).get(id_agencia=id)
+    except AGE_AGE.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_AGE_AGE')
+    obj.delete()
+    return redirect('Show_AGE_AGE')
 
-def Delete_AGE_AGE(request, id):
-    pass
+def Delete_Cupos(request, id, id2):
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Cupos')
+    try:
+        agencia = Agencias_de_viajes.objects.get(id_agencia=id)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Cupos')
+    try:
+        obj = Cupos.objects.filter(id_agencia=agencia.id_agencia, id_rally=rallie.id_rally).get(id_agencia=id)
+    except Cupos.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Cupos')
+    obj.delete()
+    return redirect('Show_Cupos')
 
-def Delete_Cupos(request, id):
-    pass
-
-def Delete_Registro_clientes(request, id):
-    pass
+def Delete_Registro_clientes(request, id,id2):
+    try:
+        cliente = Clientes.objects.get(doc_identidad_o_rif=id)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Registro_clientes')
+    try:
+        agencia = Agencias_de_viajes.objects.get(nombre=id2)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Registro_clientes')
+    try:
+        obj = Registro_clientes.objects.filter(id_cliente=cliente.doc_identidad_o_rif, id_agencia=agencia.id_agencia).get(id_cliente=id)
+    except Registro_clientes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Registro_clientes')
+    obj.delete()
+    return redirect('Show_Registro_clientes')
 
 def Delete_Alojamientos(request, id):
-    pass
+    try:
+        obj = Alojamientos.objects.get(pk=id)
+    except Alojamientos.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Alojamientos')
+    obj.delete()
+    return redirect('Show_Alojamientos')
 
 def Delete_Proveedores(request, id):
-    pass
+    try:
+        obj = Proveedores.objects.get(pk=id)
+    except Proveedores.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Proveedores')
+    obj.delete()
+    return redirect('Show_Proveedores')
 
-def Delete_PRO_AGE(request, id):
-    pass
+def Delete_PRO_AGE(request, id,id2):
+    try:
+       proveedor = Proveedores.objects.get(nombre_proveedor=id2)
+    except Proveedores.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_pro_age')
+    try:
+        agencia = Agencias_de_viajes.objects.get(id_agencia=id)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_pro_age')
+    try:
+        obj = PRO_AGE.objects.filter(id_proveedor=proveedor.id_proveedor, id_agencia=agencia.id_agencia).get(id_agencia=id)
+    except PRO_AGE.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_pro_age')
+    obj.delete()
+    return redirect('Show_pro_age')
 
 def Delete_Asesores_de_viajes(request, id):
-    pass
+    try:
+        obj = Asesores_de_viajes.objects.get(pk=id)
+    except Asesores_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Asesores_de_viajes')
+    obj.delete()
+    return redirect('Show_Asesores_de_viajes')
 
-def Delete_Paquetes(request, id):
-    pass
 
-def Delete_Especializaciones(request, id):
-    pass
+def Delete_Paquetes(request, id,id2):
+    try:
+       paquete = Paquetes.objects.get(id_paquete=id)
+    except Paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Paquetes')
+    try:
+        agencia = Agencias_de_viajes.objects.get(nombre=id2)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Paquetes')
+    try:
+        obj = Paquetes.objects.filter(id_paquete=paquete.id_paquete, id_agencia=agencia.id_agencia).get(id_paquete=id)
+    except Paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Paquetes')
+    obj.delete()
+    return redirect('Show_Paquetes')
+
+def Delete_Especializaciones(request, id,id2):
+    try:
+       especializacion = Especializaciones.objects.get(id_especializacion=id)
+    except Especializaciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Especializaciones')
+    try:
+        area = Areas_de_interes.objects.get(nombre_area_de_interes=id2)
+    except Areas_de_interes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Especializaciones')
+    try:
+        obj = Especializaciones.objects.filter(id_especializacion=especializacion.id_especializacion, id_areas_de_interes=area.id_areas_de_interes).get(id_especializacion=id)
+    except Especializaciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Especializaciones')
+    obj.delete()
+    return redirect('Show_Especializaciones')
 
 def Delete_Precios_paquetes(request, id):
     pass

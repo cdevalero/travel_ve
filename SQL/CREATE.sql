@@ -243,7 +243,7 @@ CREATE SEQUENCE cgr_secuencia_proveedores
 
 CREATE TABLE cgr_proveedores
 (
-	id_proveedor numeric NOT NULL DEFAULT nextval('cgr_proveedores'::regclass),
+	id_proveedor numeric NOT NULL DEFAULT nextval('cgr_secuencia_proveedores'::regclass),
 	id_alojamiento numeric NOT NULL,
 	nombre_proveedor varchar(30) NOT NULL,
 	tipo_proveedor varchar(20) NOT NULL,
@@ -273,7 +273,7 @@ CREATE SEQUENCE cgr_secuencia_asesores_de_viajes
 
 CREATE TABLE cgr_asesores_de_viajes
 (
-	id_asesor numeric NOT NULL DEFAULT nextval('cgr_asesores_de_viajes'::regclass),
+	id_asesor numeric NOT NULL DEFAULT nextval('cgr_secuencia_asesores_de_viajes'::regclass),
 	primer_nombre varchar(20) NOT NULL,
 	primer_apellido varchar(20) NOT NULL,
 	segundo_apellido varchar(20) NOT NULL,
