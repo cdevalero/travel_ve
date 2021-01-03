@@ -241,6 +241,15 @@ def Add_Atracciones(request):
     if request.method == 'POST':
         form = Form_Atracciones(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Atracciones')
+
             form.save()
             return redirect ('Show_Atracciones')
         else:
@@ -253,6 +262,15 @@ def Add_Circuitos(request):
     if request.method == 'POST':
         form = Form_Circuitos(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Circuitos')
+
             form.save()
             return redirect ('Show_Circuitos')
         else:
@@ -261,11 +279,30 @@ def Add_Circuitos(request):
     form = Form_Circuitos()
     return render(request, 'create_edit/AddCircuitos.html',{'form':form})
 
-
 def Add_ATR_CIR(request):
     if request.method == 'POST':
         form = Form_ATR_CIR(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.cleaned_data.get('id_atraccion')
+            try:
+                atraccion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Add_atr_cir')
+
+            id_circuito = form.cleaned_data.get('id_circuito')
+            id_rally_cir = form.cleaned_data.get('id_rally_cir')
+            id_ciudad_cir = form.cleaned_data.get('id_ciudad_cir')
+            id_pais_cir = form.cleaned_data.get('id_pais_cir')
+            try:
+                circuito = Circuitos.objects.get(orden_circuito=id_circuito, id_rally=id_rally_cir, id_ciudad=id_ciudad_cir, id_pais=id_pais_cir)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'Error, la estructura del circuito viola integridad')
+                return redirect('Add_atr_cir')
+
             form.save()
             return redirect ('Show_atr_cir')
         else:
@@ -274,11 +311,19 @@ def Add_ATR_CIR(request):
     form = Form_ATR_CIR()
     return render(request, 'create_edit/AddATR_CIR.html',{'form':form})
 
-
 def Add_Agencia_de_viajes(request):
     if request.method == 'POST':
         form = Form_Agencia_de_viajes(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Agencia_de_viajes')
+
             form.save()
             return redirect ('Show_Agencia_de_viajes')
         else:
@@ -287,11 +332,24 @@ def Add_Agencia_de_viajes(request):
     form = Form_Agencia_de_viajes()
     return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
 
-
 def Add_AGE_AGE(request):
     if request.method == 'POST':
         form = Form_AGE_AGE(request.POST)
         if form.is_valid():
+
+            id_agencia = form.cleaned_data.get('id_agencia')
+            id_socio = form.cleaned_data.get('id_socio')
+            try:
+                ciudad = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'No existe la agencia')
+                return redirect('Add_AGE_AGE')
+            try:
+                ciudad = Agencias_de_viajes.objects.get(id_agencia=id_socio)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'No existe el socio')
+                return redirect('Add_AGE_AGE')
+
             form.save()
             return redirect ('Show_AGE_AGE')
         else:
@@ -300,11 +358,18 @@ def Add_AGE_AGE(request):
     form = Form_AGE_AGE()
     return render(request, 'create_edit/AddAGE_AGE.html',{'form':form})
 
-
 def Add_Cupos(request):
     if request.method == 'POST':
         form = Form_Cupos(request.POST)
         if form.is_valid():
+
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'No existe la agencia')
+                return redirect('Add_Cupos')
+
             form.save()
             return redirect ('Show_Cupos')
         else:
@@ -313,11 +378,18 @@ def Add_Cupos(request):
     form = Form_Cupos()
     return render(request, 'create_edit/AddCupos.html',{'form':form})
 
-
 def Add_Registro_clientes(request):
     if request.method == 'POST':
         form = Form_Registro_clientes(request.POST)
         if form.is_valid():
+
+            id_cliente = form.cleaned_data.get('id_cliente')
+            try:
+                validacion = Clientes.objects.get(doc_identidad_o_rif=id_cliente)
+            except Clientes.DoesNotExist:        
+                messages.error(request, 'No existe el cliente')
+                return redirect('Add_Registro_clientes')
+
             form.save()
             return redirect ('Show_Registro_clientes')
         else:
@@ -326,11 +398,19 @@ def Add_Registro_clientes(request):
     form = Form_Registro_clientes()
     return render(request, 'create_edit/AddRegistro_clientes.html',{'form':form})
 
-
 def Add_Alojamientos(request):
     if request.method == 'POST':
         form = Form_Alojamientos(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Alojamientos')
+
             form.save()
             return redirect ('Show_Alojamientos')
         else:
@@ -338,7 +418,6 @@ def Add_Alojamientos(request):
             return redirect('Add_Alojamientos')
     form = Form_Alojamientos()
     return render(request, 'create_edit/AddAlojamientos.html',{'form':form})
-
 
 def Add_Proveedores(request):
     if request.method == 'POST':
@@ -352,11 +431,18 @@ def Add_Proveedores(request):
     form = Form_Proveedores()
     return render(request, 'create_edit/AddProveedores.html',{'form':form})
 
-
 def Add_PRO_AGE(request):
     if request.method == 'POST':
         form = Form_PRO_AGE(request.POST)
         if form.is_valid():
+
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'No existe la agencia')
+                return redirect('Add_pro_age')
+
             form.save()
             return redirect ('Show_pro_age')
         else:
@@ -364,7 +450,6 @@ def Add_PRO_AGE(request):
             return redirect('Add_pro_age')
     form = Form_PRO_AGE()
     return render(request, 'create_edit/AddPRO_AGE.html',{'form':form})
-
 
 def Add_Asesores_de_viajes(request):
     if request.method == 'POST':
@@ -378,7 +463,6 @@ def Add_Asesores_de_viajes(request):
     form = Form_Asesores_de_viajes()
     return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
 
-
 def Add_Paquetes(request):
     if request.method == 'POST':
         form = Form_Paquetes(request.POST)
@@ -391,11 +475,28 @@ def Add_Paquetes(request):
     form = Form_Paquetes()
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
-
 def Add_Especializaciones(request):
     if request.method == 'POST':
         form = Form_Especializaciones(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.cleaned_data.get('id_atraccion')
+            try:
+                validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Add_Especializaciones')
+            
+            id_paquete = form.cleaned_data.get('id_paquete')
+            id_agencia_paquete = form.cleaned_data.get('id_agencia_paquete')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia_paquete)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Especializaciones')
+
             form.save()
             return redirect ('Show_Especializaciones')
         else:
@@ -404,11 +505,19 @@ def Add_Especializaciones(request):
     form = Form_Especializaciones()
     return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
-
 def Add_Precios_paquetes(request):
     if request.method == 'POST':
         form = Form_Precios_paquetes(request.POST)
         if form.is_valid():
+
+            id_paquete = form.cleaned_data.get('id_paquete')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Precios_paquetes')
+
             form.save()
             return redirect ('Show_Precios_paquetes')
         else:
@@ -429,7 +538,6 @@ def Add_Calendarios_anuales(request):
     form = Form_Calendarios_anuales()
     return render(request, 'create_edit/AddCalendarios_anuales.html',{'form':form})
 
-
 def Add_Descuentos(request):
     if request.method == 'POST':
         form = Form_Descuentos(request.POST)
@@ -442,11 +550,27 @@ def Add_Descuentos(request):
     form = Form_Descuentos()
     return render(request, 'create_edit/AddDescuentos.html',{'form':form})
 
-
 def Add_Intinerarios(request):
     if request.method == 'POST':
         form = Form_Itinerarios(request.POST)
         if form.is_valid():
+
+            id_paquete = form.cleaned_data.get('id_paquete')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Intinerarios')
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Intinerarios')
+
             form.save()
             return redirect ('Show_Intinerarios')
         else:
@@ -455,11 +579,31 @@ def Add_Intinerarios(request):
     form = Form_Itinerarios()
     return render(request, 'create_edit/AddIntinerarios.html',{'form':form})
 
-
 def Add_ITN_ATR(request):
     if request.method == 'POST':
         form = Form_ITN_ATR(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.cleaned_data.get('id_atraccion')
+            try:
+                validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Add_ITN_ATR')
+
+            id_itinerario = form.cleaned_data.get('id_itinerario')
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            id_paquete = form.cleaned_data.get('id_paquete')
+            try:
+                validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+            except Itinerarios.DoesNotExist:        
+                messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
+                return redirect('Add_ITN_ATR')
+
             form.save()
             return redirect ('Show_ITN_ATR')
         else:
@@ -468,11 +612,22 @@ def Add_ITN_ATR(request):
     form = Form_ITN_ATR()
     return render(request, 'create_edit/AddITN_ATR.html',{'form':form})
 
-
 def Add_Detalles_servicios(request):
     if request.method == 'POST':
         form = Form_Detalles_servicios(request.POST)
         if form.is_valid():
+
+            id_itinerario = form.cleaned_data.get('id_itinerario')
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            id_paquete = form.cleaned_data.get('id_paquete')
+            try:
+                validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+            except Itinerarios.DoesNotExist:        
+                messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
+                return redirect('Add_Detalles_servicios')
+
             form.save()
             return redirect ('Show_Detalles_servicios')
         else:
@@ -481,11 +636,24 @@ def Add_Detalles_servicios(request):
     form = Form_Detalles_servicios()
     return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
 
-
 def Add_ALO_DET(request):
     if request.method == 'POST':
         form = Form_ALO_DET(request.POST)
         if form.is_valid():
+
+            id_detalle_servicio = form.cleaned_data.get('id_detalle_servicio')
+            id_itinerario = form.cleaned_data.get('id_itinerario')
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            id_paquete = form.cleaned_data.get('id_paquete')
+            try:
+                validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+            except Detalles_servicios.DoesNotExist:        
+                messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete y detalle servicio')
+                return redirect('Add_ALO_DET')
+
+
             form.save()
             return redirect ('Show_ALO_DET')
         else:
@@ -494,11 +662,18 @@ def Add_ALO_DET(request):
     form = Form_ALO_DET()
     return render(request, 'create_edit/AddALO_DET.html',{'form':form})
 
-
 def Add_Instrumentos_de_pago(request):
     if request.method == 'POST':
         form = Form_Instrumentos_de_pago(request.POST)
         if form.is_valid():
+
+            doc_identidad_cliente = form.cleaned_data.get('doc_identidad_cliente')
+            try:
+                validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
+            except Clientes.DoesNotExist:        
+                messages.error(request, 'Cliente no existe')
+                return redirect('Add_Instrumentos_de_pago')
+
             form.save()
             return redirect ('Show_Instrumentos_de_pago')
         else:
@@ -507,11 +682,27 @@ def Add_Instrumentos_de_pago(request):
     form = Form_Instrumentos_de_pago()
     return render(request, 'create_edit/AddInstrumentos_de_pago.html',{'form':form})
 
-
 def Add_Paquetes_contrato(request):
     if request.method == 'POST':
         form = Form_Paquetes_contrato(request.POST)
         if form.is_valid():
+
+            id_paquete = form.cleaned_data.get('id_paquete')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Paquetes_contrato')
+
+            id_reg_cliente = form.cleaned_data.get('id_reg_cliente')
+            id_reg_agencia = form.cleaned_data.get('id_reg_agencia')
+            try:
+                validacion = Registro_clientes.objects.get(id_cliente=id_reg_cliente, id_agencia=id_reg_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Paquetes_contrato')
+
             form.save()
             return redirect ('Show_Paquetes_contrato')
         else:
@@ -520,11 +711,26 @@ def Add_Paquetes_contrato(request):
     form = Form_Paquetes_contrato()
     return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
-
 def Add_Formas_de_pago(request):
     if request.method == 'POST':
         form = Form_Formas_de_pago(request.POST)
         if form.is_valid():
+
+            id_instrumento = form.cleaned_data.get('id_instrumento')
+            id_cliente = form.cleaned_data.get('id_cliente')
+            try:
+                validacion = Instrumentos_de_pago.objects.get(id_instrumento=id_instrumento, doc_identidad_cliente=id_cliente)
+            except Instrumentos_de_pago.DoesNotExist:        
+                messages.error(request, 'Error, instrumento de pago y cliente no coinciden')
+                return redirect('Add_Formas_de_pago')
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, paquete contrato invalido')
+                return redirect('Add_Formas_de_pago')
+
             form.save()
             return redirect ('Show_Formas_de_pago')
         else:
@@ -533,11 +739,26 @@ def Add_Formas_de_pago(request):
     form = Form_Formas_de_pago()
     return render(request, 'create_edit/AddFormas_de_pago.html',{'form':form})
 
-
 def Add_Viajeros(request):
     if request.method == 'POST':
         form = Form_Viajeros(request.POST)
         if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Viajeros')
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, paquete contrato invalido')
+                return redirect('Add_Viajeros')
+
             form.save()
             return redirect ('Show_Viajeros')
         else:
@@ -546,11 +767,18 @@ def Add_Viajeros(request):
     form = Form_Viajeros()
     return render(request, 'create_edit/AddViajeros.html',{'form':form})
 
-
 def Add_PAI_VIA(request):
     if request.method == 'POST':
         form = Form_PAI_VIA(request.POST)
         if form.is_valid():
+
+            id_viajero = form.cleaned_data.get('id_viajero')
+            try:
+                validacion = Viajeros.objects.get(id_de_identidad=id_viajero)
+            except Viajeros.DoesNotExist:        
+                messages.error(request, 'Error, Viajero invalido')
+                return redirect('Add_PAI_VIA')
+
             form.save()
             return redirect ('Show_PAI_VIA')
         else:
@@ -559,11 +787,25 @@ def Add_PAI_VIA(request):
     form = Form_PAI_VIA()
     return render(request, 'create_edit/AddPAI_VIA.html',{'form':form})
 
-
 def Add_Registro_viajeros(request):
     if request.method == 'POST':
         form = Form_Registro_viajeros(request.POST)
         if form.is_valid():
+
+            id_viajero = form.cleaned_data.get('id_viajero')
+            try:
+                validacion = Viajeros.objects.get(id_de_identidad=id_viajero)
+            except Viajeros.DoesNotExist:        
+                messages.error(request, 'Error, Viajero invalido')
+                return redirect('Add_Registro_viajeros')
+
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'Error, Agencia invalida')
+                return redirect('Add_Registro_viajeros')
+
             form.save()
             return redirect ('Show_Registro_viajeros')
         else:
@@ -572,11 +814,26 @@ def Add_Registro_viajeros(request):
     form = Form_Registro_viajeros()
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
-
 def Add_Detalle_viajeros(request):
     if request.method == 'POST':
         form = Form_Detalle_viajeros(request.POST)
         if form.is_valid():
+
+            id_viajero = form.cleaned_data.get('id_viajero')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Registro_viajeros.objects.get(id_agencia=id_agencia, id_viajero=id_viajero)
+            except Registro_viajeros.DoesNotExist:        
+                messages.error(request, 'Error, Viajero no pertenece a la agencia')
+                return redirect('Add_Detalle_viajeros')
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, Paquete invalido')
+                return redirect('Add_Detalle_viajeros')
+
             form.save()
             return redirect ('Show_Detalle_viajeros')
         else:
@@ -585,11 +842,27 @@ def Add_Detalle_viajeros(request):
     form = Form_Detalle_viajeros()
     return render(request, 'create_edit/AddDetalle_viajeros.html',{'form':form})
 
-
 def Add_Participantes(request):
     if request.method == 'POST':
         form = Form_Participantes(request.POST)
         if form.is_valid():
+
+            id_via_viajero = form.cleaned_data.get('id_via_viajero')
+            id_via_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Registro_viajeros.objects.get(id_agencia=id_via_agencia, id_viajero=id_via_viajero)
+            except Registro_viajeros.DoesNotExist:        
+                messages.error(request, 'Error, Viajero no pertenece a la agencia')
+                return redirect('Add_Participantes')
+
+            id_cli_cliente = form.cleaned_data.get('id_cli_cliente')
+            id_cli_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Registro_viajeros.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
+            except Registro_clientes.DoesNotExist:        
+                messages.error(request, 'Error, Cliente no pertenece a la agencia')
+                return redirect('Add_Participantes')
+
             form.save()
             return redirect ('Show_Participantes')
         else:
@@ -602,6 +875,23 @@ def Add_Puntuaciones(request):
     if request.method == 'POST':
         form = Form_Puntuaciones(request.POST)
         if form.is_valid():
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, paquete contrato invalido')
+                return redirect('Add_Puntuaciones')
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.cleaned_data.get('id_atraccion')
+            try:
+                atraccion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Add_Puntuaciones')
+
             form.save()
             return redirect ('Show_Puntuaciones')
         else:
@@ -1276,7 +1566,23 @@ def Delete_Puntuaciones(request, id):
 #Edit
 
 def Edit_Bancos(request, id):
-    pass
+
+    try:
+        obj = Bancos.objects.get(id_banco=id)
+    except Bancos.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_bancos')
+
+    if request.method == 'POST':
+        form = Form_Bancos(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_bancos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Show_bancos')
+    form = Form_Bancos(instance= obj)
+    return render(request, 'create_edit/AddBancos.html',{'form':form})
 
 def Edit_Clientes(request, id):
     pass

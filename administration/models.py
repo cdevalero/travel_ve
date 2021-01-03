@@ -179,7 +179,7 @@ class Circuitos(models.Model):
         ordering = ['orden_circuito']
 
 class ATR_CIR(models.Model):
-    id_atraccion = models.IntegerField(primary_key=True)
+    id_atraccion = models.IntegerField(primary_key=True, unique=False)
     id_ciudad_at = models.IntegerField()
     id_pais_at = models.IntegerField()
     id_circuito = models.IntegerField()
@@ -610,7 +610,7 @@ class Paquetes_contrato(models.Model):
     f_viaje = models.DateField()
 
     registro = CompositeForeignKey(Registro_clientes, on_delete=CASCADE, to_fields={'id_cliente': 'id_reg_cliente','id_agencia': 'id_reg_agencia'})
-    paquete = CompositeForeignKey(Paquetes, on_delete=CASCADE, to_fields={'id_agencia': 'id_paquete','id_agencia': 'id_agencia'})
+    paquete = CompositeForeignKey(Paquetes, on_delete=CASCADE, to_fields={'id_paquete': 'id_paquete','id_agencia': 'id_agencia'})
 
     def __str__(self):
         return str(self.numero_factura)
