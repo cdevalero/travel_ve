@@ -59,10 +59,10 @@
                                         <td>{{pice.nro_de_pasaporte}}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
-                                                <a href="{% url 'Delete_PAI_VIA' pice.id_viajero %}">
+                                                <a href="{% url 'Delete_PAI_VIA' pice.id_viajero pice.id_pais %}">
                                                     <i class="far fa-trash-alt"></i>
                                                 </a>
-                                                <a href="{% url 'Edit_PAI_VIA' pice.id_viajero %}" class="offset-1">
+                                                <a href="{% url 'Edit_PAI_VIA' pice.id_viajero pice.id_pais %}" class="offset-1">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
