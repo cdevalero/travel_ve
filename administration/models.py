@@ -218,7 +218,7 @@ class Agencias_de_viajes(models.Model):
     nombre = models.CharField(max_length=30)
     tipo_de_operacion = models.CharField(choices=OPERACION, max_length=1)
     alcance_geografico = models.CharField(choices=ALCANCE, max_length=1)
-    web = models.CharField(null=True, blank = True, max_length=30)
+    web = models.URLField(null=True, blank = True, max_length=30)
     telefono = models.IntegerField(null=True, blank = True)
     calle_av = models.TextField(null=True, blank = True, max_length=255)
     descripcion = models.TextField(null=True, blank = True, max_length=255)
@@ -604,7 +604,7 @@ class Paquetes_contrato(models.Model):
     presupuesto = models.IntegerField()
     f_aprobacion = models.DateField()
     f_emision = models.DateField()
-    email_validacion = models.CharField(max_length=30)
+    email_validacion = models.EmailField(max_length=30)
     total_costo_calculado = models.IntegerField()
     numer_de_viajeros = models.IntegerField()
     f_viaje = models.DateField()
@@ -683,7 +683,7 @@ class PAI_VIA(models.Model):
         ordering = ['id_viajero']
 
 class Registro_viajeros(models.Model):
-    id_agencia = models.IntegerField(primary_key=True)
+    id_agencia = models.IntegerField(primary_key=True, unique=False)
     id_viajero = models.IntegerField()
     f_registro = models.DateField()
     nro_registro = models.IntegerField()

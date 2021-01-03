@@ -72,6 +72,9 @@ class Form_Registro_clientes(forms.ModelForm):
     class Meta:
         model = Registro_clientes;
         fields = ('id_cliente','id_agencia','f_registro','numero_registro')
+        widgets = {
+            'f_registro': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Alojamientos(forms.ModelForm):
     class Meta:

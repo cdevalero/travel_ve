@@ -1,3 +1,4 @@
+from django.db import connection
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import *
@@ -378,19 +379,30 @@ def Add_Cupos(request):
     form = Form_Cupos()
     return render(request, 'create_edit/AddCupos.html',{'form':form})
 
+def Crear_Registro_clientes(cliente, agencia, fecha, numero):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, %s)', 
+                        [cliente, agencia, fecha, numero])
+        
 def Add_Registro_clientes(request):
     if request.method == 'POST':
         form = Form_Registro_clientes(request.POST)
+        try:
+            del form.errors['id_cliente']
+        except:
+            pass
         if form.is_valid():
-
-            id_cliente = form.cleaned_data.get('id_cliente')
+            id_cliente = form.data['id_cliente']
+            id_agencia = form.data['id_agencia']
+            f_registro = form.data['f_registro']
+            numero_registro = form.data['numero_registro']
             try:
                 validacion = Clientes.objects.get(doc_identidad_o_rif=id_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'No existe el cliente')
                 return redirect('Add_Registro_clientes')
-
-            form.save()
+            Crear_Registro_clientes(id_cliente, id_agencia, f_registro, numero_registro)
+            #form.save()
             return redirect ('Show_Registro_clientes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -1071,7 +1083,7 @@ def Delete_Agencia_de_viajes(request, id):
         return redirect('Show_Agencia_de_viajes')
     obj.delete()
     return redirect('Show_Agencia_de_viajes')
-#----------------------------------------------------------------------
+
 def Delete_AGE_AGE(request, id,id2):
     try:
         socio = Agencias_de_viajes.objects.get(id_agencia=id2)
@@ -1110,6 +1122,10 @@ def Delete_Cupos(request, id, id2):
     obj.delete()
     return redirect('Show_Cupos')
 
+def borrar_Registro_clientes(cliente, agencia):
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_registro_clientes WHERE id_cliente=%s and id_agencia=%s ", [cliente, agencia])
+
 def Delete_Registro_clientes(request, id,id2):
     try:
         cliente = Clientes.objects.get(doc_identidad_o_rif=id)
@@ -1122,11 +1138,11 @@ def Delete_Registro_clientes(request, id,id2):
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Registro_clientes')
     try:
-        obj = Registro_clientes.objects.filter(id_cliente=cliente.doc_identidad_o_rif, id_agencia=agencia.id_agencia).get(id_cliente=id)
+        obj = Registro_clientes.objects.filter(id_agencia=agencia.id_agencia).get(id_cliente=cliente.doc_identidad_o_rif)
     except Registro_clientes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Registro_clientes')
-    obj.delete()
+    borrar_Registro_clientes(id, agencia.id_agencia)
     return redirect('Show_Registro_clientes')
 
 def Delete_Alojamientos(request, id):
