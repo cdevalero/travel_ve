@@ -27,6 +27,10 @@ class Form_Rallies(forms.ModelForm):
     class Meta:
         model = Rallies;
         fields = ('nombre_rally', 'costo_participante', 'f_inicio', 'f_fin', 'tipo_rally', 'duracion', 'total_cupo_participante')
+        widgets = {
+            'f_inicio': DateInput(attrs={'type': 'date'}),
+            'f_fin': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Premios(forms.ModelForm):
     class Meta:
@@ -62,6 +66,10 @@ class Form_AGE_AGE(forms.ModelForm):
     class Meta:
         model = AGE_AGE;
         fields = ('id_agencia','id_socio','f_inicio', 'f_fin')
+        widgets = {
+            'f_inicio': DateInput(attrs={'type': 'date'}),
+            'f_fin': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Cupos(forms.ModelForm):
     class Meta:
@@ -90,6 +98,10 @@ class Form_PRO_AGE(forms.ModelForm):
     class Meta:
         model = PRO_AGE;
         fields = ('id_agencia','id_proveedor','f_inicio','f_fin')
+        widgets = {
+            'f_inicio': DateInput(attrs={'type': 'date'}),
+            'f_fin': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Asesores_de_viajes(forms.ModelForm):
     class Meta:
@@ -120,6 +132,10 @@ class Form_Descuentos(forms.ModelForm):
     class Meta:
         model = Descuentos;
         fields = ('id_descuento','id_agencia','f_inicio','tipo_descuento','f_fin','cant_per_gratis','porcentaje')
+        widgets = {
+            'f_inicio': DateInput(attrs={'type': 'date'}),
+            'f_fin': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Itinerarios(forms.ModelForm):
     class Meta:
@@ -150,6 +166,11 @@ class Form_Paquetes_contrato(forms.ModelForm):
     class Meta:
         model = Paquetes_contrato;
         fields = ('numero_factura','id_paquete','id_agencia','id_reg_cliente','id_reg_agencia','id_asesor','presupuesto','f_aprobacion','f_emision','email_validacion','total_costo_calculado','numer_de_viajeros','f_viaje')
+        widgets = {
+            'f_aprobacion': DateInput(attrs={'type': 'date'}),
+            'f_emision': DateInput(attrs={'type': 'date'}),
+            'f_viaje': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Formas_de_pago(forms.ModelForm):
     class Meta:
@@ -160,6 +181,9 @@ class Form_Viajeros(forms.ModelForm):
     class Meta:
         model = Viajeros;
         fields = ('id_de_identidad','id_ciudad','id_pais','id_paquete_contrato','primer_nombre','segundo_nombre','primer_apellido','segundo_apellido','sexo','f_nacimiento')
+        widgets = {
+            'f_nacimiento': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_PAI_VIA(forms.ModelForm):
     class Meta:
@@ -170,6 +194,9 @@ class Form_Registro_viajeros(forms.ModelForm):
     class Meta:
         model = Registro_viajeros;
         fields = ('id_agencia','id_viajero','f_registro','nro_registro')
+        widgets = {
+            'f_registro': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Detalle_viajeros(forms.ModelForm):
     class Meta:

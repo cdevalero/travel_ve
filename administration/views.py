@@ -1,12 +1,12 @@
-from django.db import connection
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import *
 from .forms import *
 from django.contrib import messages
 from datetime import timedelta
+from .sql_functions import *
 
-# SHOW
+# SHOW ---------------------------------------------------------------------------------------------------------------
 
 def Show_bancos(request):
     obj = Bancos.objects.all()
@@ -28,7 +28,7 @@ def Show_rallies(request):
     obj = Rallies.objects.all()
     return render(request, 'show/ShowRallie.html', {'obj': obj})
 
-def Show_premios(request):
+def Show_premios(request): 
     obj = Premios.objects.all()
     return render(request, 'show/ShowPremios.html', {'obj': obj})
 
@@ -152,7 +152,7 @@ def Show_Puntuaciones(request):
     obj = Puntuaciones.objects.all()
     return render(request, 'show/ShowPuntuaciones.html', {'obj': obj})
 
-#ADD
+#ADD --------------------------------------------------------------------------------------------------------------------
 
 def Add_Bancos(request):
     if request.method == 'POST':
@@ -217,8 +217,23 @@ def Add_Rallies(request):
 def Add_Premios(request):
     if request.method == 'POST':
         form = Form_Premios(request.POST)
+
+        try:
+            del form.errors['id_premio']    #-> eliminar error de duplicidad si existe 
+        except:
+            pass
+
         if form.is_valid():
-            form.save()
+
+            id_premio = form.data['id_premio']  #-> definir cada una de las variables para guardarlas
+            id_rally = form.data['id_rally']
+            posicion = form.data['posicion']
+            descripcion_premio = form.data['descripcion_premio']
+
+            #-> Validad, que exista la entrada si se usa multiple FK
+
+            Crear_Premios(id_premio, id_rally, posicion, descripcion_premio) # -> form.save()
+
             return redirect ('Show_premios')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -226,7 +241,7 @@ def Add_Premios(request):
     form = Form_Premios()
     return render(request, 'create_edit/AddPremios.html',{'form':form})
 
-def Add_Ciudades(request):
+def Add_Ciudades(request): #FIX
     if request.method == 'POST':
         form = Form_Ciudades(request.POST)
         if form.is_valid():
@@ -238,7 +253,7 @@ def Add_Ciudades(request):
     form = Form_Ciudades()
     return render(request, 'create_edit/AddCiudades.html',{'form':form})
 
-def Add_Atracciones(request):
+def Add_Atracciones(request): #FIX
     if request.method == 'POST':
         form = Form_Atracciones(request.POST)
         if form.is_valid():
@@ -259,7 +274,7 @@ def Add_Atracciones(request):
     form = Form_Atracciones()
     return render(request, 'create_edit/AddAtracciones.html',{'form':form})
 
-def Add_Circuitos(request):
+def Add_Circuitos(request): #FIX
     if request.method == 'POST':
         form = Form_Circuitos(request.POST)
         if form.is_valid():
@@ -280,7 +295,7 @@ def Add_Circuitos(request):
     form = Form_Circuitos()
     return render(request, 'create_edit/AddCircuitos.html',{'form':form})
 
-def Add_ATR_CIR(request):
+def Add_ATR_CIR(request): #FIX
     if request.method == 'POST':
         form = Form_ATR_CIR(request.POST)
         if form.is_valid():
@@ -333,7 +348,7 @@ def Add_Agencia_de_viajes(request):
     form = Form_Agencia_de_viajes()
     return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
 
-def Add_AGE_AGE(request):
+def Add_AGE_AGE(request): #FIX
     if request.method == 'POST':
         form = Form_AGE_AGE(request.POST)
         if form.is_valid():
@@ -359,7 +374,7 @@ def Add_AGE_AGE(request):
     form = Form_AGE_AGE()
     return render(request, 'create_edit/AddAGE_AGE.html',{'form':form})
 
-def Add_Cupos(request):
+def Add_Cupos(request): #FIX
     if request.method == 'POST':
         form = Form_Cupos(request.POST)
         if form.is_valid():
@@ -378,13 +393,8 @@ def Add_Cupos(request):
             return redirect('Add_Cupos')
     form = Form_Cupos()
     return render(request, 'create_edit/AddCupos.html',{'form':form})
-
-def Crear_Registro_clientes(cliente, agencia, fecha, numero):
-    with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, %s)', 
-                        [cliente, agencia, fecha, numero])
         
-def Add_Registro_clientes(request):
+def Add_Registro_clientes(request): #GUIA------------
     if request.method == 'POST':
         form = Form_Registro_clientes(request.POST)
         try:
@@ -443,7 +453,7 @@ def Add_Proveedores(request):
     form = Form_Proveedores()
     return render(request, 'create_edit/AddProveedores.html',{'form':form})
 
-def Add_PRO_AGE(request):
+def Add_PRO_AGE(request): #FIX
     if request.method == 'POST':
         form = Form_PRO_AGE(request.POST)
         if form.is_valid():
@@ -475,7 +485,7 @@ def Add_Asesores_de_viajes(request):
     form = Form_Asesores_de_viajes()
     return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
 
-def Add_Paquetes(request):
+def Add_Paquetes(request): #FIX
     if request.method == 'POST':
         form = Form_Paquetes(request.POST)
         if form.is_valid():
@@ -487,7 +497,7 @@ def Add_Paquetes(request):
     form = Form_Paquetes()
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
-def Add_Especializaciones(request):
+def Add_Especializaciones(request): #FIX
     if request.method == 'POST':
         form = Form_Especializaciones(request.POST)
         if form.is_valid():
@@ -517,7 +527,7 @@ def Add_Especializaciones(request):
     form = Form_Especializaciones()
     return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
-def Add_Precios_paquetes(request):
+def Add_Precios_paquetes(request): #FIX
     if request.method == 'POST':
         form = Form_Precios_paquetes(request.POST)
         if form.is_valid():
@@ -538,7 +548,7 @@ def Add_Precios_paquetes(request):
     form = Form_Precios_paquetes()
     return render(request, 'create_edit/AddPrecios_paquetes.html',{'form':form})
 
-def Add_Calendarios_anuales(request):
+def Add_Calendarios_anuales(request): #FIX
     if request.method == 'POST':
         form = Form_Calendarios_anuales(request.POST)
         if form.is_valid():
@@ -550,7 +560,7 @@ def Add_Calendarios_anuales(request):
     form = Form_Calendarios_anuales()
     return render(request, 'create_edit/AddCalendarios_anuales.html',{'form':form})
 
-def Add_Descuentos(request):
+def Add_Descuentos(request): #FIX
     if request.method == 'POST':
         form = Form_Descuentos(request.POST)
         if form.is_valid():
@@ -562,7 +572,7 @@ def Add_Descuentos(request):
     form = Form_Descuentos()
     return render(request, 'create_edit/AddDescuentos.html',{'form':form})
 
-def Add_Intinerarios(request):
+def Add_Intinerarios(request): #FIX
     if request.method == 'POST':
         form = Form_Itinerarios(request.POST)
         if form.is_valid():
@@ -591,7 +601,7 @@ def Add_Intinerarios(request):
     form = Form_Itinerarios()
     return render(request, 'create_edit/AddIntinerarios.html',{'form':form})
 
-def Add_ITN_ATR(request):
+def Add_ITN_ATR(request): #FIX
     if request.method == 'POST':
         form = Form_ITN_ATR(request.POST)
         if form.is_valid():
@@ -624,7 +634,7 @@ def Add_ITN_ATR(request):
     form = Form_ITN_ATR()
     return render(request, 'create_edit/AddITN_ATR.html',{'form':form})
 
-def Add_Detalles_servicios(request):
+def Add_Detalles_servicios(request): #FIX
     if request.method == 'POST':
         form = Form_Detalles_servicios(request.POST)
         if form.is_valid():
@@ -648,7 +658,7 @@ def Add_Detalles_servicios(request):
     form = Form_Detalles_servicios()
     return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
 
-def Add_ALO_DET(request):
+def Add_ALO_DET(request): #FIX
     if request.method == 'POST':
         form = Form_ALO_DET(request.POST)
         if form.is_valid():
@@ -674,7 +684,7 @@ def Add_ALO_DET(request):
     form = Form_ALO_DET()
     return render(request, 'create_edit/AddALO_DET.html',{'form':form})
 
-def Add_Instrumentos_de_pago(request):
+def Add_Instrumentos_de_pago(request): #FIX
     if request.method == 'POST':
         form = Form_Instrumentos_de_pago(request.POST)
         if form.is_valid():
@@ -723,7 +733,7 @@ def Add_Paquetes_contrato(request):
     form = Form_Paquetes_contrato()
     return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
-def Add_Formas_de_pago(request):
+def Add_Formas_de_pago(request): #FIX
     if request.method == 'POST':
         form = Form_Formas_de_pago(request.POST)
         if form.is_valid():
@@ -779,7 +789,7 @@ def Add_Viajeros(request):
     form = Form_Viajeros()
     return render(request, 'create_edit/AddViajeros.html',{'form':form})
 
-def Add_PAI_VIA(request):
+def Add_PAI_VIA(request):#FIX
     if request.method == 'POST':
         form = Form_PAI_VIA(request.POST)
         if form.is_valid():
@@ -799,7 +809,7 @@ def Add_PAI_VIA(request):
     form = Form_PAI_VIA()
     return render(request, 'create_edit/AddPAI_VIA.html',{'form':form})
 
-def Add_Registro_viajeros(request):
+def Add_Registro_viajeros(request): #FIX
     if request.method == 'POST':
         form = Form_Registro_viajeros(request.POST)
         if form.is_valid():
@@ -826,7 +836,7 @@ def Add_Registro_viajeros(request):
     form = Form_Registro_viajeros()
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
-def Add_Detalle_viajeros(request):
+def Add_Detalle_viajeros(request): #FIX
     if request.method == 'POST':
         form = Form_Detalle_viajeros(request.POST)
         if form.is_valid():
@@ -854,7 +864,7 @@ def Add_Detalle_viajeros(request):
     form = Form_Detalle_viajeros()
     return render(request, 'create_edit/AddDetalle_viajeros.html',{'form':form})
 
-def Add_Participantes(request):
+def Add_Participantes(request): #FIX
     if request.method == 'POST':
         form = Form_Participantes(request.POST)
         if form.is_valid():
@@ -913,7 +923,7 @@ def Add_Puntuaciones(request):
     return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
 
 
-#Delete
+#Delete ------------------------------------------------------------------------------------------------------------
 
 def Delete_Bancos(request, id):
     try:
@@ -971,7 +981,7 @@ def Delete_Premios(request, id, id2):
     except Premios.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
-    obj.delete()
+    Borrar_Premios(id, rallie.id_rally)
     return redirect('Show_rallies')
 
 def Delete_Ciudades(request, id, id2):
@@ -985,7 +995,7 @@ def Delete_Ciudades(request, id, id2):
     except Ciudades.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Ciudades')
-    obj.delete()
+    Borrar_Ciudad(id, pais.id_pais)
     return redirect('Show_Ciudades')
 
 def Delete_Atracciones(request, id,id2,id3):
@@ -1004,7 +1014,7 @@ def Delete_Atracciones(request, id,id2,id3):
     except Atracciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Atracciones')
-    obj.delete()
+    Borrar_Atraccion(id, ciudad.id_ciudad, pais.id_pais)
     return redirect('Show_Atracciones')
 
 def Delete_Circuitos(request, id,id2,id3,id4):
@@ -1028,7 +1038,7 @@ def Delete_Circuitos(request, id,id2,id3,id4):
     except Circuitos.DoesNotExist:        
         messages.error(request, 'No existe la 4')
         return redirect('Show_Circuitos')
-    obj.delete()
+    Borrar_Circuito(id, rallie.id_rally, ciudad.id_ciudad, pais.id_pais)
     return redirect('Show_Circuitos')  
 
 def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
@@ -1068,11 +1078,11 @@ def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
         messages.error(request, 'No existe la entrada7')
         return redirect('Show_atr_cir')
     try:
-        obj = ATR_CIR.objects.filter(id_atraccion=atraccion.id_atraccion,id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_at.id_ciudad,id_pais_cir=pais_at.id_pais).get(id_atraccion=id)
+        obj = ATR_CIR.objects.filter(id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_at.id_ciudad,id_pais_cir=pais_at.id_pais).get(id_atraccion=id)
     except ATR_CIR.DoesNotExist:        
         messages.error(request, 'No existe la entrada8')
         return redirect('Show_atr_cir')
-    obj.delete()
+    Borrar_ATR_CIR(atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais, circuito.orden_circuito, rallie.id_rally, ciudad_at.id_ciudad, pais_at.id_pais)
     return redirect('Show_atr_cir')
 
 def Delete_Agencia_de_viajes(request, id):
@@ -1096,11 +1106,11 @@ def Delete_AGE_AGE(request, id,id2):
         messages.error(request, 'No existe la entrada')
         return redirect('Show_AGE_AGE')
     try:
-        obj = AGE_AGE.objects.filter(id_agencia=agencia.id_agencia,id_socio=socio.id_agencia).get(id_agencia=id)
+        obj = AGE_AGE.objects.filter(id_socio=socio.id_agencia).get(id_agencia=id)
     except AGE_AGE.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_AGE_AGE')
-    obj.delete()
+    Borrar_AGE_AGE(id, socio.id_agencia)
     return redirect('Show_AGE_AGE')
 
 def Delete_Cupos(request, id, id2):
@@ -1115,16 +1125,12 @@ def Delete_Cupos(request, id, id2):
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Cupos')
     try:
-        obj = Cupos.objects.filter(id_agencia=agencia.id_agencia, id_rally=rallie.id_rally).get(id_agencia=id)
+        obj = Cupos.objects.filter(id_rally=rallie.id_rally).get(id_agencia=id)
     except Cupos.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Cupos')
-    obj.delete()
+    Borrar_Cupo(id, rallie.id_rally)
     return redirect('Show_Cupos')
-
-def borrar_Registro_clientes(cliente, agencia):
-    with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_registro_clientes WHERE id_cliente=%s and id_agencia=%s ", [cliente, agencia])
 
 def Delete_Registro_clientes(request, id,id2):
     try:
@@ -1142,7 +1148,7 @@ def Delete_Registro_clientes(request, id,id2):
     except Registro_clientes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Registro_clientes')
-    borrar_Registro_clientes(id, agencia.id_agencia)
+    Borrar_Registro_clientes(id, agencia.id_agencia)
     return redirect('Show_Registro_clientes')
 
 def Delete_Alojamientos(request, id):
@@ -1175,11 +1181,11 @@ def Delete_PRO_AGE(request, id,id2):
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_pro_age')
     try:
-        obj = PRO_AGE.objects.filter(id_proveedor=proveedor.id_proveedor, id_agencia=agencia.id_agencia).get(id_agencia=id)
+        obj = PRO_AGE.objects.filter(id_proveedor=proveedor.id_proveedor).get(id_agencia=id)
     except PRO_AGE.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_pro_age')
-    obj.delete()
+    Borrar_PRO_AGE(id, proveedor.id_proveedor)
     return redirect('Show_pro_age')
 
 def Delete_Asesores_de_viajes(request, id):
@@ -1190,7 +1196,6 @@ def Delete_Asesores_de_viajes(request, id):
         return redirect('Show_Asesores_de_viajes')
     obj.delete()
     return redirect('Show_Asesores_de_viajes')
-
 
 def Delete_Paquetes(request, id,id2):
     try:
@@ -1204,11 +1209,11 @@ def Delete_Paquetes(request, id,id2):
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Paquetes')
     try:
-        obj = Paquetes.objects.filter(id_paquete=paquete.id_paquete, id_agencia=agencia.id_agencia).get(id_paquete=id)
+        obj = Paquetes.objects.filter(id_agencia=agencia.id_agencia).get(id_paquete=id)
     except Paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Paquetes')
-    obj.delete()
+    Borrar_Paquetes(id, agencia.id_agencia)
     return redirect('Show_Paquetes')
 
 def Delete_Especializaciones(request, id,id2):
@@ -1223,11 +1228,11 @@ def Delete_Especializaciones(request, id,id2):
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Especializaciones')
     try:
-        obj = Especializaciones.objects.filter(id_especializacion=especializacion.id_especializacion, id_areas_de_interes=area.id_areas_de_interes).get(id_especializacion=id)
+        obj = Especializaciones.objects.filter(id_areas_de_interes=area.id_areas_de_interes).get(id_especializacion=id)
     except Especializaciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Especializaciones')
-    obj.delete()
+    Borrar_Especializacion(id, area.id_areas_de_interes)
     return redirect('Show_Especializaciones')
 
 def Delete_Precios_paquetes(request, id,id2,id3):
@@ -1246,7 +1251,7 @@ def Delete_Precios_paquetes(request, id,id2,id3):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Precios_paquetes')
-    obj.delete()
+    Borrar_Precio_paquete(id,paquete.id_paquete, agencia.id_agencia)
     return redirect('Show_Precios_paquetes')
 
 def Delete_Calendarios_anuales(request, id,id2,id3):
@@ -1265,7 +1270,7 @@ def Delete_Calendarios_anuales(request, id,id2,id3):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Calendarios_anuales')
-    obj.delete()
+    Borrar_Calendarios_anuales(id, paquete.id_paquete, agencia.id_agencia)
     return redirect('Show_Calendarios_anuales')
 
 def Delete_Descuentos(request, id,id2):
@@ -1279,7 +1284,7 @@ def Delete_Descuentos(request, id,id2):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Descuentos')
-    obj.delete()
+    Borrar_Descuentos(id, agencia.id_agencia)
     return redirect('Show_Descuentos')
 
 def Delete_Intinerarios(request, id,id2,id3,id4,id5):
@@ -1308,7 +1313,7 @@ def Delete_Intinerarios(request, id,id2,id3,id4,id5):
     except Itinerarios.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Intinerarios')
-    obj.delete()
+    Borrar_Itinerarios(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete)
     return redirect('Show_Intinerarios')
 
 def Delete_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
@@ -1357,7 +1362,7 @@ def Delete_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
     except ITN_ATR.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_ITN_ATR')
-    obj.delete()
+    Borrar_ITN_ATR(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete, atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais)
     return redirect('Show_ITN_ATR')
 
 def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
@@ -1391,7 +1396,7 @@ def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
     except Detalles_servicios.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_Detalles_servicios')
-    obj.delete()
+    Borrar_Detalle_servicio(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais)
     return redirect('Show_Detalles_servicios')
 
 def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
@@ -1435,7 +1440,7 @@ def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
     except ALO_DET.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_ALO_DET')
-    obj.delete()
+    Borrar_ALO_DET(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais, alojamiento.id_alojamiento)
     return redirect('Show_ALO_DET')
 
 def Delete_Instrumentos_de_pago(request, id,id2):
@@ -1449,7 +1454,7 @@ def Delete_Instrumentos_de_pago(request, id,id2):
     except Instrumentos_de_pago.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Instrumentos_de_pago')
-    obj.delete()
+    Borrar_Instrumento_de_pago(id, cliente.doc_identidad_o_rif)
     return redirect('Show_Instrumentos_de_pago')
 
 def Delete_Paquetes_contrato(request, id):
@@ -1482,7 +1487,7 @@ def Delete_Formas_de_pago(request, id,id2,id3):
     except Formas_de_pago.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Formas_de_pago')
-    obj.delete()
+    Borrar_Forma_de_pago(id, cliente.doc_identidad_o_rif, paq_cont.numero_factura)
     return redirect('Show_Formas_de_pago')
 
 def Delete_Viajeros(request, id):
@@ -1510,7 +1515,7 @@ def Delete_PAI_VIA(request, id,id2):
     except PAI_VIA.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_PAI_VIA')
-    obj.delete()
+    Borrar_PAI_VIA(id, pais.id_pais)
     return redirect('Show_PAI_VIA')
 
 def Delete_Registro_viajeros(request, id,id2):
@@ -1529,7 +1534,7 @@ def Delete_Registro_viajeros(request, id,id2):
     except Registro_viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Registro_viajeros')
-    obj.delete()
+    Borrar_Registro_viajeros(agencia.id_agencia, viajero.id_de_identidad)
     return redirect('Show_Registro_viajeros')
 
 def Delete_Detalle_viajeros(request, id,id2,id3):
@@ -1553,7 +1558,7 @@ def Delete_Detalle_viajeros(request, id,id2,id3):
     except Detalle_viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada4')
         return redirect('Show_Detalle_viajeros')
-    obj.delete()
+    Borrar_Detalle_viajero(id, agencia.id_agencia, paq_cont.numero_factura)
     return redirect('Show_Detalle_viajeros')
 
 def Delete_Participantes(request, id,id2):
@@ -1567,7 +1572,7 @@ def Delete_Participantes(request, id,id2):
     except Participantes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Participantes')
-    obj.delete()
+    Borrar_Participantes(id, rallie.id_rally)
     return redirect('Show_Participantes')
 
 def Delete_Puntuaciones(request, id):
@@ -1579,7 +1584,7 @@ def Delete_Puntuaciones(request, id):
     obj.delete()
     return redirect('Show_Puntuaciones')
 
-#Edit
+#Edit ------------------------------------------------------------------------------------------------------------------
 
 def Edit_Bancos(request, id):
 
@@ -1596,47 +1601,111 @@ def Edit_Bancos(request, id):
             return redirect ('Show_bancos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Show_bancos')
+            return redirect('Add_bancos')
     form = Form_Bancos(instance= obj)
     return render(request, 'create_edit/AddBancos.html',{'form':form})
 
 def Edit_Clientes(request, id):
-    pass
+
+    try:
+        obj = Clientes.objects.get(doc_identidad_o_rif=id)
+    except Clientes.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Clientes')
+
+    if request.method == 'POST':
+        form = Form_Clientes(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Clientes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Clientes')
+    form = Form_Clientes(instance= obj)
+    return render(request, 'create_edit/AddClientes.html',{'form':form})
 
 def Edit_Areas_de_interes(request, id):
-    pass
+    
+    try:
+        obj = Areas_de_interes.objects.get(id_areas_de_interes=id)
+    except Areas_de_interes.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Areas_de_interes')
+
+    if request.method == 'POST':
+        form = Form_Areas_de_interes(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Areas_de_interes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Areas_de_interes')
+    form = Form_Areas_de_interes(instance= obj)
+    return render(request, 'create_edit/AddAreas_de_interes.html',{'form':form})
 
 def Edit_Paises(request, id):
-    pass
+    
+    try:
+        obj = Paises.objects.get(id_pais=id)
+    except Paises.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_paises')
+
+    if request.method == 'POST':
+        form = Form_Paises(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_paises')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_paises')
+    form = Form_Paises(instance= obj)
+    return render(request, 'create_edit/AddPaises.html',{'form':form})
 
 def Edit_Rallies(request, id):
+
+    try:
+        obj = Rallies.objects.get(id_rally=id)
+    except Rallies.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_rallies')
+
+    if request.method == 'POST':
+        form = Form_Rallies(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_rallies')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_rallies')
+    form = Form_Rallies(instance= obj)
+    return render(request, 'create_edit/AddRallies.html',{'form':form})
+
+def Edit_Premios(request, id, id2):
     pass
 
-def Edit_Premios(request, id):
+def Edit_Ciudades(request, id, id2):
     pass
 
-def Edit_Ciudades(request, id):
+def Edit_Atracciones(request, id, id2, id3):
     pass
 
-def Edit_Atracciones(request, id):
+def Edit_Circuitos(request, id,id2,id3,id4):
     pass
 
-def Edit_Circuitos(request, id):
-    pass
-
-def Edit_ATR_CIR(request, id):
+def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
     pass
 
 def Edit_Agencia_de_viajes(request, id):
     pass
 
-def Edit_AGE_AGE(request, id):
+def Edit_AGE_AGE(request, id,id2):
     pass
 
-def Edit_Cupos(request, id):
+def Edit_Cupos(request, id,id2):
     pass
 
-def Edit_Registro_clientes(request, id):
+def Edit_Registro_clientes(request, id,id2):
     pass
 
 def Edit_Alojamientos(request, id):
@@ -1645,61 +1714,61 @@ def Edit_Alojamientos(request, id):
 def Edit_Proveedores(request, id):
     pass
 
-def Edit_PRO_AGE(request, id):
+def Edit_PRO_AGE(request, id,id2):
     pass
 
 def Edit_Asesores_de_viajes(request, id):
     pass
 
-def Edit_Paquetes(request, id):
+def Edit_Paquetes(request, id,id2):
     pass
 
-def Edit_Especializaciones(request, id):
+def Edit_Especializaciones(request, id,id2):
     pass
 
-def Edit_Precios_paquetes(request, id):
+def Edit_Precios_paquetes(request, id,id2,id3):
     pass
 
-def Edit_Calendarios_anuales(request, id):
+def Edit_Calendarios_anuales(request, id,id2,id3):
     pass
 
-def Edit_Descuentos(request, id):
+def Edit_Descuentos(request, id,id2):
     pass
 
-def Edit_Intinerarios(request, id):
+def Edit_Intinerarios(request, id,id2,id3,id4,id5):
     pass
 
-def Edit_ITN_ATR(request, id):
+def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
     pass
 
-def Edit_Detalles_servicios(request, id):
+def Edit_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
     pass
 
-def Edit_ALO_DET(request, id):
+def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
     pass
 
-def Edit_Instrumentos_de_pago(request, id):
+def Edit_Instrumentos_de_pago(request, id,id2):
     pass
 
 def Edit_Paquetes_contrato(request, id):
     pass
 
-def Edit_Formas_de_pago(request, id):
+def Edit_Formas_de_pago(request, id,id2,id3):
     pass
 
 def Edit_Viajeros(request, id):
     pass
 
-def Edit_PAI_VIA(request, id):
+def Edit_PAI_VIA(request, id,id2):
     pass
 
-def Edit_Registro_viajeros(request, id):
+def Edit_Registro_viajeros(request, id,id2):
     pass
 
-def Edit_Detalle_viajeros(request, id):
+def Edit_Detalle_viajeros(request, id,id2,id3):
     pass
 
-def Edit_Participantes(request, id):
+def Edit_Participantes(request, id,id2):
     pass
 
 def Edit_Puntuaciones(request, id):
