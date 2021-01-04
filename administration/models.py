@@ -98,7 +98,7 @@ class Rallies(models.Model):
         db_table = 'cgr_rallies'
         ordering = ['id_rally']
 
-class Premios(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Premios(models.Model):
     PREMIO = (
         (1,'1er'),
         (2,'2do'),
@@ -119,7 +119,7 @@ class Premios(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_premios'
         ordering = ['id_premio']
 
-class Ciudades(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Ciudades(models.Model):
     DESTINO = (
         ('localidad','Localidad'),
         ('ciudad','Ciudad'),
@@ -140,7 +140,7 @@ class Ciudades(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_ciudades'
         ordering = ['id_ciudad']
 
-class Atracciones(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Atracciones(models.Model): 
     id_atraccion = models.AutoField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
@@ -159,7 +159,7 @@ class Atracciones(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, E
         db_table = 'cgr_atracciones'
         ordering = ['id_atraccion']
 
-class Circuitos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Circuitos(models.Model): 
     orden_circuito = models.IntegerField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, null=False, related_name='id_rally_cir', db_column='id_rally')
     id_ciudad = models.IntegerField()
@@ -178,7 +178,7 @@ class Circuitos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDI
         db_table = 'cgr_circuitos'
         ordering = ['orden_circuito']
 
-class ATR_CIR(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class ATR_CIR(models.Model): 
     id_atraccion = models.IntegerField(primary_key=True, unique=False)
     id_ciudad_at = models.IntegerField()
     id_pais_at = models.IntegerField()
@@ -234,7 +234,7 @@ class Agencias_de_viajes(models.Model):
         db_table = 'cgr_agencias_de_viajes'
         ordering = ['id_agencia']
 
-class AGE_AGE(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class AGE_AGE(models.Model): 
     id_agencia = models.IntegerField(primary_key=True)
     id_socio = models.IntegerField()
     f_inicio = models.DateField()
@@ -253,7 +253,7 @@ class AGE_AGE(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_age_age'
         ordering = ['id_agencia']
 
-class Cupos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Cupos(models.Model):
     id_agencia = models.IntegerField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_rally_cupos', db_column='id_rally')
     cantidad = models.IntegerField(null=True, blank = True)
@@ -271,7 +271,7 @@ class Cupos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_cupos'
         ordering = ['id_agencia']
 
-class Registro_clientes(models.Model): # aplicar cambios de tipo SQL en EDIT
+class Registro_clientes(models.Model):
     id_cliente = models.IntegerField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_registro', db_column='id_agencia')
     f_registro = models.DateField()
@@ -324,7 +324,7 @@ class Proveedores(models.Model):
         db_table = 'cgr_proveedores'
         ordering = ['id_proveedor']
 
-class PRO_AGE(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class PRO_AGE(models.Model):
     id_agencia = models.IntegerField(primary_key=True)
     id_proveedor = models.ForeignKey(Proveedores, on_delete=models.CASCADE, related_name='id_proveedor_PA', db_column='id_proveedor')
     f_inicio = models.DateField()
@@ -359,7 +359,7 @@ class Asesores_de_viajes(models.Model):
         db_table = 'cgr_asesores_de_viajes'
         ordering = ['id_asesor']
 
-class Paquetes(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Paquetes(models.Model):
     id_paquete = models.AutoField(primary_key=True)
     id_agencia = models.ForeignKey(Agencias_de_viajes, on_delete=models.CASCADE, related_name='id_agencia_pa', db_column='id_agencia')
     nombre_paquete = models.CharField(max_length=30)
@@ -373,12 +373,12 @@ class Paquetes(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
 
     class Meta:
 
-        unique_together = [('id_agencia', 'id_agencia')]
+        unique_together = [('id_paquete', 'id_agencia')]
 
         db_table = 'cgr_paquetes'
         ordering = ['id_agencia']
 
-class Especializaciones(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Especializaciones(models.Model):
     id_especializacion = models.AutoField(primary_key=True)
     id_areas_de_interes = models.ForeignKey(Areas_de_interes, on_delete=models.CASCADE, related_name='id_area_es', db_column='id_areas_de_interes')
     id_atraccion = models.IntegerField()
@@ -403,7 +403,7 @@ class Especializaciones(models.Model): # aplicar cambios de tipo SQL en DELETE, 
         db_table = 'cgr_especializaciones'
         ordering = ['id_especializacion']
 
-class Precios_paquetes(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Precios_paquetes(models.Model):
     
     f_inicio = models.DateTimeField(primary_key=True)
     id_paquete = models.IntegerField()
@@ -424,7 +424,7 @@ class Precios_paquetes(models.Model): # aplicar cambios de tipo SQL en DELETE, A
         db_table = 'cgr_precios_paquetes'
         ordering = ['f_inicio']
 
-class Calendarios_anuales(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Calendarios_anuales(models.Model):
     f_salida = models.DateTimeField(primary_key=True)
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
@@ -440,7 +440,7 @@ class Calendarios_anuales(models.Model): # aplicar cambios de tipo SQL en DELETE
         db_table = 'cgr_calendarios_anuales'
         ordering = ['f_salida']
 
-class Descuentos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Descuentos(models.Model):
     DESCUENTO = (
         ('descnino','Descuento niño'),
         ('adultos','Adultos'),
@@ -466,7 +466,7 @@ class Descuentos(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, ED
         db_table = 'cgr_descuentos'
         ordering = ['id_descuento']
 
-class Itinerarios(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Itinerarios(models.Model):
     orden = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
@@ -488,7 +488,7 @@ class Itinerarios(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, E
         db_table = 'cgr_itinerarios'
         ordering = ['orden']
 
-class ITN_ATR(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class ITN_ATR(models.Model):
     id_itinerario = models.IntegerField(primary_key=True)
     id_ciudad = models.IntegerField()
     id_pais = models.IntegerField()
@@ -513,7 +513,7 @@ class ITN_ATR(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_itn_atr'
         ordering = ['id_itinerario']
 
-class Detalles_servicios(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Detalles_servicios(models.Model):
     BOLETO = {
         ('boleto_avion', 'Boleto de avion'),
         ('boleto_tren', 'Boleto de tren'),
@@ -545,7 +545,7 @@ class Detalles_servicios(models.Model): # aplicar cambios de tipo SQL en DELETE,
         db_table = 'cgr_detalles_servicios'
         ordering = ['id_detalle_servicio']
 
-class ALO_DET(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class ALO_DET(models.Model):
     id_detalle_servicio = models.IntegerField(primary_key=True)
     id_itinerario = models.IntegerField()
     id_paquete = models.IntegerField()
@@ -567,7 +567,7 @@ class ALO_DET(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
         db_table = 'cgr_alo_det'
         ordering = ['id_detalle_servicio']
 
-class Instrumentos_de_pago(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Instrumentos_de_pago(models.Model):
     INSTRUMENTO = {
         ('TDC', 'Tarjeta de Credito'),
         ('TDD', 'Tarjeta de Debito'),
@@ -580,7 +580,7 @@ class Instrumentos_de_pago(models.Model): # aplicar cambios de tipo SQL en DELET
     tipo_instrumento = models.CharField(max_length=30, choices=INSTRUMENTO)
     id_banco = models.ForeignKey(Bancos, on_delete=models.CASCADE, related_name='id_banco_inst', null=True, blank=True, db_column='id_banco')
     numero_zelle = models.IntegerField(null=True, blank=True)
-    email_zelle = models.CharField(max_length=15, null=True, blank=True)
+    email_zelle = models.EmailField(max_length=15, null=True, blank=True)
 
     persona = CompositeForeignKey(Clientes, on_delete=CASCADE, to_fields={'doc_identidad_o_rif': 'doc_identidad_cliente'})
 
@@ -619,7 +619,7 @@ class Paquetes_contrato(models.Model):
         db_table = 'cgr_paquetes_contrato'
         ordering = ['numero_factura']
 
-class Formas_de_pago(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Formas_de_pago(models.Model):
     TRAMITES = {
         ('parcial', 'Parcial'),
         ('cuotas', 'Cuotas'),
@@ -679,10 +679,13 @@ class PAI_VIA(models.Model):
         return self.id_viajero + ' ' + self.id_pais
 
     class Meta:
+
+        unique_together = [('id_viajero', 'id_pais')]
+
         db_table = 'cgr_pai_via'
         ordering = ['id_viajero']
 
-class Registro_viajeros(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Registro_viajeros(models.Model):
     id_agencia = models.IntegerField(primary_key=True, unique=False)
     id_viajero = models.IntegerField()
     f_registro = models.DateField()
@@ -701,7 +704,7 @@ class Registro_viajeros(models.Model): # aplicar cambios de tipo SQL en DELETE, 
         db_table = 'cgr_registro_viajeros'
         ordering = ['id_viajero']
 
-class Detalle_viajeros(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Detalle_viajeros(models.Model):
     id_viajero = models.IntegerField(primary_key=True)
     id_agencia = models.IntegerField()
     id_paquete_contrato = models.IntegerField()
@@ -719,7 +722,7 @@ class Detalle_viajeros(models.Model): # aplicar cambios de tipo SQL en DELETE, A
         db_table = 'cgr_detalle_viajeros'
         ordering = ['id_viajero']
 
-class Participantes(models.Model): # aplicar cambios de tipo SQL en DELETE, ADD, EDIT
+class Participantes(models.Model):
     id_partipante = models.AutoField(primary_key=True)
     id_rally = models.ForeignKey(Rallies, on_delete=models.CASCADE, related_name='id_participantes_rally', db_column='id_rally')
     id_via_agencia = models.IntegerField(null=True, blank=True)

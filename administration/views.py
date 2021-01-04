@@ -214,7 +214,7 @@ def Add_Rallies(request):
     form = Form_Rallies()
     return render(request, 'create_edit/AddRallies.html',{'form':form})
 
-def Add_Premios(request):
+def Add_Premios(request): #GUIA------------
     if request.method == 'POST':
         form = Form_Premios(request.POST)
 
@@ -241,11 +241,20 @@ def Add_Premios(request):
     form = Form_Premios()
     return render(request, 'create_edit/AddPremios.html',{'form':form})
 
-def Add_Ciudades(request): #FIX
+def Add_Ciudades(request):
     if request.method == 'POST':
         form = Form_Ciudades(request.POST)
+        try:
+            del form.errors['id_ciudad']    
+        except:
+            pass
         if form.is_valid():
-            form.save()
+            id_ciudad = form.data['id_ciudad']  
+            id_pais = form.data['id_pais']
+            nombre_ciudad = form.data['nombre_ciudad']
+            tipo_ciudad = form.data['tipo_ciudad']
+            descripcion_ciudad = form.data['descripcion_ciudad']
+            Crear_Ciudad(id_ciudad, id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad)
             return redirect ('Show_Ciudades')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -253,20 +262,25 @@ def Add_Ciudades(request): #FIX
     form = Form_Ciudades()
     return render(request, 'create_edit/AddCiudades.html',{'form':form})
 
-def Add_Atracciones(request): #FIX
+def Add_Atracciones(request):
     if request.method == 'POST':
         form = Form_Atracciones(request.POST)
+        try:
+            del form.errors['id_atraccion']    
+        except:
+            pass
         if form.is_valid():
-
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.data['id_atraccion']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            nombre_atraccion = form.data['nombre_atraccion']
+            descripcion_atraccion = form.data['descripcion_atraccion']
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Atracciones')
-
-            form.save()
+            Crear_Atraccion(id_atraccion, id_ciudad, id_pais, nombre_atraccion, descripcion_atraccion)
             return redirect ('Show_Atracciones')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -274,20 +288,26 @@ def Add_Atracciones(request): #FIX
     form = Form_Atracciones()
     return render(request, 'create_edit/AddAtracciones.html',{'form':form})
 
-def Add_Circuitos(request): #FIX
+def Add_Circuitos(request):
     if request.method == 'POST':
         form = Form_Circuitos(request.POST)
+        try:
+            del form.errors['orden_circuito']    
+        except:
+            pass
         if form.is_valid():
-
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
+            orden_circuito = form.data['orden_circuito']  
+            id_rally = form.data['id_rally']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            maxdias = form.data['maxdias']
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Circuitos')
 
-            form.save()
+            Crear_Circuito(orden_circuito, id_rally, id_ciudad, id_pais, maxdias)
             return redirect ('Show_Circuitos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -295,31 +315,36 @@ def Add_Circuitos(request): #FIX
     form = Form_Circuitos()
     return render(request, 'create_edit/AddCircuitos.html',{'form':form})
 
-def Add_ATR_CIR(request): #FIX
+def Add_ATR_CIR(request):
     if request.method == 'POST':
         form = Form_ATR_CIR(request.POST)
+        try:
+            del form.errors['id_atraccion']    
+        except:
+            pass
         if form.is_valid():
+            id_atraccion = form.data['id_atraccion']  
+            id_ciudad_at = form.data['id_ciudad_at']
+            id_pais_at = form.data['id_pais_at']
+            id_circuito = form.data['id_circuito']
+            id_rally_cir = form.data['id_rally_cir']  
+            id_ciudad_cir = form.data['id_ciudad_cir']
+            id_pais_cir = form.data['id_pais_cir']
+            orden = form.data['orden']
 
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_atraccion = form.cleaned_data.get('id_atraccion')
             try:
-                atraccion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+                atraccion = Atracciones.objects.get(id_ciudad=id_ciudad_at, id_pais=id_pais_at, id_atraccion=id_atraccion)
             except Atracciones.DoesNotExist:        
                 messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
                 return redirect('Add_atr_cir')
 
-            id_circuito = form.cleaned_data.get('id_circuito')
-            id_rally_cir = form.cleaned_data.get('id_rally_cir')
-            id_ciudad_cir = form.cleaned_data.get('id_ciudad_cir')
-            id_pais_cir = form.cleaned_data.get('id_pais_cir')
             try:
                 circuito = Circuitos.objects.get(orden_circuito=id_circuito, id_rally=id_rally_cir, id_ciudad=id_ciudad_cir, id_pais=id_pais_cir)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'Error, la estructura del circuito viola integridad')
                 return redirect('Add_atr_cir')
 
-            form.save()
+            Crear_ATR_CIR(id_atraccion, id_ciudad_at, id_pais_at, id_circuito, id_rally_cir, id_ciudad_cir, id_pais_cir, orden)
             return redirect ('Show_atr_cir')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -348,13 +373,19 @@ def Add_Agencia_de_viajes(request):
     form = Form_Agencia_de_viajes()
     return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
 
-def Add_AGE_AGE(request): #FIX
+def Add_AGE_AGE(request):
     if request.method == 'POST':
         form = Form_AGE_AGE(request.POST)
+        try:
+            del form.errors['id_agencia']    
+        except:
+            pass
         if form.is_valid():
 
-            id_agencia = form.cleaned_data.get('id_agencia')
-            id_socio = form.cleaned_data.get('id_socio')
+            id_agencia = form.data['id_agencia']  
+            id_socio = form.data['id_socio']
+            f_inicio = form.data['f_inicio']
+            f_fin = form.data['f_fin']
             try:
                 ciudad = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
             except Agencias_de_viajes.DoesNotExist:        
@@ -366,7 +397,7 @@ def Add_AGE_AGE(request): #FIX
                 messages.error(request, 'No existe el socio')
                 return redirect('Add_AGE_AGE')
 
-            form.save()
+            Crear_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
             return redirect ('Show_AGE_AGE')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -374,19 +405,23 @@ def Add_AGE_AGE(request): #FIX
     form = Form_AGE_AGE()
     return render(request, 'create_edit/AddAGE_AGE.html',{'form':form})
 
-def Add_Cupos(request): #FIX
+def Add_Cupos(request):
     if request.method == 'POST':
         form = Form_Cupos(request.POST)
+        try:
+            del form.errors['id_agencia']    
+        except:
+            pass
         if form.is_valid():
-
-            id_agencia = form.cleaned_data.get('id_agencia')
+            id_agencia = form.data['id_agencia']  
+            id_rally = form.data['id_rally']
+            cantidad = form.data['cantidad']
             try:
                 validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe la agencia')
                 return redirect('Add_Cupos')
-
-            form.save()
+            Crear_Cupo(id_agencia, id_rally, cantidad)
             return redirect ('Show_Cupos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -394,7 +429,7 @@ def Add_Cupos(request): #FIX
     form = Form_Cupos()
     return render(request, 'create_edit/AddCupos.html',{'form':form})
         
-def Add_Registro_clientes(request): #GUIA------------
+def Add_Registro_clientes(request): 
     if request.method == 'POST':
         form = Form_Registro_clientes(request.POST)
         try:
@@ -453,19 +488,26 @@ def Add_Proveedores(request):
     form = Form_Proveedores()
     return render(request, 'create_edit/AddProveedores.html',{'form':form})
 
-def Add_PRO_AGE(request): #FIX
+def Add_PRO_AGE(request):
     if request.method == 'POST':
         form = Form_PRO_AGE(request.POST)
+        try:
+            del form.errors['id_agencia']    
+        except:
+            pass
         if form.is_valid():
 
-            id_agencia = form.cleaned_data.get('id_agencia')
+            id_agencia = form.data['id_agencia']  
+            id_proveedor = form.data['id_proveedor']
+            f_inicio = form.data['f_inicio']
+            f_fin = form.data['f_fin']
             try:
                 validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe la agencia')
                 return redirect('Add_pro_age')
 
-            form.save()
+            Crear_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
             return redirect ('Show_pro_age')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -485,11 +527,22 @@ def Add_Asesores_de_viajes(request):
     form = Form_Asesores_de_viajes()
     return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
 
-def Add_Paquetes(request): #FIX
+def Add_Paquetes(request):
     if request.method == 'POST':
         form = Form_Paquetes(request.POST)
+        try:
+            del form.errors['id_paquete']    
+        except:
+            pass
         if form.is_valid():
-            form.save()
+            id_paquete = form.data['id_paquete']  
+            id_agencia = form.data['id_agencia']
+            nombre_paquete = form.data['nombre_paquete']
+            duracion_dias = form.data['duracion_dias']  
+            descripcion_turistica = form.data['descripcion_turistica']
+            disponible = form.data['disponible']
+            numero_personas = form.data['numero_personas']
+            Crear_Paquetes(id_paquete, id_agencia, nombre_paquete, duracion_dias, descripcion_turistica, disponible, numero_personas)
             return redirect ('Show_Paquetes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -497,29 +550,36 @@ def Add_Paquetes(request): #FIX
     form = Form_Paquetes()
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
-def Add_Especializaciones(request): #FIX
+def Add_Especializaciones(request):
     if request.method == 'POST':
         form = Form_Especializaciones(request.POST)
+        try:
+            del form.errors['id_especializacion']    
+        except:
+            pass
         if form.is_valid():
-
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_atraccion = form.cleaned_data.get('id_atraccion')
+            id_especializacion = form.data['id_especializacion']  
+            id_areas_de_interes = form.data['id_areas_de_interes']
+            id_atraccion = form.data['id_atraccion']
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']  
+            id_agencia = form.data['id_agencia']
+            id_paquete = form.data['id_paquete']  
+            id_agencia_paquete = form.data['id_agencia_paquete']
+            id_asesor = form.data['id_asesor']
+            comentarios = form.data['comentarios']
             try:
                 validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
             except Atracciones.DoesNotExist:        
                 messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
                 return redirect('Add_Especializaciones')
-            
-            id_paquete = form.cleaned_data.get('id_paquete')
-            id_agencia_paquete = form.cleaned_data.get('id_agencia_paquete')
             try:
                 validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia_paquete)
             except Paquetes.DoesNotExist:        
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Especializaciones')
 
-            form.save()
+            Crear_Especializacion(id_especializacion,id_areas_de_interes,id_atraccion,id_ciudad,id_pais,id_agencia,id_paquete,id_agencia_paquete,id_asesor,comentarios)
             return redirect ('Show_Especializaciones')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -527,20 +587,27 @@ def Add_Especializaciones(request): #FIX
     form = Form_Especializaciones()
     return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
-def Add_Precios_paquetes(request): #FIX
+def Add_Precios_paquetes(request): 
     if request.method == 'POST':
         form = Form_Precios_paquetes(request.POST)
+        try:
+            del form.errors['f_inicio']    
+        except:
+            pass
         if form.is_valid():
 
-            id_paquete = form.cleaned_data.get('id_paquete')
-            id_agencia = form.cleaned_data.get('id_agencia')
+            f_inicio = form.data['f_inicio']  
+            id_paquete = form.data['id_paquete']
+            id_agencia = form.data['id_agencia']
+            f_fin = form.data['f_fin']
+            valor = form.data['valor']
             try:
                 validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
             except Paquetes.DoesNotExist:        
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Precios_paquetes')
 
-            form.save()
+            Crear_Precio_paquete(f_inicio, id_paquete, id_agencia, f_fin, valor)
             return redirect ('Show_Precios_paquetes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -548,11 +615,19 @@ def Add_Precios_paquetes(request): #FIX
     form = Form_Precios_paquetes()
     return render(request, 'create_edit/AddPrecios_paquetes.html',{'form':form})
 
-def Add_Calendarios_anuales(request): #FIX
+def Add_Calendarios_anuales(request):
     if request.method == 'POST':
         form = Form_Calendarios_anuales(request.POST)
+        try:
+            del form.errors['f_salida']    
+        except:
+            pass
         if form.is_valid():
-            form.save()
+            f_salida = form.data['f_salida']  
+            id_paquete = form.data['id_paquete']
+            id_agencia = form.data['id_agencia']
+            descripcion = form.data['descripcion']
+            Crear_Calendarios_anuales(f_salida, id_paquete, id_agencia, descripcion)
             return redirect ('Show_Calendarios_anuales')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -560,11 +635,22 @@ def Add_Calendarios_anuales(request): #FIX
     form = Form_Calendarios_anuales()
     return render(request, 'create_edit/AddCalendarios_anuales.html',{'form':form})
 
-def Add_Descuentos(request): #FIX
+def Add_Descuentos(request):
     if request.method == 'POST':
         form = Form_Descuentos(request.POST)
+        try:
+            del form.errors['id_descuento']    
+        except:
+            pass
         if form.is_valid():
-            form.save()
+            id_descuento = form.data['id_descuento']  
+            id_agencia = form.data['id_agencia']
+            f_inicio = form.data['f_inicio']
+            tipo_descuento = form.data['tipo_descuento']  
+            f_fin = form.data['f_fin']
+            cant_per_gratis = form.data['cant_per_gratis']
+            porcentaje = form.data['porcentaje']
+            Crear_Descuentos(id_descuento, id_agencia, f_inicio, tipo_descuento, f_fin, cant_per_gratis, porcentaje)
             return redirect ('Show_Descuentos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -572,28 +658,32 @@ def Add_Descuentos(request): #FIX
     form = Form_Descuentos()
     return render(request, 'create_edit/AddDescuentos.html',{'form':form})
 
-def Add_Intinerarios(request): #FIX
+def Add_Intinerarios(request):
     if request.method == 'POST':
         form = Form_Itinerarios(request.POST)
+        try:
+            del form.errors['orden']    
+        except:
+            pass
         if form.is_valid():
-
-            id_paquete = form.cleaned_data.get('id_paquete')
-            id_agencia = form.cleaned_data.get('id_agencia')
+            orden = form.data['orden']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            id_agencia = form.data['id_agencia']
+            id_paquete = form.data['id_paquete']  
+            tiempo_estadia = form.data['tiempo_estadia']
             try:
                 validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
             except Paquetes.DoesNotExist:        
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Intinerarios')
-
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Intinerarios')
 
-            form.save()
+            Crear_Itinerarios(orden, id_ciudad, id_pais, id_agencia, id_paquete, tiempo_estadia)
             return redirect ('Show_Intinerarios')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -601,32 +691,35 @@ def Add_Intinerarios(request): #FIX
     form = Form_Itinerarios()
     return render(request, 'create_edit/AddIntinerarios.html',{'form':form})
 
-def Add_ITN_ATR(request): #FIX
+def Add_ITN_ATR(request):
     if request.method == 'POST':
         form = Form_ITN_ATR(request.POST)
+        try:
+            del form.errors['id_itinerario']    
+        except:
+            pass
         if form.is_valid():
-
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_atraccion = form.cleaned_data.get('id_atraccion')
+            id_itinerario = form.data['id_itinerario']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            id_agencia = form.data['id_agencia']
+            id_paquete = form.data['id_paquete']  
+            id_atraccion = form.data['id_atraccion']
+            id_ciudad_at = form.data['id_ciudad_at']
+            id_pais_at = form.data['id_pais_at']
+            orden_visita = form.data['orden_visita']
             try:
                 validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
             except Atracciones.DoesNotExist:        
                 messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
                 return redirect('Add_ITN_ATR')
-
-            id_itinerario = form.cleaned_data.get('id_itinerario')
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_agencia = form.cleaned_data.get('id_agencia')
-            id_paquete = form.cleaned_data.get('id_paquete')
             try:
                 validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Itinerarios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
-                return redirect('Add_ITN_ATR')
+                return redirect('Add_ITN_ATR') 
 
-            form.save()
+            Crear_ITN_ATR(id_itinerario, id_ciudad, id_pais, id_agencia, id_paquete, id_atraccion, id_ciudad_at, id_pais_at, orden_visita)
             return redirect ('Show_ITN_ATR')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -634,23 +727,31 @@ def Add_ITN_ATR(request): #FIX
     form = Form_ITN_ATR()
     return render(request, 'create_edit/AddITN_ATR.html',{'form':form})
 
-def Add_Detalles_servicios(request): #FIX
+def Add_Detalles_servicios(request):
     if request.method == 'POST':
         form = Form_Detalles_servicios(request.POST)
+        try:
+            del form.errors['id_detalle_servicio']    
+        except:
+            pass
         if form.is_valid():
 
-            id_itinerario = form.cleaned_data.get('id_itinerario')
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_agencia = form.cleaned_data.get('id_agencia')
-            id_paquete = form.cleaned_data.get('id_paquete')
+            id_detalle_servicio = form.data['id_detalle_servicio']  
+            id_itinerario = form.data['id_itinerario']
+            id_paquete = form.data['id_paquete']
+            id_agencia = form.data['id_agencia']
+            id_ciudad = form.data['id_ciudad']  
+            id_pais = form.data['id_pais']
+            tipo_detalle = form.data['tipo_detalle']
+            descripcion = form.data['descripcion']
+            comida = form.data['comida']
             try:
                 validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Itinerarios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
                 return redirect('Add_Detalles_servicios')
 
-            form.save()
+            Crear_Detalle_servicio(id_detalle_servicio, id_itinerario, id_paquete, id_agencia, id_ciudad, id_pais, tipo_detalle, descripcion, comida)
             return redirect ('Show_Detalles_servicios')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -658,25 +759,29 @@ def Add_Detalles_servicios(request): #FIX
     form = Form_Detalles_servicios()
     return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
 
-def Add_ALO_DET(request): #FIX
+def Add_ALO_DET(request):
     if request.method == 'POST':
         form = Form_ALO_DET(request.POST)
+        try:
+            del form.errors['id_detalle_servicio']    
+        except:
+            pass
         if form.is_valid():
 
-            id_detalle_servicio = form.cleaned_data.get('id_detalle_servicio')
-            id_itinerario = form.cleaned_data.get('id_itinerario')
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
-            id_agencia = form.cleaned_data.get('id_agencia')
-            id_paquete = form.cleaned_data.get('id_paquete')
+            id_detalle_servicio = form.data['id_detalle_servicio']  
+            id_itinerario = form.data['id_itinerario']
+            id_paquete = form.data['id_paquete']
+            id_agencia = form.data['id_agencia']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            id_alojamiento = form.data['id_alojamiento']
             try:
                 validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Detalles_servicios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete y detalle servicio')
                 return redirect('Add_ALO_DET')
 
-
-            form.save()
+            Crear_ALO_DET(id_detalle_servicio, id_itinerario, id_paquete, id_agencia, id_ciudad, id_pais, id_alojamiento)
             return redirect ('Show_ALO_DET')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -684,19 +789,28 @@ def Add_ALO_DET(request): #FIX
     form = Form_ALO_DET()
     return render(request, 'create_edit/AddALO_DET.html',{'form':form})
 
-def Add_Instrumentos_de_pago(request): #FIX
+def Add_Instrumentos_de_pago(request):
     if request.method == 'POST':
         form = Form_Instrumentos_de_pago(request.POST)
+        try:
+            del form.errors['id_instrumento']    
+        except:
+            pass
         if form.is_valid():
-
-            doc_identidad_cliente = form.cleaned_data.get('doc_identidad_cliente')
+            id_instrumento = form.data['id_instrumento']  
+            doc_identidad_cliente = form.data['doc_identidad_cliente']
+            monto = form.data['monto']
+            tipo_instrumento = form.data['tipo_instrumento']  
+            id_banco = form.data['id_banco']
+            numero_zelle = form.data['numero_zelle']
+            email_zelle = form.data['email_zelle']
             try:
                 validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'Cliente no existe')
                 return redirect('Add_Instrumentos_de_pago')
 
-            form.save()
+            Crear_Instrumento_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle)
             return redirect ('Show_Instrumentos_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -733,27 +847,31 @@ def Add_Paquetes_contrato(request):
     form = Form_Paquetes_contrato()
     return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
-def Add_Formas_de_pago(request): #FIX
+def Add_Formas_de_pago(request):
     if request.method == 'POST':
         form = Form_Formas_de_pago(request.POST)
+        try:
+            del form.errors['id_instrumento']    
+        except:
+            pass
         if form.is_valid():
 
-            id_instrumento = form.cleaned_data.get('id_instrumento')
-            id_cliente = form.cleaned_data.get('id_cliente')
+            id_instrumento = form.data['id_instrumento']  
+            id_cliente = form.data['id_cliente']
+            id_paquete_contrato = form.data['id_paquete_contrato']
+            tipo_forma_de_pago = form.data['tipo_forma_de_pago']
             try:
                 validacion = Instrumentos_de_pago.objects.get(id_instrumento=id_instrumento, doc_identidad_cliente=id_cliente)
             except Instrumentos_de_pago.DoesNotExist:        
                 messages.error(request, 'Error, instrumento de pago y cliente no coinciden')
                 return redirect('Add_Formas_de_pago')
-
-            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
             try:
                 validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
             except Paquetes_contrato.DoesNotExist:        
                 messages.error(request, 'Error, paquete contrato invalido')
                 return redirect('Add_Formas_de_pago')
 
-            form.save()
+            Crear_Forma_de_pago(id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago)
             return redirect ('Show_Formas_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -789,19 +907,24 @@ def Add_Viajeros(request):
     form = Form_Viajeros()
     return render(request, 'create_edit/AddViajeros.html',{'form':form})
 
-def Add_PAI_VIA(request):#FIX
+def Add_PAI_VIA(request):
     if request.method == 'POST':
         form = Form_PAI_VIA(request.POST)
+        try:
+            del form.errors['id_viajero']    
+        except:
+            pass
         if form.is_valid():
-
-            id_viajero = form.cleaned_data.get('id_viajero')
+            id_viajero = form.data['id_viajero']  
+            id_pais = form.data['id_pais']
+            nro_de_pasaporte = form.data['nro_de_pasaporte']
             try:
                 validacion = Viajeros.objects.get(id_de_identidad=id_viajero)
             except Viajeros.DoesNotExist:        
                 messages.error(request, 'Error, Viajero invalido')
                 return redirect('Add_PAI_VIA')
 
-            form.save()
+            Crear_PAI_VIA(id_viajero, id_pais, nro_de_pasaporte)
             return redirect ('Show_PAI_VIA')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -809,26 +932,30 @@ def Add_PAI_VIA(request):#FIX
     form = Form_PAI_VIA()
     return render(request, 'create_edit/AddPAI_VIA.html',{'form':form})
 
-def Add_Registro_viajeros(request): #FIX
+def Add_Registro_viajeros(request):
     if request.method == 'POST':
         form = Form_Registro_viajeros(request.POST)
+        try:
+            del form.errors['id_agencia']    
+        except:
+            pass
         if form.is_valid():
-
-            id_viajero = form.cleaned_data.get('id_viajero')
+            id_agencia = form.data['id_agencia']  
+            id_viajero = form.data['id_viajero']
+            f_registro = form.data['f_registro']
+            nro_registro = form.data['nro_registro']
             try:
                 validacion = Viajeros.objects.get(id_de_identidad=id_viajero)
             except Viajeros.DoesNotExist:        
                 messages.error(request, 'Error, Viajero invalido')
                 return redirect('Add_Registro_viajeros')
-
-            id_agencia = form.cleaned_data.get('id_agencia')
             try:
                 validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'Error, Agencia invalida')
                 return redirect('Add_Registro_viajeros')
 
-            form.save()
+            Crear_Registro_viajeros(id_agencia, id_viajero, f_registro, nro_registro)
             return redirect ('Show_Registro_viajeros')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -836,27 +963,29 @@ def Add_Registro_viajeros(request): #FIX
     form = Form_Registro_viajeros()
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
-def Add_Detalle_viajeros(request): #FIX
+def Add_Detalle_viajeros(request):
     if request.method == 'POST':
         form = Form_Detalle_viajeros(request.POST)
+        try:
+            del form.errors['id_viajero']    
+        except:
+            pass
         if form.is_valid():
-
-            id_viajero = form.cleaned_data.get('id_viajero')
-            id_agencia = form.cleaned_data.get('id_agencia')
+            id_viajero = form.data['id_viajero']
+            id_agencia = form.data['id_agencia']
+            id_paquete_contrato = form.data['id_paquete_contrato']
             try:
                 validacion = Registro_viajeros.objects.get(id_agencia=id_agencia, id_viajero=id_viajero)
             except Registro_viajeros.DoesNotExist:        
                 messages.error(request, 'Error, Viajero no pertenece a la agencia')
                 return redirect('Add_Detalle_viajeros')
-
-            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
             try:
                 validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
             except Paquetes_contrato.DoesNotExist:        
                 messages.error(request, 'Error, Paquete invalido')
                 return redirect('Add_Detalle_viajeros')
 
-            form.save()
+            Crear_Detalle_viajero(id_viajero, id_agencia, id_paquete_contrato)
             return redirect ('Show_Detalle_viajeros')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -864,28 +993,35 @@ def Add_Detalle_viajeros(request): #FIX
     form = Form_Detalle_viajeros()
     return render(request, 'create_edit/AddDetalle_viajeros.html',{'form':form})
 
-def Add_Participantes(request): #FIX
+def Add_Participantes(request):
     if request.method == 'POST':
         form = Form_Participantes(request.POST)
+        try:
+            del form.errors['id_partipante']    
+        except:
+            pass
         if form.is_valid():
+            id_partipante = form.data['id_partipante']  
+            id_rally = form.data['id_rally']
+            id_via_agencia = form.data['id_via_agencia']
+            id_via_viajero = form.data['id_via_viajero']
+            id_cli_cliente = form.data['id_cli_cliente']  
+            id_cli_agencia = form.data['id_cli_agencia']
+            equipo = form.data['equipo']
+            posicion = form.data['posicion']
 
-            id_via_viajero = form.cleaned_data.get('id_via_viajero')
-            id_via_agencia = form.cleaned_data.get('id_agencia')
             try:
                 validacion = Registro_viajeros.objects.get(id_agencia=id_via_agencia, id_viajero=id_via_viajero)
             except Registro_viajeros.DoesNotExist:        
                 messages.error(request, 'Error, Viajero no pertenece a la agencia')
                 return redirect('Add_Participantes')
-
-            id_cli_cliente = form.cleaned_data.get('id_cli_cliente')
-            id_cli_agencia = form.cleaned_data.get('id_agencia')
             try:
                 validacion = Registro_viajeros.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
             except Registro_clientes.DoesNotExist:        
                 messages.error(request, 'Error, Cliente no pertenece a la agencia')
                 return redirect('Add_Participantes')
 
-            form.save()
+            Crear_Participantes(id_partipante, id_rally, id_via_agencia, id_via_viajero, id_cli_cliente, id_cli_agencia, equipo, posicion)
             return redirect ('Show_Participantes')
         else:
             messages.error(request, 'Entrada Invalida')
