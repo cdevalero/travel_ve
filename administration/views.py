@@ -6,7 +6,7 @@ from django.contrib import messages
 from datetime import timedelta
 from .sql_functions import *
 
-# SHOW ---------------------------------------------------------------------------------------------------------------
+# SHOW -----------------------------------------------------------------------------------------------------------------------------------------
 
 def Show_bancos(request):
     obj = Bancos.objects.all()
@@ -152,7 +152,7 @@ def Show_Puntuaciones(request):
     obj = Puntuaciones.objects.all()
     return render(request, 'show/ShowPuntuaciones.html', {'obj': obj})
 
-#ADD --------------------------------------------------------------------------------------------------------------------
+#ADD ------------------------------------------------------------------------------------------------------------------------------------------
 
 def Add_Bancos(request):
     if request.method == 'POST':
@@ -206,6 +206,10 @@ def Add_Rallies(request):
     if request.method == 'POST':
         form = Form_Rallies(request.POST)
         if form.is_valid():
+            # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
+            if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
+                messages.error(request, 'Los Rally deben tener maximo una semana de duración')
+                return redirect('Add_rallies')
             form.save()
             return redirect ('Show_rallies')
         else:
@@ -214,25 +218,12 @@ def Add_Rallies(request):
     form = Form_Rallies()
     return render(request, 'create_edit/AddRallies.html',{'form':form})
 
-def Add_Premios(request): #GUIA------------
+def Add_Premios(request):
     if request.method == 'POST':
         form = Form_Premios(request.POST)
-
-        try:
-            del form.errors['id_premio']    #-> eliminar error de duplicidad si existe 
-        except:
-            pass
-
         if form.is_valid():
 
-            id_premio = form.data['id_premio']  #-> definir cada una de las variables para guardarlas
-            id_rally = form.data['id_rally']
-            posicion = form.data['posicion']
-            descripcion_premio = form.data['descripcion_premio']
-
-            #-> Validad, que exista la entrada si se usa multiple FK
-
-            Crear_Premios(id_premio, id_rally, posicion, descripcion_premio) # -> form.save()
+            form.save()
 
             return redirect ('Show_premios')
         else:
@@ -244,17 +235,8 @@ def Add_Premios(request): #GUIA------------
 def Add_Ciudades(request):
     if request.method == 'POST':
         form = Form_Ciudades(request.POST)
-        try:
-            del form.errors['id_ciudad']    
-        except:
-            pass
         if form.is_valid():
-            id_ciudad = form.data['id_ciudad']  
-            id_pais = form.data['id_pais']
-            nombre_ciudad = form.data['nombre_ciudad']
-            tipo_ciudad = form.data['tipo_ciudad']
-            descripcion_ciudad = form.data['descripcion_ciudad']
-            Crear_Ciudad(id_ciudad, id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad)
+            form.save()
             return redirect ('Show_Ciudades')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -265,22 +247,15 @@ def Add_Ciudades(request):
 def Add_Atracciones(request):
     if request.method == 'POST':
         form = Form_Atracciones(request.POST)
-        try:
-            del form.errors['id_atraccion']    
-        except:
-            pass
         if form.is_valid():
-            id_atraccion = form.data['id_atraccion']  
             id_ciudad = form.data['id_ciudad']
             id_pais = form.data['id_pais']
-            nombre_atraccion = form.data['nombre_atraccion']
-            descripcion_atraccion = form.data['descripcion_atraccion']
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Atracciones')
-            Crear_Atraccion(id_atraccion, id_ciudad, id_pais, nombre_atraccion, descripcion_atraccion)
+            form.save()
             return redirect ('Show_Atracciones')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -395,6 +370,11 @@ def Add_AGE_AGE(request):
                 ciudad = Agencias_de_viajes.objects.get(id_agencia=id_socio)
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe el socio')
+                return redirect('Add_AGE_AGE')
+            try:
+                ciudad = AGE_AGE.objects.get(id_agencia=id_socio, id_socio=id_agencia)
+            except Agencias_de_viajes.DoesNotExist:        
+                messages.error(request, 'Ya existe ese registro')
                 return redirect('Add_AGE_AGE')
 
             Crear_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
@@ -530,19 +510,8 @@ def Add_Asesores_de_viajes(request):
 def Add_Paquetes(request):
     if request.method == 'POST':
         form = Form_Paquetes(request.POST)
-        try:
-            del form.errors['id_paquete']    
-        except:
-            pass
         if form.is_valid():
-            id_paquete = form.data['id_paquete']  
-            id_agencia = form.data['id_agencia']
-            nombre_paquete = form.data['nombre_paquete']
-            duracion_dias = form.data['duracion_dias']  
-            descripcion_turistica = form.data['descripcion_turistica']
-            disponible = form.data['disponible']
-            numero_personas = form.data['numero_personas']
-            Crear_Paquetes(id_paquete, id_agencia, nombre_paquete, duracion_dias, descripcion_turistica, disponible, numero_personas)
+            form.save()
             return redirect ('Show_Paquetes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -553,21 +522,13 @@ def Add_Paquetes(request):
 def Add_Especializaciones(request):
     if request.method == 'POST':
         form = Form_Especializaciones(request.POST)
-        try:
-            del form.errors['id_especializacion']    
-        except:
-            pass
         if form.is_valid():
-            id_especializacion = form.data['id_especializacion']  
-            id_areas_de_interes = form.data['id_areas_de_interes']
             id_atraccion = form.data['id_atraccion']
             id_ciudad = form.data['id_ciudad']
             id_pais = form.data['id_pais']  
-            id_agencia = form.data['id_agencia']
             id_paquete = form.data['id_paquete']  
             id_agencia_paquete = form.data['id_agencia_paquete']
-            id_asesor = form.data['id_asesor']
-            comentarios = form.data['comentarios']
+
             try:
                 validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
             except Atracciones.DoesNotExist:        
@@ -578,8 +539,7 @@ def Add_Especializaciones(request):
             except Paquetes.DoesNotExist:        
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Especializaciones')
-
-            Crear_Especializacion(id_especializacion,id_areas_de_interes,id_atraccion,id_ciudad,id_pais,id_agencia,id_paquete,id_agencia_paquete,id_asesor,comentarios)
+            form.save()
             return redirect ('Show_Especializaciones')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -638,19 +598,8 @@ def Add_Calendarios_anuales(request):
 def Add_Descuentos(request):
     if request.method == 'POST':
         form = Form_Descuentos(request.POST)
-        try:
-            del form.errors['id_descuento']    
-        except:
-            pass
         if form.is_valid():
-            id_descuento = form.data['id_descuento']  
-            id_agencia = form.data['id_agencia']
-            f_inicio = form.data['f_inicio']
-            tipo_descuento = form.data['tipo_descuento']  
-            f_fin = form.data['f_fin']
-            cant_per_gratis = form.data['cant_per_gratis']
-            porcentaje = form.data['porcentaje']
-            Crear_Descuentos(id_descuento, id_agencia, f_inicio, tipo_descuento, f_fin, cant_per_gratis, porcentaje)
+            form.save()
             return redirect ('Show_Descuentos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -730,28 +679,18 @@ def Add_ITN_ATR(request):
 def Add_Detalles_servicios(request):
     if request.method == 'POST':
         form = Form_Detalles_servicios(request.POST)
-        try:
-            del form.errors['id_detalle_servicio']    
-        except:
-            pass
-        if form.is_valid():
-
-            id_detalle_servicio = form.data['id_detalle_servicio']  
+        if form.is_valid(): 
             id_itinerario = form.data['id_itinerario']
             id_paquete = form.data['id_paquete']
             id_agencia = form.data['id_agencia']
             id_ciudad = form.data['id_ciudad']  
             id_pais = form.data['id_pais']
-            tipo_detalle = form.data['tipo_detalle']
-            descripcion = form.data['descripcion']
-            comida = form.data['comida']
             try:
                 validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Itinerarios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
                 return redirect('Add_Detalles_servicios')
-
-            Crear_Detalle_servicio(id_detalle_servicio, id_itinerario, id_paquete, id_agencia, id_ciudad, id_pais, tipo_detalle, descripcion, comida)
+            form.save()
             return redirect ('Show_Detalles_servicios')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -792,25 +731,14 @@ def Add_ALO_DET(request):
 def Add_Instrumentos_de_pago(request):
     if request.method == 'POST':
         form = Form_Instrumentos_de_pago(request.POST)
-        try:
-            del form.errors['id_instrumento']    
-        except:
-            pass
         if form.is_valid():
-            id_instrumento = form.data['id_instrumento']  
             doc_identidad_cliente = form.data['doc_identidad_cliente']
-            monto = form.data['monto']
-            tipo_instrumento = form.data['tipo_instrumento']  
-            id_banco = form.data['id_banco']
-            numero_zelle = form.data['numero_zelle']
-            email_zelle = form.data['email_zelle']
             try:
                 validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'Cliente no existe')
                 return redirect('Add_Instrumentos_de_pago')
-
-            Crear_Instrumento_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle)
+            form.save()
             return redirect ('Show_Instrumentos_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -996,19 +924,11 @@ def Add_Detalle_viajeros(request):
 def Add_Participantes(request):
     if request.method == 'POST':
         form = Form_Participantes(request.POST)
-        try:
-            del form.errors['id_partipante']    
-        except:
-            pass
         if form.is_valid():
-            id_partipante = form.data['id_partipante']  
-            id_rally = form.data['id_rally']
             id_via_agencia = form.data['id_via_agencia']
             id_via_viajero = form.data['id_via_viajero']
             id_cli_cliente = form.data['id_cli_cliente']  
             id_cli_agencia = form.data['id_cli_agencia']
-            equipo = form.data['equipo']
-            posicion = form.data['posicion']
 
             try:
                 validacion = Registro_viajeros.objects.get(id_agencia=id_via_agencia, id_viajero=id_via_viajero)
@@ -1020,8 +940,7 @@ def Add_Participantes(request):
             except Registro_clientes.DoesNotExist:        
                 messages.error(request, 'Error, Cliente no pertenece a la agencia')
                 return redirect('Add_Participantes')
-
-            Crear_Participantes(id_partipante, id_rally, id_via_agencia, id_via_viajero, id_cli_cliente, id_cli_agencia, equipo, posicion)
+            form.save()
             return redirect ('Show_Participantes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -1058,8 +977,7 @@ def Add_Puntuaciones(request):
     form = Form_Puntuaciones()
     return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
 
-
-#Delete ------------------------------------------------------------------------------------------------------------
+#Delete -------------------------------------------------------------------------------------------------------------------------------------
 
 def Delete_Bancos(request, id):
     try:
@@ -1117,7 +1035,7 @@ def Delete_Premios(request, id, id2):
     except Premios.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
-    Borrar_Premios(id, rallie.id_rally)
+    obj.delete()
     return redirect('Show_rallies')
 
 def Delete_Ciudades(request, id, id2):
@@ -1131,7 +1049,7 @@ def Delete_Ciudades(request, id, id2):
     except Ciudades.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Ciudades')
-    Borrar_Ciudad(id, pais.id_pais)
+    obj.delete()
     return redirect('Show_Ciudades')
 
 def Delete_Atracciones(request, id,id2,id3):
@@ -1150,7 +1068,7 @@ def Delete_Atracciones(request, id,id2,id3):
     except Atracciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Atracciones')
-    Borrar_Atraccion(id, ciudad.id_ciudad, pais.id_pais)
+    obj.delete()
     return redirect('Show_Atracciones')
 
 def Delete_Circuitos(request, id,id2,id3,id4):
@@ -1349,7 +1267,7 @@ def Delete_Paquetes(request, id,id2):
     except Paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Paquetes')
-    Borrar_Paquetes(id, agencia.id_agencia)
+    obj.delete()
     return redirect('Show_Paquetes')
 
 def Delete_Especializaciones(request, id,id2):
@@ -1368,7 +1286,7 @@ def Delete_Especializaciones(request, id,id2):
     except Especializaciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Especializaciones')
-    Borrar_Especializacion(id, area.id_areas_de_interes)
+    obj.delete()
     return redirect('Show_Especializaciones')
 
 def Delete_Precios_paquetes(request, id,id2,id3):
@@ -1420,7 +1338,7 @@ def Delete_Descuentos(request, id,id2):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Descuentos')
-    Borrar_Descuentos(id, agencia.id_agencia)
+    obj.delete()
     return redirect('Show_Descuentos')
 
 def Delete_Intinerarios(request, id,id2,id3,id4,id5):
@@ -1532,7 +1450,7 @@ def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
     except Detalles_servicios.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_Detalles_servicios')
-    Borrar_Detalle_servicio(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais)
+    obj.delete()
     return redirect('Show_Detalles_servicios')
 
 def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
@@ -1590,7 +1508,7 @@ def Delete_Instrumentos_de_pago(request, id,id2):
     except Instrumentos_de_pago.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Instrumentos_de_pago')
-    Borrar_Instrumento_de_pago(id, cliente.doc_identidad_o_rif)
+    obj.delete()
     return redirect('Show_Instrumentos_de_pago')
 
 def Delete_Paquetes_contrato(request, id):
@@ -1708,7 +1626,7 @@ def Delete_Participantes(request, id,id2):
     except Participantes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Participantes')
-    Borrar_Participantes(id, rallie.id_rally)
+    obj.delete()
     return redirect('Show_Participantes')
 
 def Delete_Puntuaciones(request, id):
@@ -1720,7 +1638,7 @@ def Delete_Puntuaciones(request, id):
     obj.delete()
     return redirect('Show_Puntuaciones')
 
-#Edit ------------------------------------------------------------------------------------------------------------------
+#Edit --------------------------------------------------------------------------------------------------------------------------------------
 
 def Edit_Bancos(request, id):
 
@@ -1799,25 +1717,9 @@ def Edit_Paises(request, id):
     return render(request, 'create_edit/AddPaises.html',{'form':form})
 
 def Edit_Rallies(request, id):
+    pass
 
-    try:
-        obj = Rallies.objects.get(id_rally=id)
-    except Rallies.DoesNotExist:
-        messages.error(request, 'No existe la entrada')
-        return redirect('Show_rallies')
-
-    if request.method == 'POST':
-        form = Form_Rallies(request.POST, instance= obj)
-        if form.is_valid():
-            form.save()
-            return redirect ('Show_rallies')
-        else:
-            messages.error(request, 'Entrada Invalida')
-            return redirect('Add_rallies')
-    form = Form_Rallies(instance= obj)
-    return render(request, 'create_edit/AddRallies.html',{'form':form})
-
-def Edit_Premios(request, id, id2):
+def Edit_Premios(request, id, id2): 
     pass
 
 def Edit_Ciudades(request, id, id2):
@@ -1826,22 +1728,22 @@ def Edit_Ciudades(request, id, id2):
 def Edit_Atracciones(request, id, id2, id3):
     pass
 
-def Edit_Circuitos(request, id,id2,id3,id4):
+def Edit_Circuitos(request, id,id2,id3,id4):#****
     pass
 
-def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
+def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):#****
     pass
 
 def Edit_Agencia_de_viajes(request, id):
     pass
 
-def Edit_AGE_AGE(request, id,id2):
+def Edit_AGE_AGE(request, id,id2):#****
     pass
 
-def Edit_Cupos(request, id,id2):
+def Edit_Cupos(request, id,id2):#****
     pass
 
-def Edit_Registro_clientes(request, id,id2):
+def Edit_Registro_clientes(request, id,id2):#****
     pass
 
 def Edit_Alojamientos(request, id):
@@ -1850,7 +1752,7 @@ def Edit_Alojamientos(request, id):
 def Edit_Proveedores(request, id):
     pass
 
-def Edit_PRO_AGE(request, id,id2):
+def Edit_PRO_AGE(request, id,id2):#****
     pass
 
 def Edit_Asesores_de_viajes(request, id):
@@ -1862,25 +1764,25 @@ def Edit_Paquetes(request, id,id2):
 def Edit_Especializaciones(request, id,id2):
     pass
 
-def Edit_Precios_paquetes(request, id,id2,id3):
+def Edit_Precios_paquetes(request, id,id2,id3):#****
     pass
 
-def Edit_Calendarios_anuales(request, id,id2,id3):
+def Edit_Calendarios_anuales(request, id,id2,id3):#****
     pass
 
 def Edit_Descuentos(request, id,id2):
     pass
 
-def Edit_Intinerarios(request, id,id2,id3,id4,id5):
+def Edit_Intinerarios(request, id,id2,id3,id4,id5):#****
     pass
 
-def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
+def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):#****
     pass
 
 def Edit_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
     pass
 
-def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
+def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):#****
     pass
 
 def Edit_Instrumentos_de_pago(request, id,id2):
@@ -1889,19 +1791,19 @@ def Edit_Instrumentos_de_pago(request, id,id2):
 def Edit_Paquetes_contrato(request, id):
     pass
 
-def Edit_Formas_de_pago(request, id,id2,id3):
+def Edit_Formas_de_pago(request, id,id2,id3):#****
     pass
 
 def Edit_Viajeros(request, id):
     pass
 
-def Edit_PAI_VIA(request, id,id2):
+def Edit_PAI_VIA(request, id,id2):#****
     pass
 
-def Edit_Registro_viajeros(request, id,id2):
+def Edit_Registro_viajeros(request, id,id2):#****
     pass
 
-def Edit_Detalle_viajeros(request, id,id2,id3):
+def Edit_Detalle_viajeros(request, id,id2,id3):#****
     pass
 
 def Edit_Participantes(request, id,id2):
