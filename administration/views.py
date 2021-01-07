@@ -1717,25 +1717,180 @@ def Edit_Paises(request, id):
     return render(request, 'create_edit/AddPaises.html',{'form':form})
 
 def Edit_Rallies(request, id):
-    pass
+    try:
+        obj = Paises.objects.get(id_rally=id)                   #---> cambiar id
+    except Paises.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_rallies')                         #---> cambiar show
+
+    if request.method == 'POST':
+        form = Form_Rallies(request.POST, instance= obj)        #---> poner instance
+        if form.is_valid():
+            # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
+            if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
+                messages.error(request, 'Los Rally deben tener maximo una semana de duración')
+                return redirect('Add_rallies')
+            form.save()
+            return redirect ('Show_rallies')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_rallies')
+    form = Form_Rallies(instance= obj)                          #---> cambiar intance
+    return render(request, 'create_edit/AddRallies.html',{'form':form})
 
 def Edit_Premios(request, id, id2): 
-    pass
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_premios')
+    try:
+        obj = Premios.objects.filter(id_rally=rallie.id_rally).get(id_premio=id)  
+    except Premios.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_premios')      
+    if request.method == 'POST':
+        form = Form_Premios(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_premios')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_premios')
+    form = Form_Premios(instance= obj)
+    return render(request, 'create_edit/AddPremios.html',{'form':form})
 
 def Edit_Ciudades(request, id, id2):
-    pass
+    try:
+        pais = Paises.objects.get(nombre_pais=id2)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Ciudades')
+    try:
+        obj = Ciudades.objects.filter(id_pais=pais.id_pais).get(id_ciudad=id)
+    except Ciudades.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Ciudades')
+    if request.method == 'POST':
+        form = Form_Ciudades(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Ciudades')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Ciudades')
+    form = Form_Ciudades(instance= obj)
+    return render(request, 'create_edit/AddCiudades.html',{'form':form})
 
 def Edit_Atracciones(request, id, id2, id3):
-    pass
-
+    try:
+        ciudad = Ciudades.objects.get(id_ciudad=id2)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Atracciones')
+    try:
+        pais = Paises.objects.get(id_pais=id3)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Atracciones')
+    try:
+        obj = Atracciones.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=pais.id_pais).get(id_atraccion=id)
+    except Atracciones.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Atracciones')
+    if request.method == 'POST':
+        form = Form_Atracciones(request.POST, instance= obj)
+        if form.is_valid():
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Atracciones')
+            form.save()
+            return redirect ('Show_Atracciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Atracciones')
+    form = Form_Atracciones(instance= obj)
+    return render(request, 'create_edit/AddAtracciones.html',{'form':form})
+    
 def Edit_Circuitos(request, id,id2,id3,id4):#****
-    pass
+    try:
+        ciudad = Ciudades.objects.get(id_ciudad=id3)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Circuitos')
+    try:
+        pais = Paises.objects.get(id_pais=id4)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Circuitos')
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Circuitos')
+    try:
+        obj = Circuitos.objects.filter(id_ciudad=ciudad.id_ciudad,id_pais=pais.id_pais,id_rally=rallie.id_rally).get(orden_circuito=id)
+    except Circuitos.DoesNotExist:        
+        messages.error(request, 'No existe la 4')
+        return redirect('Show_Circuitos')
+    if request.method == 'POST':
+        form = Form_Circuitos(request.POST, instance= obj)
+        try:
+            del form.errors['orden_circuito']    
+        except:
+            pass
+        if form.is_valid():
+            orden_circuito = form.data['orden_circuito']  
+            id_rally = form.data['id_rally']  
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']
+            maxdias = form.data['maxdias']
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Show_Circuitos')
+
+            Crear_Circuito(orden_circuito, id_rally, id_ciudad, id_pais, maxdias)
+            return redirect ('Show_Circuitos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Circuitos')
+    form = Form_Circuitos(instance= obj)
+    return render(request, 'create_edit/AddCircuitos.html',{'form':form})
 
 def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):#****
     pass
 
 def Edit_Agencia_de_viajes(request, id):
-    pass
+    try:
+        obj = Agencias_de_viajes.objects.get(pk=id)
+    except Agencias_de_viajes.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Agencia_de_viajes')
+    if request.method == 'POST':
+        form = Form_Agencia_de_viajes(request.POST, instance= obj)
+        if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Show_Agencia_de_viajes')
+
+            form.save()
+            return redirect ('Show_Agencia_de_viajes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Agencia_de_viajes')
+    form = Form_Agencia_de_viajes(instance= obj)
+    return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
 
 def Edit_AGE_AGE(request, id,id2):#****
     pass
@@ -1747,22 +1902,137 @@ def Edit_Registro_clientes(request, id,id2):#****
     pass
 
 def Edit_Alojamientos(request, id):
-    pass
+    try:
+        obj = Alojamientos.objects.get(pk=id)
+    except Alojamientos.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Agencia_de_viajes')
+    if request.method == 'POST':
+        form = Form_Alojamientos(request.POST, instance= obj)
+        if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Add_Alojamientos')
+
+            form.save()
+            return redirect ('Show_Alojamientos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Alojamientos')
+    form = Form_Alojamientos(instance= obj)
+    return render(request, 'create_edit/AddAlojamientos.html',{'form':form})
 
 def Edit_Proveedores(request, id):
-    pass
+    try:
+        obj = Proveedores.objects.get(pk=id)
+    except Bancos.DoesNotExist:
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Proveedores')
+    if request.method == 'POST':
+        form = Form_Proveedores(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Proveedores')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Proveedores')
+    form = Form_Proveedores(instance= obj)
+    return render(request, 'create_edit/AddProveedores.html',{'form':form})
 
 def Edit_PRO_AGE(request, id,id2):#****
     pass
 
 def Edit_Asesores_de_viajes(request, id):
-    pass
+    try:
+        obj = Asesores_de_viajes.objects.get(pk=id)
+    except Asesores_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Asesores_de_viajes')
+    if request.method == 'POST':
+        form = Form_Asesores_de_viajes(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Asesores_de_viajes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Asesores_de_viajes')
+    form = Form_Asesores_de_viajes(instance= obj)
+    return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
 
 def Edit_Paquetes(request, id,id2):
-    pass
+    try:
+       paquete = Paquetes.objects.get(id_paquete=id)
+    except Paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Paquetes')
+    try:
+        agencia = Agencias_de_viajes.objects.get(nombre=id2)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Paquetes')
+    try:
+        obj = Paquetes.objects.filter(id_agencia=agencia.id_agencia).get(id_paquete=id)
+    except Paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Paquetes')
+    if request.method == 'POST':
+        form = Form_Paquetes(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Paquetes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Paquetes')
+    form = Form_Paquetes(instance= obj)
+    return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
 def Edit_Especializaciones(request, id,id2):
-    pass
+    try:
+       especializacion = Especializaciones.objects.get(id_especializacion=id)
+    except Especializaciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Especializaciones')
+    try:
+        area = Areas_de_interes.objects.get(nombre_area_de_interes=id2)
+    except Areas_de_interes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Especializaciones')
+    try:
+        obj = Especializaciones.objects.filter(id_areas_de_interes=area.id_areas_de_interes).get(id_especializacion=id)
+    except Especializaciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Especializaciones')
+    if request.method == 'POST':
+        form = Form_Especializaciones(request.POST, instance= obj)
+        if form.is_valid():
+            id_atraccion = form.data['id_atraccion']
+            id_ciudad = form.data['id_ciudad']
+            id_pais = form.data['id_pais']  
+            id_paquete = form.data['id_paquete']  
+            id_agencia_paquete = form.data['id_agencia_paquete']
+
+            try:
+                validacion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Show_Especializaciones')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia_paquete)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Show_Especializaciones')
+            form.save()
+            return redirect ('Show_Especializaciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Especializaciones')
+    form = Form_Especializaciones(instance= obj)
+    return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
 def Edit_Precios_paquetes(request, id,id2,id3):#****
     pass
@@ -1771,7 +2041,26 @@ def Edit_Calendarios_anuales(request, id,id2,id3):#****
     pass
 
 def Edit_Descuentos(request, id,id2):
-    pass
+    try:
+        agencia = Agencias_de_viajes.objects.get(nombre=id2)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Descuentos')
+    try:
+        obj = Descuentos.objects.filter( id_agencia=agencia.id_agencia).get(id_descuento=id)
+    except Precios_paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Descuentos')
+    if request.method == 'POST':
+        form = Form_Descuentos(request.POST, instance= obj)
+        if form.is_valid():
+            form.save()
+            return redirect ('Show_Descuentos')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Descuentos')
+    form = Form_Descuentos(instance= obj)
+    return render(request, 'create_edit/AddDescuentos.html',{'form':form})
 
 def Edit_Intinerarios(request, id,id2,id3,id4,id5):#****
     pass
@@ -1780,22 +2069,157 @@ def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):#****
     pass
 
 def Edit_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
-    pass
+    try:
+        itinerario = Itinerarios.objects.get(orden=id2)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Detalles_servicios')
+    try:
+       paquete = Paquetes.objects.get(id_paquete=id3)
+    except Paquetes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Detalles_servicios')
+    try:
+        agencia = Agencias_de_viajes.objects.get(id_agencia=id4)
+    except Agencias_de_viajes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada3')
+        return redirect('Show_Detalles_servicios')
+    try:
+        ciudad = Ciudades.objects.get(id_ciudad=id5)
+    except Ciudades.DoesNotExist:        
+        messages.error(request, 'No existe la entrada4')
+        return redirect('Show_Detalles_servicios')
+    try:
+        pais = Paises.objects.get(id_pais=id6)
+    except Paises.DoesNotExist:        
+        messages.error(request, 'No existe la entrada5')
+        return redirect('Show_Detalles_servicios')
+    try:
+        obj = Detalles_servicios.objects.filter(id_itinerario=itinerario.orden,id_paquete=paquete.id_paquete,id_agencia=agencia.id_agencia,id_ciudad=ciudad.id_ciudad,id_pais=pais.id_pais).get(id_detalle_servicio=id)
+    except Detalles_servicios.DoesNotExist:        
+        messages.error(request, 'No existe la entrada6')
+        return redirect('Show_Detalles_servicios')
+    if request.method == 'POST':
+        form = Form_Detalles_servicios(request.POST, instance= obj)
+        if form.is_valid(): 
+            id_itinerario = form.data['id_itinerario']
+            id_paquete = form.data['id_paquete']
+            id_agencia = form.data['id_agencia']
+            id_ciudad = form.data['id_ciudad']  
+            id_pais = form.data['id_pais']
+            try:
+                validacion = Itinerarios.objects.get(orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+            except Itinerarios.DoesNotExist:        
+                messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete')
+                return redirect('Show_Detalles_servicios')
+            form.save()
+            return redirect ('Show_Detalles_servicios')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Detalles_servicios')
+    form = Form_Detalles_servicios(instance= obj)
+    return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
 
 def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):#****
     pass
 
 def Edit_Instrumentos_de_pago(request, id,id2):
-    pass
+    try:
+        cliente = Clientes.objects.get(doc_identidad_o_rif=id2)
+    except Clientes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Instrumentos_de_pago')
+    try:
+        obj = Instrumentos_de_pago.objects.filter(doc_identidad_cliente=cliente.doc_identidad_o_rif).get(id_instrumento=id)
+    except Instrumentos_de_pago.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Instrumentos_de_pago')
+    if request.method == 'POST':
+        form = Form_Instrumentos_de_pago(request.POST, instance= obj)
+        if form.is_valid():
+            doc_identidad_cliente = form.data['doc_identidad_cliente']
+            try:
+                validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
+            except Clientes.DoesNotExist:        
+                messages.error(request, 'Cliente no existe')
+                return redirect('Show_Instrumentos_de_pago')
+            form.save()
+            return redirect ('Show_Instrumentos_de_pago')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Instrumentos_de_pago')
+    form = Form_Instrumentos_de_pago(instance= obj)
+    return render(request, 'create_edit/AddInstrumentos_de_pago.html',{'form':form})
 
 def Edit_Paquetes_contrato(request, id):
-    pass
+    try:
+        obj = Paquetes_contrato.objects.get(pk=id)
+    except Paquetes_contrato.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Paquetes_contrato')
+    if request.method == 'POST':
+        form = Form_Paquetes_contrato(request.POST, instance= obj)
+        if form.is_valid():
+
+            id_paquete = form.cleaned_data.get('id_paquete')
+            id_agencia = form.cleaned_data.get('id_agencia')
+            try:
+                validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Paquetes_contrato')
+
+            id_reg_cliente = form.cleaned_data.get('id_reg_cliente')
+            id_reg_agencia = form.cleaned_data.get('id_reg_agencia')
+            try:
+                validacion = Registro_clientes.objects.get(id_cliente=id_reg_cliente, id_agencia=id_reg_agencia)
+            except Paquetes.DoesNotExist:        
+                messages.error(request, 'Error, el paquete no pertenece a la agencia')
+                return redirect('Add_Paquetes_contrato')
+
+            form.save()
+            return redirect ('Show_Paquetes_contrato')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Paquetes_contrato')
+    form = Form_Paquetes_contrato(instance= obj)
+    return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
 def Edit_Formas_de_pago(request, id,id2,id3):#****
     pass
 
 def Edit_Viajeros(request, id):
-    pass
+    try:
+        obj =Viajeros.objects.get(pk=id)
+    except Viajeros.DoesNotExist:        
+        messages.error(request, 'No existe la entrada')
+        return redirect('Show_Viajeros')
+    if request.method == 'POST':
+        form = Form_Viajeros(request.POST, instance= obj)
+        if form.is_valid():
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            try:
+                ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
+            except Ciudades.DoesNotExist:        
+                messages.error(request, 'La ciudad no corresponde con el pais')
+                return redirect('Show_Viajeros')
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, paquete contrato invalido')
+                return redirect('Show_Viajeros')
+
+            form.save()
+            return redirect ('Show_Viajeros')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Viajeros')
+    form = Form_Viajeros(instance= obj)
+    return render(request, 'create_edit/AddViajeros.html',{'form':form})
 
 def Edit_PAI_VIA(request, id,id2):#****
     pass
@@ -1807,7 +2231,73 @@ def Edit_Detalle_viajeros(request, id,id2,id3):#****
     pass
 
 def Edit_Participantes(request, id,id2):
-    pass
+    try:
+        rallie = Rallies.objects.get(nombre_rally=id2)
+    except Rallies.DoesNotExist:        
+        messages.error(request, 'No existe la entrada1')
+        return redirect('Show_Participantes')
+    try:
+        obj = Participantes.objects.filter(id_rally=rallie.id_rally).get(id_partipante=id)
+    except Participantes.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Participantes')
+    if request.method == 'POST':
+        form = Form_Participantes(request.POST, instance= obj)
+        if form.is_valid():
+            id_via_agencia = form.data['id_via_agencia']
+            id_via_viajero = form.data['id_via_viajero']
+            id_cli_cliente = form.data['id_cli_cliente']  
+            id_cli_agencia = form.data['id_cli_agencia']
+
+            try:
+                validacion = Registro_viajeros.objects.get(id_agencia=id_via_agencia, id_viajero=id_via_viajero)
+            except Registro_viajeros.DoesNotExist:        
+                messages.error(request, 'Error, Viajero no pertenece a la agencia')
+                return redirect('Show_Participantes')
+            try:
+                validacion = Registro_viajeros.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
+            except Registro_clientes.DoesNotExist:        
+                messages.error(request, 'Error, Cliente no pertenece a la agencia')
+                return redirect('Show_Participantes')
+            form.save()
+            return redirect ('Show_Participantes')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Participantes')
+    form = Form_Participantes(instance= obj)
+    return render(request, 'create_edit/AddParticipantes.html',{'form':form})
 
 def Edit_Puntuaciones(request, id):
-    pass
+    try:
+        obj = Puntuaciones.objects.get(id_puntuacion=id)
+    except Puntuaciones.DoesNotExist:        
+        messages.error(request, 'No existe la entrada2')
+        return redirect('Show_Puntuaciones')
+    if request.method == 'POST':
+        form = Form_Puntuaciones(request.POST, instance= obj)
+        if form.is_valid():
+
+            id_paquete_contrato = form.cleaned_data.get('id_paquete_contrato')
+            try:
+                validacion = Paquetes_contrato.objects.get(numero_factura=id_paquete_contrato)
+            except Paquetes_contrato.DoesNotExist:        
+                messages.error(request, 'Error, paquete contrato invalido')
+                return redirect('Show_Puntuaciones')
+
+            id_ciudad = form.cleaned_data.get('id_ciudad')
+            id_pais = form.cleaned_data.get('id_pais')
+            id_atraccion = form.cleaned_data.get('id_atraccion')
+            try:
+                atraccion = Atracciones.objects.get(id_ciudad=id_ciudad, id_pais=id_pais, id_atraccion=id_atraccion)
+            except Atracciones.DoesNotExist:        
+                messages.error(request, 'Error con la union de ciudad, pais y atraccion, verificar integridad')
+                return redirect('Show_Puntuaciones')
+
+            form.save()
+            return redirect ('Show_Puntuaciones')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Puntuaciones')
+    form = Form_Puntuaciones(instance= obj)
+    return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
+
