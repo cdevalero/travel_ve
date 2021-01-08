@@ -97,3 +97,52 @@ def Borrar_Registro_viajeros(agencia, viajero):
 
 def Borrar_Detalle_viajero(viajero, agencia, paquete_contrato):
     pass
+
+# Actualizar --------------------------------------------------------------------------------------------------------------
+
+def Actualizar_Circuito(orden, rally, ciudad, pais, dias):
+    pass
+
+def Actualizar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden):
+    pass
+
+def Actualizar_AGE_AGE(agencia, socio, inicio, fin):
+    pass
+
+def Actualizar_Cupo(agencia, rally, cantidad):
+    pass
+
+def Actualizar_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_registro_clientes SET id_cliente=%s, id_agencia=%s, f_registro=%s, numero_registro=%s WHERE id_cliente=%s and id_agencia=%s', 
+        [cliente, agencia, fecha, numero, cliente, agencia])
+
+def Actualizar_PRO_AGE(agencia, proveedor, inicio, fin):
+    pass
+
+def Actualizar_Precio_paquete(inicio, paquete, agencia, fin, valor):
+    pass
+
+def Actualizar_Calendarios_anuales(salida, paquete, agencia, descripcion):
+    pass
+
+def Actualizar_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo):
+    pass
+
+def Actualizar_ITN_ATR(itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at, orden):
+    pass
+
+def Actualizar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento):
+    pass
+
+def Actualizar_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
+    pass
+
+def Actualizar_PAI_VIA(viajero, pais, numero):
+    pass
+
+def Actualizar_Registro_viajeros(agencia, viajero, registro, numero):
+    pass
+
+def Actualizar_Detalle_viajero(viajero, agencia, paquete_contrato):
+    pass
