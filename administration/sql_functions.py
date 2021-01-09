@@ -3,16 +3,24 @@ from django.db import connection
 # Crear
 
 def Crear_Circuito(orden, rally, ciudad, pais, dias):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_circuitos(orden_circuito, id_rally, id_ciudad, id_pais, maxdias) VALUES (%s, %s, %s, %s, %s)', 
+        [orden, rally, ciudad, pais, dias])
 
 def Crear_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_atr_cir(id_atraccion, id_ciudad_at, id_pais_at, id_circuito, id_rally_cir, id_ciudad_cir, id_pais_cir, orden) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', 
+        [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden])
 
 def Crear_AGE_AGE(agencia, socio, inicio, fin):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_age_age(id_agencia, id_socio, f_inicio, f_fin) VALUES (%s, %s, %s, %s)', 
+        [agencia, socio, inicio, fin])
 
 def Crear_Cupo(agencia, rally, cantidad):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_cupos(id_agencia, id_rally, cantidad) VALUES (%s, %s, %s)', 
+        [agencia, rally, cantidad])
 
 def Crear_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
     with connection.cursor() as cursor:
@@ -20,48 +28,76 @@ def Crear_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
         [cliente, agencia, fecha, numero])
 
 def Crear_PRO_AGE(agencia, proveedor, inicio, fin):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_pro_age(id_agencia, id_proveedor, f_inicio, f_fin) VALUES (%s, %s, %s, %s)', 
+        [agencia, proveedor, inicio, fin])
 
 def Crear_Precio_paquete(inicio, paquete, agencia, fin, valor):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_precios_paquetes(f_inicio, id_paquete, id_agencia, f_fin, valor) VALUES (%s, %s, %s, %s, %s)', 
+        [inicio, paquete, agencia, fin, valor])
 
 def Crear_Calendarios_anuales(salida, paquete, agencia, descripcion):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_calendarios_anuales(f_salida, id_paquete, id_agencia, descripcion) VALUES (%s, %s, %s, %s)', 
+        [salida, paquete, agencia, descripcion])
 
 def Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_itinerarios(orden, id_ciudad, id_pais, id_agencia, id_paquete, tiempo_estadia) VALUES (%s, %s, %s, %s, %s, %s)', 
+        [orden, ciudad, pais, agencia, paquete, tiempo])
 
 def Crear_ITN_ATR(itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at, orden):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_itn_atr(id_itinerario, id_ciudad, id_pais, id_agencia, id_paquete, id_atraccion, id_ciudad_at, id_pais_at, orden_visita) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', 
+        [itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at, orden])
 
 def Crear_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_alo_det(id_detalle_servicio, id_itinerario, id_paquete, id_agencia, id_ciudad, id_pais, id_alojamiento) VALUES (%s, %s, %s, %s, %s, %s, %s)', 
+        [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
 def Crear_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_formas_de_pago(id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago) VALUES (%s, %s, %s, %s)', 
+        [instrumento, cliente, paquete_contrato, tipo_forma_pago])
 
 def Crear_PAI_VIA(viajero, pais, numero):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_pai_via(id_viajero, id_pais, nro_de_pasaporte) VALUES (%s, %s, %s)', 
+        [viajero, pais, numero])
 
 def Crear_Registro_viajeros(agencia, viajero, registro, numero):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_registro_viajeros(id_agencia, id_viajero, f_registro, nro_registro) VALUES (%s, %s, %s, %s)', 
+        [agencia, viajero, registro, numero])
 
 def Crear_Detalle_viajero(viajero, agencia, paquete_contrato):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_detalle_viajeros(id_viajero, id_agencia, id_paquete_contrato) VALUES (%s, %s, %s)', 
+        [viajero, agencia, paquete_contrato])
 
 # Borrar --------------------------------------------------------------------------------------------------------------
 
 def Borrar_Circuito(orden, rally, ciudad, pais):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_circuitos WHERE orden_circuito=%s and id_rally=%s and id_ciudad=%s and id_pais=%s ", 
+        [orden, rally, ciudad, pais])
 
 def Borrar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_atr_cir WHERE id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s and id_circuito=%s and id_rally_cir=%s and id_ciudad_cir=%s and id_pais_cir=%s ", 
+        [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir])
 
 def Borrar_AGE_AGE(agencia, socio):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_age_age WHERE id_agencia=%s and id_socio=%s ", 
+        [agencia, socio])
 
 def Borrar_Cupo(agencia, rally):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_cupos WHERE id_agencia=%s and id_rally=%s ", 
+        [agencia, rally])
 
 def Borrar_Registro_clientes(cliente, agencia): #GUIA --------
     with connection.cursor() as cursor:
@@ -69,48 +105,76 @@ def Borrar_Registro_clientes(cliente, agencia): #GUIA --------
         [cliente, agencia])
 
 def Borrar_PRO_AGE(agencia, proveedor):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_pro_age WHERE id_agencia=%s and id_proveedor=%s ", 
+        [agencia, proveedor])
 
 def Borrar_Precio_paquete(inicio, paquete, agencia):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_precios_paquetes WHERE f_inicio=%s and id_paquete=%s and id_agencia=%s ", 
+        [inicio, paquete, agencia])
 
 def Borrar_Calendarios_anuales(salida, paquete, agencia):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_calendarios_anuales WHERE f_salida=%s and id_paquete=%s and id_agencia=%s ", 
+        [salida, paquete, agencia])
 
 def Borrar_Itinerarios(orden, ciudad, pais, agencia, paquete):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_itinerarios WHERE orden=%s and id_ciudad=%s and id_pais=%s and id_agencia=%s and id_paquete=%s ", 
+        [orden, ciudad, pais, agencia, paquete])
 
 def Borrar_ITN_ATR(itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_itn_atr WHERE id_itinerario=%s and id_ciudad=%s and id_pais=%s id_agencia=%s and id_paquete=%s and id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s ", 
+        [itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at])
 
 def Borrar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_alo_det WHERE id_detalle_servicio=%s and id_itinerario=%s and id_paquete=%s id_agencia=%s and id_ciudad=%s and id_pais=%s and id_alojamiento=%s ", 
+        [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
 def Borrar_Forma_de_pago(instrumento, cliente, paquete_contrato):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_formas_de_pago WHERE id_instrumento=%s and id_cliente=%s and id_paquete_contrato=%s ", 
+        [instrumento, cliente, paquete_contrato])
 
 def Borrar_PAI_VIA(viajero, pais):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_pai_via WHERE id_viajero=%s and id_pais=%s ", 
+        [viajero, pais])
 
 def Borrar_Registro_viajeros(agencia, viajero):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_registro_viajeros WHERE id_agencia=%s and id_viajero=%s ", 
+        [agencia, viajero])
 
 def Borrar_Detalle_viajero(viajero, agencia, paquete_contrato):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ("DELETE FROM public.cgr_detalle_viajeros WHERE id_viajero=%s and id_agencia=%s and id_paquete_contrato=%s ", 
+        [viajero, agencia, paquete_contrato])
 
 # Actualizar --------------------------------------------------------------------------------------------------------------
 
 def Actualizar_Circuito(orden, rally, ciudad, pais, dias):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_circuitos SET orden_circuito=%s, id_rally=%s, id_ciudad=%s, id_pais=%s, maxdias=%s WHERE orden_circuito=%s and id_rally=%s and id_ciudad=%s and id_pais=%s', 
+        [orden, rally, ciudad, pais, dias, orden, rally, ciudad, pais])
 
 def Actualizar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_atr_cir SET id_atraccion=%s, id_ciudad_at=%s, id_pais_at=%s, id_circuito=%s, id_rally_cir=%s, id_ciudad_cir=%s, id_pais_cir=%s, orden=%s WHERE id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s and id_circuito=%s and id_rally_cir=%s and id_ciudad_cir=%s and id_pais_cir=%s', 
+        [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden, atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir])
 
 def Actualizar_AGE_AGE(agencia, socio, inicio, fin):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_age_age SET id_agencia=%s, id_socio=%s, f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_socio=%s', 
+        [agencia, socio, inicio, fin, agencia, socio])
 
 def Actualizar_Cupo(agencia, rally, cantidad):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_cupos SET id_agencia=%s, id_rally=%s, cantidad=%s WHERE id_agencia=%s and id_rally=%s', 
+        [agencia, rally, cantidad, agencia, rally])
 
 def Actualizar_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
     with connection.cursor() as cursor:
@@ -118,31 +182,51 @@ def Actualizar_Registro_clientes(cliente, agencia, fecha, numero): # GUIA ------
         [cliente, agencia, fecha, numero, cliente, agencia])
 
 def Actualizar_PRO_AGE(agencia, proveedor, inicio, fin):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_pro_age SET id_agencia=%s, id_proveedor=%s, f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_proveedor=%s', 
+        [agencia, proveedor, inicio, fin, agencia, proveedor])
 
 def Actualizar_Precio_paquete(inicio, paquete, agencia, fin, valor):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_precios_paquetes SET f_inicio=%s, id_paquete=%s, id_agencia=%s, f_fin=%s, valor=%s WHERE f_inicio=%s and id_paquete=%s and id_agencia=%s', 
+        [inicio, paquete, agencia, fin, valor, inicio, paquete, agencia])
 
 def Actualizar_Calendarios_anuales(salida, paquete, agencia, descripcion):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_calendarios_anuales SET f_salida=%s, id_paquete=%s, id_agencia=%s, descripcion=%s WHERE f_salida=%s and id_paquete=%s and id_agencia=%s', 
+        [salida, paquete, agencia, descripcion, salida, paquete, agencia])
 
 def Actualizar_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_itinerarios SET orden=%s, id_ciudad=%s, id_pais=%s, id_agencia=%s, id_paquete=%s, tiempo_estadia=%s WHERE orden=%s and id_ciudad=%s and id_pais=%s and id_agencia=%s and id_paquete=%s', 
+        [orden, ciudad, pais, agencia, paquete, tiempo, orden, ciudad, pais, agencia, paquete])
 
 def Actualizar_ITN_ATR(itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at, orden):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_itn_atr SET id_itinerario=%s, id_ciudad=%s, id_pais=%s, id_agencia=%s, id_paquete=%s, id_atraccion=%s, id_ciudad_at=%s, id_pais_at=%s, orden_visita=%s WHERE id_itinerario=%s and id_ciudad=%s and id_pais=%s and id_agencia=%s and id_paquete=%s and id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s', 
+        [itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at, orden, itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at])
 
 def Actualizar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_alo_det SET id_detalle_servicio=%s, id_itinerario=%s, id_paquete=%s, id_agencia=%s, id_ciudad=%s, id_pais=%s, id_alojamiento=%s WHERE id_detalle_servicio=%s and id_itinerario=%s and id_paquete=%s and id_agencia=%s and id_ciudad=%s and id_pais=%s and id_alojamiento=%s', 
+        [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento, detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
 def Actualizar_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_formas_de_pago SET id_instrumento=%s, id_cliente=%s, id_paquete_contrato=%s, tipo_forma_de_pago=%s WHERE id_instrumento=%s and id_cliente=%s and id_paquete_contrato=%s', 
+        [instrumento, cliente, paquete_contrato, tipo_forma_pago, instrumento, cliente, paquete_contrato])
 
 def Actualizar_PAI_VIA(viajero, pais, numero):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_pai_via SET id_viajero=%s, id_pais=%s, nro_de_pasaporte=%s WHERE id_viajero=%s and id_pais=%s', 
+        [viajero, pais, numero, viajero, pais])
 
 def Actualizar_Registro_viajeros(agencia, viajero, registro, numero):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_registro_viajeros SET id_agencia=%s, id_viajero=%s, f_registro=%s, nro_registro=%s WHERE id_agencia=%s and id_viajero=%s', 
+        [agencia, viajero, registro, numero, agencia, viajero])
 
 def Actualizar_Detalle_viajero(viajero, agencia, paquete_contrato):
-    pass
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_detalle_viajeros SET id_viajero=%s, id_agencia=%s, id_paquete_contrato=%s WHERE id_viajero=%s and id_agencia=%s and id_paquete_contrato=%s', 
+        [viajero, agencia, paquete_contrato, viajero, agencia, paquete_contrato])
