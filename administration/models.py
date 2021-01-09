@@ -377,7 +377,7 @@ class Paquetes(models.Model):
 
         db_table = 'cgr_paquetes'
         ordering = ['id_agencia']
-
+ 
 class Especializaciones(models.Model):
     id_especializacion = models.AutoField(primary_key=True)
     id_areas_de_interes = models.ForeignKey(Areas_de_interes, on_delete=models.CASCADE, related_name='id_area_es', db_column='id_areas_de_interes')
