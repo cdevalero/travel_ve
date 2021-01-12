@@ -2,6 +2,36 @@ from django.db import connection
 
 # Crear
 
+def Crear_Banco(nombre_banco):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_bancos(id_banco, nombre_banco) VALUES (DEFAULT,%s)', 
+        [nombre_banco])
+'''
+def Crear_Area_de_interes(id_areas_de_interes, nombre_area_de_interes, descripcion_area_de_interes):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_areas_de_interes(id_banco, nombre_banco) VALUES (%s, %s, %s)', 
+        [id_areas_de_interes, nombre_area_de_interes, descripcion_area_de_interes])
+
+def Crear_Pais(id_pais, nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_paises(id_banco, nombre_banco) VALUES (%s, %s, %s, %s, %s, %s)', 
+        [id_pais, nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais])
+
+def Crear_Rally(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES (%s, %s, %s, %s, %s, %s, %s)', 
+        [id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante])
+
+def Crear_Premio(id_premio, id_rally, posicion, descripcion_premio):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_premios(id_premio, id_rally, posicion, descripcion_premio) VALUES (%s, %s, %s, %s)', 
+        [id_premio, id_rally, posicion, descripcion_premio])'''
+
+def Crear_Ciudad( pais, nombre, tipo, descripcion):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_ciudades(id_ciudad, id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad) VALUES (DEFAULT, %s, %s, %s, %s)', 
+        [ pais, nombre, tipo, descripcion])
+#-------------------------------------------------------------------------------------
 def Crear_Circuito(orden, rally, ciudad, pais, dias):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_circuitos(orden_circuito, id_rally, id_ciudad, id_pais, maxdias) VALUES (%s, %s, %s, %s, %s)', 

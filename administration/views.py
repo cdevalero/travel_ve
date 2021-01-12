@@ -158,7 +158,8 @@ def Add_Bancos(request):
     if request.method == 'POST':
         form = Form_Bancos(request.POST)
         if form.is_valid():
-            form.save()
+            nombre_banco = form.data['nombre_banco']   
+            Crear_Banco(nombre_banco)
             return redirect ('Show_bancos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -233,10 +234,25 @@ def Add_Premios(request):
     return render(request, 'create_edit/AddPremios.html',{'form':form})
 
 def Add_Ciudades(request):
-    if request.method == 'POST':
+    '''if request.method == 'POST':
         form = Form_Ciudades(request.POST)
         if form.is_valid():
             form.save()
+            return redirect ('Show_Ciudades')
+        else:
+            messages.error(request, 'Entrada Invalida')
+            return redirect('Add_Ciudades')
+    form = Form_Ciudades()
+    return render(request, 'create_edit/AddCiudades.html',{'form':form})'''
+    if request.method == 'POST':
+        form = Form_Ciudades(request.POST)
+        if form.is_valid():
+            id_pais = form.data['id_pais']  
+            nombre_ciudad= form.data['nombre_ciudad'] 
+            tipo_ciudad= form.data['tipo_ciudad'] 
+            descripcion_ciudad= form.data['descripcion_ciudad'] 
+
+            Crear_Ciudad(id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad)
             return redirect ('Show_Ciudades')
         else:
             messages.error(request, 'Entrada Invalida')
