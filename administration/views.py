@@ -194,8 +194,15 @@ def Add_Areas_de_interes(request):
 def Add_Paises(request):
     if request.method == 'POST':
         form = Form_Paises(request.POST)
+        
         if form.is_valid():
-            form.save()
+            nombre_pais = form.data['nombre_pais']  
+            region_pais = form.data['region_pais']  
+            continente_pais = form.data['continente_pais']  
+            nacionalidad = form.data['nacionalidad']  
+            descripcion_pais = form.data['descripcion_pais']  
+            Crear_Pais(nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais)
+            #form.save()
             return redirect ('Show_paises')
         else:
             messages.error(request, 'Entrada Invalida')

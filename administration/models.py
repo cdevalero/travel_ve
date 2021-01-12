@@ -63,7 +63,7 @@ class Paises(models.Model):
         ('Europa','Europa'),
         ('America','America'),
     )
-    id_pais = models.AutoField(primary_key=True)
+    id_pais = models.IntegerField(primary_key=True)
     nombre_pais = models.CharField( max_length=30)
     region_pais = models.CharField(max_length=15, choices=REGIONES)
     continente_pais = models.CharField(max_length=15, choices=CONTINENTES)
