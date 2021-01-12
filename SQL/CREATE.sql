@@ -501,16 +501,9 @@ CREATE TABLE cgr_formas_de_pago
 	CONSTRAINT fk2_paquetes_contrato FOREIGN KEY (id_paquete_contrato) REFERENCES cgr_paquetes_contrato(numero_factura) ON DELETE CASCADE
 );
 
-CREATE SEQUENCE cgr_secuencia_viajero
-	start with 1
-	increment 1
-	minvalue 1
-	maxvalue 100
-;
-
 CREATE TABLE cgr_viajeros
 (
-	id_de_identidad numeric NOT NULL DEFAULT nextval('cgr_secuencia_viajero'::regclass),
+	id_de_identidad numeric NOT NULL,
 	id_ciudad numeric NOT NULL,
 	id_pais numeric NOT NULL,
 	id_paquete_contrato numeric NOT NULL,

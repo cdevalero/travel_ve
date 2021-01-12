@@ -6,7 +6,7 @@ from .models import *
 class Form_Bancos(forms.ModelForm):
     class Meta:
         model = Bancos;
-        fields = ('nombre_banco', )
+        fields = ('nombre_banco',)
 
 class Form_Clientes(forms.ModelForm):
     class Meta:
@@ -87,12 +87,12 @@ class Form_Registro_clientes(forms.ModelForm):
 class Form_Alojamientos(forms.ModelForm):
     class Meta:
         model = Alojamientos;
-        fields = ('id_alojamiento','id_ciudad','id_pais','nombre')
+        fields = ('id_ciudad','id_pais','nombre')
 
 class Form_Proveedores(forms.ModelForm):
     class Meta:
         model = Proveedores;
-        fields = ('nombre_proveedor','id_proveedor','id_alojamiento','tipo_proveedor')
+        fields = ('nombre_proveedor','id_alojamiento','tipo_proveedor')
 
 class Form_PRO_AGE(forms.ModelForm):
     class Meta:
@@ -106,7 +106,7 @@ class Form_PRO_AGE(forms.ModelForm):
 class Form_Asesores_de_viajes(forms.ModelForm):
     class Meta:
         model = Asesores_de_viajes;
-        fields = ('id_asesor','primer_nombre','segundo_nombre','primer_apellido','segundo_apellido','telefono')
+        fields = ('primer_nombre','segundo_nombre','primer_apellido','segundo_apellido','telefono')
 
 class Form_Paquetes(forms.ModelForm):
     class Meta:
@@ -116,7 +116,7 @@ class Form_Paquetes(forms.ModelForm):
 class Form_Especializaciones(forms.ModelForm):
     class Meta:
         model = Especializaciones;
-        fields = ('id_especializacion','id_areas_de_interes','id_atraccion','id_ciudad','id_pais','id_agencia','id_paquete','id_agencia_paquete','id_asesor','comentarios')
+        fields = ('id_areas_de_interes','id_atraccion','id_ciudad','id_pais','id_agencia','id_paquete','id_agencia_paquete','id_asesor','comentarios')
 
 class Form_Precios_paquetes(forms.ModelForm):
     class Meta:
@@ -131,7 +131,7 @@ class Form_Calendarios_anuales(forms.ModelForm):
 class Form_Descuentos(forms.ModelForm):
     class Meta:
         model = Descuentos;
-        fields = ('id_descuento','id_agencia','f_inicio','tipo_descuento','f_fin','cant_per_gratis','porcentaje')
+        fields = ('id_agencia','f_inicio','tipo_descuento','f_fin','cant_per_gratis','porcentaje')
         widgets = {
             'f_inicio': DateInput(attrs={'type': 'date'}),
             'f_fin': DateInput(attrs={'type': 'date'})
@@ -150,7 +150,7 @@ class Form_ITN_ATR(forms.ModelForm):
 class Form_Detalles_servicios(forms.ModelForm):
     class Meta:
         model = Detalles_servicios;
-        fields = ('id_detalle_servicio','id_itinerario','id_paquete','id_agencia','id_ciudad','id_pais','tipo_detalle','descripcion','comida')
+        fields = ('id_itinerario','id_paquete','id_agencia','id_ciudad','id_pais','tipo_detalle','descripcion','comida')
 
 class Form_ALO_DET(forms.ModelForm):
     class Meta:
@@ -160,12 +160,12 @@ class Form_ALO_DET(forms.ModelForm):
 class Form_Instrumentos_de_pago(forms.ModelForm):
     class Meta:
         model = Instrumentos_de_pago;
-        fields = ('id_instrumento','doc_identidad_cliente','monto','tipo_instrumento','id_banco','numero_zelle','email_zelle')
+        fields = ('doc_identidad_cliente','monto','tipo_instrumento','id_banco','numero_zelle','email_zelle')
 
 class Form_Paquetes_contrato(forms.ModelForm):
     class Meta:
         model = Paquetes_contrato;
-        fields = ('numero_factura','id_paquete','id_agencia','id_reg_cliente','id_reg_agencia','id_asesor','presupuesto','f_aprobacion','f_emision','email_validacion','total_costo_calculado','numer_de_viajeros','f_viaje')
+        fields = ('id_paquete','id_agencia','id_reg_cliente','id_reg_agencia','id_asesor','presupuesto','f_aprobacion','f_emision','email_validacion','total_costo_calculado','numer_de_viajeros','f_viaje')
         widgets = {
             'f_aprobacion': DateInput(attrs={'type': 'date'}),
             'f_emision': DateInput(attrs={'type': 'date'}),
@@ -206,9 +206,9 @@ class Form_Detalle_viajeros(forms.ModelForm):
 class Form_Participantes(forms.ModelForm):
     class Meta:
         model = Participantes;
-        fields = ('id_partipante','id_rally','id_via_agencia','id_via_viajero','id_cli_cliente','id_cli_agencia','equipo','posicion')
+        fields = ('id_rally','id_via_agencia','id_via_viajero','id_cli_cliente','id_cli_agencia','equipo','posicion')
 
 class Form_Puntuaciones(forms.ModelForm):
     class Meta:
         model = Puntuaciones;
-        fields = ('id_puntuacion','id_rally','id_paquete_contrato','id_ciudad','id_pais','id_atraccion')
+        fields = ('id_rally','id_paquete_contrato','id_ciudad','id_pais','id_atraccion')
