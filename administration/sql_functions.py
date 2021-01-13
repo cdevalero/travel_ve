@@ -12,27 +12,20 @@ def Crear_Pais(nombre_pais, region_pais, continente_pais, nacionalidad, descripc
         cursor.execute ('INSERT INTO public.cgr_paises(id_pais, nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais) VALUES ((SELECT max(p.id_pais) from cgr_paises p) + 1, %s, %s, %s, %s, %s)', 
         [nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais])
 
-
-
-
-
-
-'''
 def Crear_Area_de_interes(id_areas_de_interes, nombre_area_de_interes, descripcion_area_de_interes):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_areas_de_interes(id_banco, nombre_banco) VALUES (%s, %s, %s)', 
         [id_areas_de_interes, nombre_area_de_interes, descripcion_area_de_interes])
 
-def Crear_Rally(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante):
+def Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante):
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES (%s, %s, %s, %s, %s, %s, %s)', 
-        [id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante])
+        cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)', 
+        [nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante])
 
 def Crear_Premio(id_premio, id_rally, posicion, descripcion_premio):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_premios(id_premio, id_rally, posicion, descripcion_premio) VALUES (%s, %s, %s, %s)', 
-        [id_premio, id_rally, posicion, descripcion_premio])'''
-
+        [id_premio, id_rally, posicion, descripcion_premio])
 def Crear_Ciudad( pais, nombre, tipo, descripcion):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_ciudades(id_ciudad, id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad) VALUES (DEFAULT, %s, %s, %s, %s)', 

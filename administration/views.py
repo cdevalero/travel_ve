@@ -1,3 +1,4 @@
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import *
@@ -190,7 +191,7 @@ def Add_Areas_de_interes(request):
             return redirect('Add_Areas_de_interes')
     form = Form_Areas_de_interes()
     return render(request, 'create_edit/AddAreas_de_interes.html',{'form':form})
-
+ 
 def Add_Paises(request):
     if request.method == 'POST':
         form = Form_Paises(request.POST)
@@ -214,11 +215,18 @@ def Add_Rallies(request):
     if request.method == 'POST':
         form = Form_Rallies(request.POST)
         if form.is_valid():
+            nombre_rally = form.data['nombre_rally'] 
+            costo_participante = form.data['costo_participante'] 
+            f_inicio = form.data['f_inicio'] 
+            f_fin = form.data['f_fin'] 
+            tipo_rally = form.data['tipo_rally'] 
+            duracion = form.data['duracion'] 
+            total_cupo_participante = form.data['total_cupo_participante'] 
             # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
             if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
                 messages.error(request, 'Los Rally deben tener maximo una semana de duración')
                 return redirect('Add_rallies')
-            form.save()
+            Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante)
             return redirect ('Show_rallies')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -1008,7 +1016,11 @@ def Delete_Bancos(request, id):
     except Bancos.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_bancos')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_bancos')
     return redirect('Show_bancos')
 
 def Delete_Clientes(request, id):
@@ -1017,7 +1029,11 @@ def Delete_Clientes(request, id):
     except Clientes.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Clientes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Clientes')
     return redirect('Show_Clientes')
 
 def Delete_Areas_de_interes(request, id):
@@ -1026,7 +1042,11 @@ def Delete_Areas_de_interes(request, id):
     except Areas_de_interes.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Areas_de_interes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Areas_de_interes')
     return redirect('Show_Areas_de_interes')
 
 def Delete_Paises(request, id):
@@ -1035,7 +1055,11 @@ def Delete_Paises(request, id):
     except Paises.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_paises')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_paises')
     return redirect('Show_paises')
 
 def Delete_Rallies(request, id):
@@ -1044,7 +1068,11 @@ def Delete_Rallies(request, id):
     except Rallies.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_rallies')
     return redirect('Show_rallies')
 
 def Delete_Premios(request, id, id2):
@@ -1058,7 +1086,11 @@ def Delete_Premios(request, id, id2):
     except Premios.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_rallies')
     return redirect('Show_rallies')
 
 def Delete_Ciudades(request, id, id2):
@@ -1072,7 +1104,11 @@ def Delete_Ciudades(request, id, id2):
     except Ciudades.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Ciudades')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Ciudades')
     return redirect('Show_Ciudades')
 
 def Delete_Atracciones(request, id,id2,id3):
@@ -1091,7 +1127,11 @@ def Delete_Atracciones(request, id,id2,id3):
     except Atracciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Atracciones')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Atracciones')
     return redirect('Show_Atracciones')
 
 def Delete_Circuitos(request, id,id2,id3,id4):
@@ -1115,7 +1155,11 @@ def Delete_Circuitos(request, id,id2,id3,id4):
     except Circuitos.DoesNotExist:        
         messages.error(request, 'No existe la 4')
         return redirect('Show_Circuitos')
-    Borrar_Circuito(id, rallie.id_rally, ciudad.id_ciudad, pais.id_pais)
+    try:
+        Borrar_Circuito(id, rallie.id_rally, ciudad.id_ciudad, pais.id_pais)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Circuitos')
     return redirect('Show_Circuitos')  
 
 def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
@@ -1159,7 +1203,12 @@ def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
     except ATR_CIR.DoesNotExist:        
         messages.error(request, 'No existe la entrada8')
         return redirect('Show_atr_cir')
-    Borrar_ATR_CIR(atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais, circuito.orden_circuito, rallie.id_rally, ciudad_at.id_ciudad, pais_at.id_pais)
+    try:
+        Borrar_ATR_CIR(atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais, circuito.orden_circuito, rallie.id_rally, ciudad_at.id_ciudad, pais_at.id_pais)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_atr_cir')
+    
     return redirect('Show_atr_cir')
 
 def Delete_Agencia_de_viajes(request, id):
@@ -1168,7 +1217,11 @@ def Delete_Agencia_de_viajes(request, id):
     except Agencias_de_viajes.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Agencia_de_viajes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Agencia_de_viajes')
     return redirect('Show_Agencia_de_viajes')
 
 def Delete_AGE_AGE(request, id,id2):
@@ -1187,7 +1240,12 @@ def Delete_AGE_AGE(request, id,id2):
     except AGE_AGE.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_AGE_AGE')
-    Borrar_AGE_AGE(id, socio.id_agencia)
+    try:
+        Borrar_AGE_AGE(id, socio.id_agencia)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_AGE_AGE')
+    
     return redirect('Show_AGE_AGE')
 
 def Delete_Cupos(request, id, id2):
@@ -1206,7 +1264,12 @@ def Delete_Cupos(request, id, id2):
     except Cupos.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Cupos')
-    Borrar_Cupo(id, rallie.id_rally)
+    try:
+        Borrar_Cupo(id, rallie.id_rally)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Cupos')
+    
     return redirect('Show_Cupos')
 
 def Delete_Registro_clientes(request, id,id2):
@@ -1225,7 +1288,12 @@ def Delete_Registro_clientes(request, id,id2):
     except Registro_clientes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Registro_clientes')
-    Borrar_Registro_clientes(id, agencia.id_agencia)
+    try:
+        Borrar_Registro_clientes(id, agencia.id_agencia)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Registro_clientes')
+    
     return redirect('Show_Registro_clientes')
 
 def Delete_Alojamientos(request, id):
@@ -1234,7 +1302,11 @@ def Delete_Alojamientos(request, id):
     except Alojamientos.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Alojamientos')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Alojamientos')
     return redirect('Show_Alojamientos')
 
 def Delete_Proveedores(request, id):
@@ -1243,7 +1315,11 @@ def Delete_Proveedores(request, id):
     except Proveedores.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Proveedores')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Proveedores')
     return redirect('Show_Proveedores')
 
 def Delete_PRO_AGE(request, id,id2):
@@ -1262,7 +1338,12 @@ def Delete_PRO_AGE(request, id,id2):
     except PRO_AGE.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_pro_age')
-    Borrar_PRO_AGE(id, proveedor.id_proveedor)
+    try:
+        Borrar_PRO_AGE(id, proveedor.id_proveedor)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_pro_age')
+    
     return redirect('Show_pro_age')
 
 def Delete_Asesores_de_viajes(request, id):
@@ -1271,7 +1352,11 @@ def Delete_Asesores_de_viajes(request, id):
     except Asesores_de_viajes.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Asesores_de_viajes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Asesores_de_viajes')
     return redirect('Show_Asesores_de_viajes')
 
 def Delete_Paquetes(request, id,id2):
@@ -1290,7 +1375,11 @@ def Delete_Paquetes(request, id,id2):
     except Paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Paquetes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Paquetes')
     return redirect('Show_Paquetes')
 
 def Delete_Especializaciones(request, id,id2):
@@ -1309,7 +1398,11 @@ def Delete_Especializaciones(request, id,id2):
     except Especializaciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Especializaciones')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Especializaciones')
     return redirect('Show_Especializaciones')
 
 def Delete_Precios_paquetes(request, id,id2,id3):
@@ -1328,7 +1421,12 @@ def Delete_Precios_paquetes(request, id,id2,id3):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Precios_paquetes')
-    Borrar_Precio_paquete(id,paquete.id_paquete, agencia.id_agencia)
+    try:
+        Borrar_Precio_paquete(id,paquete.id_paquete, agencia.id_agencia)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Precios_paquetes')
+    
     return redirect('Show_Precios_paquetes')
 
 def Delete_Calendarios_anuales(request, id,id2,id3):
@@ -1347,7 +1445,12 @@ def Delete_Calendarios_anuales(request, id,id2,id3):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada3')
         return redirect('Show_Calendarios_anuales')
-    Borrar_Calendarios_anuales(id, paquete.id_paquete, agencia.id_agencia)
+    try:
+        Borrar_Calendarios_anuales(id, paquete.id_paquete, agencia.id_agencia)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Calendarios_anuales')
+
     return redirect('Show_Calendarios_anuales')
 
 def Delete_Descuentos(request, id,id2):
@@ -1361,7 +1464,11 @@ def Delete_Descuentos(request, id,id2):
     except Precios_paquetes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Descuentos')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Descuentos')
     return redirect('Show_Descuentos')
 
 def Delete_Intinerarios(request, id,id2,id3,id4,id5):
@@ -1390,7 +1497,12 @@ def Delete_Intinerarios(request, id,id2,id3,id4,id5):
     except Itinerarios.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Intinerarios')
-    Borrar_Itinerarios(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete)
+    try:
+        Borrar_Itinerarios(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Intinerarios')
+    
     return redirect('Show_Intinerarios')
 
 def Delete_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
@@ -1439,7 +1551,12 @@ def Delete_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
     except ITN_ATR.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_ITN_ATR')
-    Borrar_ITN_ATR(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete, atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais)
+    try:
+        Borrar_ITN_ATR(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete, atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_ITN_ATR')
+    
     return redirect('Show_ITN_ATR')
 
 def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
@@ -1473,7 +1590,11 @@ def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
     except Detalles_servicios.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_Detalles_servicios')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Detalles_servicios')
     return redirect('Show_Detalles_servicios')
 
 def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
@@ -1517,7 +1638,12 @@ def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
     except ALO_DET.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_ALO_DET')
-    Borrar_ALO_DET(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais, alojamiento.id_alojamiento)
+    try:
+        Borrar_ALO_DET(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais, alojamiento.id_alojamiento)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_ALO_DET')
+    
     return redirect('Show_ALO_DET')
 
 def Delete_Instrumentos_de_pago(request, id,id2):
@@ -1531,7 +1657,11 @@ def Delete_Instrumentos_de_pago(request, id,id2):
     except Instrumentos_de_pago.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Instrumentos_de_pago')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Instrumentos_de_pago')
     return redirect('Show_Instrumentos_de_pago')
 
 def Delete_Paquetes_contrato(request, id):
@@ -1540,7 +1670,11 @@ def Delete_Paquetes_contrato(request, id):
     except Paquetes_contrato.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Paquetes_contrato')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Paquetes_contrato')
     return redirect('Show_Paquetes_contrato')
 
 def Delete_Formas_de_pago(request, id,id2,id3):
@@ -1564,7 +1698,12 @@ def Delete_Formas_de_pago(request, id,id2,id3):
     except Formas_de_pago.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Formas_de_pago')
-    Borrar_Forma_de_pago(id, cliente.doc_identidad_o_rif, paq_cont.numero_factura)
+    try:
+        Borrar_Forma_de_pago(id, cliente.doc_identidad_o_rif, paq_cont.numero_factura)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Formas_de_pago')
+    
     return redirect('Show_Formas_de_pago')
 
 def Delete_Viajeros(request, id):
@@ -1573,7 +1712,11 @@ def Delete_Viajeros(request, id):
     except Viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
         return redirect('Show_Viajeros')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Viajeros')
     return redirect('Show_Viajeros')
 
 def Delete_PAI_VIA(request, id,id2):
@@ -1592,7 +1735,12 @@ def Delete_PAI_VIA(request, id,id2):
     except PAI_VIA.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_PAI_VIA')
-    Borrar_PAI_VIA(id, pais.id_pais)
+    try:
+        Borrar_PAI_VIA(id, pais.id_pais)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_PAI_VIA')
+    
     return redirect('Show_PAI_VIA')
 
 def Delete_Registro_viajeros(request, id,id2):
@@ -1611,7 +1759,12 @@ def Delete_Registro_viajeros(request, id,id2):
     except Registro_viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Registro_viajeros')
-    Borrar_Registro_viajeros(agencia.id_agencia, viajero.id_de_identidad)
+    try:
+        Borrar_Registro_viajeros(agencia.id_agencia, viajero.id_de_identidad)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Registro_viajeros')
+    
     return redirect('Show_Registro_viajeros')
 
 def Delete_Detalle_viajeros(request, id,id2,id3):
@@ -1635,7 +1788,12 @@ def Delete_Detalle_viajeros(request, id,id2,id3):
     except Detalle_viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada4')
         return redirect('Show_Detalle_viajeros')
-    Borrar_Detalle_viajero(id, agencia.id_agencia, paq_cont.numero_factura)
+    try:
+        Borrar_Detalle_viajero(id, agencia.id_agencia, paq_cont.numero_factura)
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Detalle_viajeros')
+    
     return redirect('Show_Detalle_viajeros')
 
 def Delete_Participantes(request, id,id2):
@@ -1649,7 +1807,11 @@ def Delete_Participantes(request, id,id2):
     except Participantes.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Participantes')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Participantes')
     return redirect('Show_Participantes')
 
 def Delete_Puntuaciones(request, id):
@@ -1658,7 +1820,11 @@ def Delete_Puntuaciones(request, id):
     except Puntuaciones.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Puntuaciones')
-    obj.delete()
+    try:
+        obj.delete()
+    except ProtectedError:
+        messages.error(request, 'Existen registros vinculados')
+        return redirect('Show_Puntuaciones')
     return redirect('Show_Puntuaciones')
 
 #EDIT --------------------------------------------------------------------------------------------------------------------------------------
@@ -1823,6 +1989,7 @@ def Edit_Atracciones(request, id, id2, id3):
         return redirect('Show_Atracciones')
     if request.method == 'POST':
         form = Form_Atracciones(request.POST, instance= obj)
+
         if form.is_valid():
             id_ciudad = form.data['id_ciudad']
             id_pais = form.data['id_pais']
@@ -1830,13 +1997,15 @@ def Edit_Atracciones(request, id, id2, id3):
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
-                return redirect('Add_Atracciones')
+                return redirect('Show_Atracciones')
             form.save()
             return redirect ('Show_Atracciones')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Atracciones')
+            return redirect('Show_Atracciones')
     form = Form_Atracciones(instance= obj)
+    form.fields['id_ciudad'].disabled = True 
+    form.fields['id_pais'].disabled = True 
     return render(request, 'create_edit/AddAtracciones.html',{'form':form})
     
 def Edit_Circuitos(request, id,id2,id3,id4):

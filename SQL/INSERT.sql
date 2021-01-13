@@ -28,7 +28,7 @@ insert into cgr_areas_de_interes values (DEFAULT, 'Romance', 'Ten una velada esp
 insert into cgr_areas_de_interes values (DEFAULT, 'Spa y bienestar', 'Relajarse en pareja o indivual');
 insert into cgr_areas_de_interes values (DEFAULT, 'turismo', 'Para conocer el mundo');
 
-insert into cgr_paises values (DEFAULT, 'francia' , 'EU' , 'Europa' , 'frances' , 'primer pais');
+insert into cgr_paises values (DEFAULT, 'Francia' , 'EU' , 'Europa' , 'frances' , 'primer pais');
 insert into cgr_paises values (DEFAULT, 'Suiza' , 'EU', 'Europa' , 'suizo' , ' segundo pais' );
 insert into cgr_paises values (DEFAULT, 'Alemania', 'EU', 'Europa', 'aleman' , 'tercer pais' );
 insert into cgr_paises values (DEFAULT, 'Austria', 'EU' , 'Europa' , 'austriaco' , 'cuarto pais');
