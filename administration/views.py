@@ -1844,7 +1844,7 @@ def Edit_Bancos(request, id):
             return redirect ('Show_bancos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_bancos')
+            return redirect('Show_bancos')
     form = Form_Bancos(instance= obj)
     return render(request, 'create_edit/AddBancos.html',{'form':form})
 
@@ -1863,8 +1863,9 @@ def Edit_Clientes(request, id):
             return redirect ('Show_Clientes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Clientes')
+            return redirect('Show_Clientes')
     form = Form_Clientes(instance= obj)
+    form.fields['doc_identidad_o_rif'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddClientes.html',{'form':form})
 
 def Edit_Areas_de_interes(request, id):
@@ -1882,7 +1883,7 @@ def Edit_Areas_de_interes(request, id):
             return redirect ('Show_Areas_de_interes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Areas_de_interes')
+            return redirect('Show_Areas_de_interes')
     form = Form_Areas_de_interes(instance= obj)
     return render(request, 'create_edit/AddAreas_de_interes.html',{'form':form})
 
@@ -1901,7 +1902,7 @@ def Edit_Paises(request, id):
             return redirect ('Show_paises')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_paises')
+            return redirect('Show_paises')
     form = Form_Paises(instance= obj)
     return render(request, 'create_edit/AddPaises.html',{'form':form})
 
@@ -1923,7 +1924,7 @@ def Edit_Rallies(request, id):
             return redirect ('Show_rallies')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_rallies')
+            return redirect('Show_rallies')
     form = Form_Rallies(instance= obj)                          #---> cambiar intance
     return render(request, 'create_edit/AddRallies.html',{'form':form})
 
@@ -1945,8 +1946,9 @@ def Edit_Premios(request, id, id2):
             return redirect ('Show_premios')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_premios')
+            return redirect('Show_premios')
     form = Form_Premios(instance= obj)
+    form.fields['id_rally'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPremios.html',{'form':form})
 
 def Edit_Ciudades(request, id, id2):
@@ -1967,8 +1969,9 @@ def Edit_Ciudades(request, id, id2):
             return redirect ('Show_Ciudades')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Ciudades')
+            return redirect('Show_Ciudades')
     form = Form_Ciudades(instance= obj)
+    form.fields['id_pais'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddCiudades.html',{'form':form})
 
 def Edit_Atracciones(request, id, id2, id3):
@@ -2004,8 +2007,8 @@ def Edit_Atracciones(request, id, id2, id3):
             messages.error(request, 'Entrada Invalida')
             return redirect('Show_Atracciones')
     form = Form_Atracciones(instance= obj)
-    form.fields['id_ciudad'].disabled = True 
-    form.fields['id_pais'].disabled = True 
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True 
+    form.fields['id_pais'].widget.attrs['readonly'] = True 
     return render(request, 'create_edit/AddAtracciones.html',{'form':form})
     
 def Edit_Circuitos(request, id,id2,id3,id4):
@@ -2051,8 +2054,12 @@ def Edit_Circuitos(request, id,id2,id3,id4):
             return redirect ('Show_Circuitos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Circuitos')
+            return redirect('Show_Circuitos')
     form = Form_Circuitos(instance= obj)
+    form.fields['orden_circuito'].widget.attrs['readonly'] = True
+    form.fields['id_rally'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddCircuitos.html',{'form':form})
 
 def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
@@ -2128,8 +2135,15 @@ def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
             return redirect ('Show_atr_cir')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_atr_cir')
+            return redirect('Show_atr_cir')
     form = Form_ATR_CIR(instance= obj)
+    form.fields['id_atraccion'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad_at'].widget.attrs['readonly'] = True
+    form.fields['id_pais_at'].widget.attrs['readonly'] = True
+    form.fields['id_circuito'].widget.attrs['readonly'] = True
+    form.fields['id_rally_cir'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad_cir'].widget.attrs['readonly'] = True
+    form.fields['id_pais_cir'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddATR_CIR.html',{'form':form})
 
 def Edit_Agencia_de_viajes(request, id):
@@ -2154,7 +2168,7 @@ def Edit_Agencia_de_viajes(request, id):
             return redirect ('Show_Agencia_de_viajes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Agencia_de_viajes')
+            return redirect('Show_Agencia_de_viajes')
     form = Form_Agencia_de_viajes(instance= obj)
     return render(request, 'create_edit/AddAgencia_de_viajes.html',{'form':form})
 
@@ -2206,8 +2220,10 @@ def Edit_AGE_AGE(request, id,id2):
             return redirect ('Show_AGE_AGE')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_AGE_AGE')
+            return redirect('Show_AGE_AGE')
     form = Form_AGE_AGE(instance= obj)
+    form.fields['id_socio'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddAGE_AGE.html',{'form':form})
 
 def Edit_Cupos(request, id,id2):
@@ -2245,8 +2261,10 @@ def Edit_Cupos(request, id,id2):
             return redirect ('Show_Cupos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Cupos')
+            return redirect('Show_Cupos')
     form = Form_Cupos(instance= obj)
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_rally'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddCupos.html',{'form':form})
 
 def Edit_Registro_clientes(request, id,id2):
@@ -2286,8 +2304,10 @@ def Edit_Registro_clientes(request, id,id2):
             return redirect ('Show_Registro_clientes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Registro_clientes')
+            return redirect('Show_Registro_clientes')
     form = Form_Registro_clientes(instance= obj)
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_cliente'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddRegistro_clientes.html',{'form':form})
 
 def Edit_Alojamientos(request, id):
@@ -2312,7 +2332,7 @@ def Edit_Alojamientos(request, id):
             return redirect ('Show_Alojamientos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Alojamientos')
+            return redirect('Show_Alojamientos')
     form = Form_Alojamientos(instance= obj)
     return render(request, 'create_edit/AddAlojamientos.html',{'form':form})
 
@@ -2329,7 +2349,7 @@ def Edit_Proveedores(request, id):
             return redirect ('Show_Proveedores')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Proveedores')
+            return redirect('Show_Proveedores')
     form = Form_Proveedores(instance= obj)
     return render(request, 'create_edit/AddProveedores.html',{'form':form})
 
@@ -2370,8 +2390,10 @@ def Edit_PRO_AGE(request, id,id2):
             return redirect ('Show_pro_age')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_pro_age')
+            return redirect('Show_pro_age')
     form = Form_PRO_AGE(instance= obj)
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_proveedor'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPRO_AGE.html',{'form':form})
 
 def Edit_Asesores_de_viajes(request, id):
@@ -2387,7 +2409,7 @@ def Edit_Asesores_de_viajes(request, id):
             return redirect ('Show_Asesores_de_viajes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Asesores_de_viajes')
+            return redirect('Show_Asesores_de_viajes')
     form = Form_Asesores_de_viajes(instance= obj)
     return render(request, 'create_edit/AddAsesores_de_viajes.html',{'form':form})
 
@@ -2414,8 +2436,10 @@ def Edit_Paquetes(request, id,id2):
             return redirect ('Show_Paquetes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Paquetes')
+            return redirect('Show_Paquetes')
     form = Form_Paquetes(instance= obj)
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
 def Edit_Especializaciones(request, id,id2):
@@ -2457,8 +2481,10 @@ def Edit_Especializaciones(request, id,id2):
             return redirect ('Show_Especializaciones')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Especializaciones')
+            return redirect('Show_Especializaciones')
     form = Form_Especializaciones(instance= obj)
+    form.fields['id_areas_de_interes'].widget.attrs['readonly'] = True
+    form.fields['id_especializacion'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
 def Edit_Precios_paquetes(request, id,id2,id3):
@@ -2500,8 +2526,11 @@ def Edit_Precios_paquetes(request, id,id2,id3):
             return redirect ('Show_Precios_paquetes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Precios_paquetes')
+            return redirect('Show_Precios_paquetes')
     form = Form_Precios_paquetes(instance= obj)
+    form.fields['f_inicio'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPrecios_paquetes.html',{'form':form})
 
 def Edit_Calendarios_anuales(request, id,id2,id3):
@@ -2535,8 +2564,11 @@ def Edit_Calendarios_anuales(request, id,id2,id3):
             return redirect ('Show_Calendarios_anuales')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Calendarios_anuales')
+            return redirect('Show_Calendarios_anuales')
     form = Form_Calendarios_anuales(instance= obj)
+    form.fields['f_salida'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddCalendarios_anuales.html',{'form':form})
 
 def Edit_Descuentos(request, id,id2):
@@ -2557,8 +2589,9 @@ def Edit_Descuentos(request, id,id2):
             return redirect ('Show_Descuentos')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Descuentos')
+            return redirect('Show_Descuentos')
     form = Form_Descuentos(instance= obj)
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddDescuentos.html',{'form':form})
 
 def Edit_Intinerarios(request, id,id2,id3,id4,id5):
@@ -2615,8 +2648,13 @@ def Edit_Intinerarios(request, id,id2,id3,id4,id5):
             return redirect ('Show_Intinerarios')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Intinerarios')
+            return redirect('Show_Intinerarios')
     form = Form_Itinerarios(instance= obj)
+    form.fields['orden'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddIntinerarios.html',{'form':form})
 
 def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
@@ -2696,8 +2734,16 @@ def Edit_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
             return redirect ('Show_ITN_ATR')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_ITN_ATR')
+            return redirect('Show_ITN_ATR')
     form = Form_ITN_ATR(instance= obj)
+    form.fields['id_itinerario'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
+    form.fields['id_atraccion'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad_at'].widget.attrs['readonly'] = True
+    form.fields['id_pais_at'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddITN_ATR.html',{'form':form})
 
 def Edit_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
@@ -2748,11 +2794,16 @@ def Edit_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
             return redirect ('Show_Detalles_servicios')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Detalles_servicios')
+            return redirect('Show_Detalles_servicios')
     form = Form_Detalles_servicios(instance= obj)
+    form.fields['id_itinerario'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddDetalles_servicios.html',{'form':form})
 
-def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
+def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7): #NO TIENE FUNCION, TODAS SUS COLUMNAS SON PK, POR LO QUE ESTAN BLOQUEADAS Y NO SE PUEDEN EDITAR
     try:
         detalle = Detalles_servicios.objects.get(id_detalle_servicio=id)
     except Detalles_servicios.DoesNotExist:        
@@ -2818,8 +2869,15 @@ def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
             return redirect ('Show_ALO_DET')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_ALO_DET')
+            return redirect('Show_ALO_DET')
     form = Form_ALO_DET(instance= obj)
+    form.fields['id_itinerario'].widget.attrs['readonly'] = True
+    form.fields['id_ciudad'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_paquete'].widget.attrs['readonly'] = True
+    form.fields['id_alojamiento'].widget.attrs['readonly'] = True
+    form.fields['id_detalle_servicio'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddALO_DET.html',{'form':form})
 
 def Edit_Instrumentos_de_pago(request, id,id2):
@@ -2846,8 +2904,9 @@ def Edit_Instrumentos_de_pago(request, id,id2):
             return redirect ('Show_Instrumentos_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Instrumentos_de_pago')
+            return redirect('Show_Instrumentos_de_pago')
     form = Form_Instrumentos_de_pago(instance= obj)
+    form.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddInstrumentos_de_pago.html',{'form':form})
 
 def Edit_Paquetes_contrato(request, id):
@@ -2880,7 +2939,7 @@ def Edit_Paquetes_contrato(request, id):
             return redirect ('Show_Paquetes_contrato')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Paquetes_contrato')
+            return redirect('Show_Paquetes_contrato')
     form = Form_Paquetes_contrato(instance= obj)
     return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
@@ -2932,8 +2991,11 @@ def Edit_Formas_de_pago(request, id,id2,id3):
             return redirect ('Show_Formas_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Formas_de_pago')
+            return redirect('Show_Formas_de_pago')
     form = Form_Formas_de_pago(instance= obj)
+    form.fields['id_instrumento'].widget.attrs['readonly'] = True
+    form.fields['id_cliente'].widget.attrs['readonly'] = True
+    form.fields['id_paquete_contrato'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddFormas_de_pago.html',{'form':form})
 
 def Edit_Viajeros(request, id):
@@ -2965,8 +3027,9 @@ def Edit_Viajeros(request, id):
             return redirect ('Show_Viajeros')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Viajeros')
+            return redirect('Show_Viajeros')
     form = Form_Viajeros(instance= obj)
+    form.fields['id_de_identidad'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddViajeros.html',{'form':form})
 
 def Edit_PAI_VIA(request, id,id2):
@@ -3005,8 +3068,10 @@ def Edit_PAI_VIA(request, id,id2):
             return redirect ('Show_PAI_VIA')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_PAI_VIA')
+            return redirect('Show_PAI_VIA')
     form = Form_PAI_VIA(instance= obj)
+    form.fields['id_viajero'].widget.attrs['readonly'] = True
+    form.fields['id_pais'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPAI_VIA.html',{'form':form})
 
 def Edit_Registro_viajeros(request, id,id2):
@@ -3051,11 +3116,13 @@ def Edit_Registro_viajeros(request, id,id2):
             return redirect ('Show_Registro_viajeros')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Registro_viajeros')
+            return redirect('Show_Registro_viajeros')
     form = Form_Registro_viajeros(instance= obj)
+    form.fields['id_viajero'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
-def Edit_Detalle_viajeros(request, id,id2,id3):
+def Edit_Detalle_viajeros(request, id,id2,id3): #NO TIENE FUNCION, TODAS SUS COLUMNAS SON PK, POR LO QUE ESTAN BLOQUEADAS Y NO SE PUEDEN EDITAR
     try:
         viajero = Viajeros.objects.get(id_de_identidad=id)
     except Viajeros.DoesNotExist:        
@@ -3101,8 +3168,11 @@ def Edit_Detalle_viajeros(request, id,id2,id3):
             return redirect ('Show_Detalle_viajeros')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Detalle_viajeros')
+            return redirect('Show_Detalle_viajeros')
     form = Form_Detalle_viajeros(instance= obj)
+    form.fields['id_viajero'].widget.attrs['readonly'] = True
+    form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['id_paquete_contrato'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddDetalle_viajeros.html',{'form':form})
     
 def Edit_Participantes(request, id,id2):
@@ -3138,8 +3208,9 @@ def Edit_Participantes(request, id,id2):
             return redirect ('Show_Participantes')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Participantes')
+            return redirect('Show_Participantes')
     form = Form_Participantes(instance= obj)
+    form.fields['id_rally'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddParticipantes.html',{'form':form})
 
 def Edit_Puntuaciones(request, id):
@@ -3172,7 +3243,6 @@ def Edit_Puntuaciones(request, id):
             return redirect ('Show_Puntuaciones')
         else:
             messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Puntuaciones')
+            return redirect('Show_Puntuaciones')
     form = Form_Puntuaciones(instance= obj)
     return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
-
