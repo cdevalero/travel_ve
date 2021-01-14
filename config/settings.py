@@ -32,9 +32,10 @@ INSTALLED_APPS = [
     # Paquetes
     'crispy_forms',
 
-
     # Aplicaciones
     'administration',
+    'ventas',
+    'rally',
 ]
 
 MIDDLEWARE = [
