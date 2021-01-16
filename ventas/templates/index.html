@@ -1,0 +1,45 @@
+{% extends 'base_ventas.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content_ventas %}
+<div class="container-fluid">
+    {% load static %}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="thumb1 ">
+                        <a href="{% url 'Ventas_registrar_nuevo_cliente' %}">
+                            <img src="{% static 'img/cliente.png' %}" alt="img">
+                        </a>
+                    </div> 
+                </div>
+                <div class="col-md-6">
+                    <div class="thumb2 ">
+                        <a href="#">
+                            <img src="{% static 'img/ventas.png' %}" alt="img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="thumb1 ">
+                        <a href="#">
+                            <img src="{% static 'img/rally.png' %}" alt="img">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="thumb2 ">
+                        <a href="/mantenimiento">
+                            <img src="{% static 'img/mantenimineto.png' %}" alt="img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content_ventas %}

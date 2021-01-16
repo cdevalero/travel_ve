@@ -21,6 +21,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/admin.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/extra.css' %}" rel="stylesheet">
 
 </head>
 
@@ -43,7 +44,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#"
                     aria-expanded="true" aria-controls="collapsePages1">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="fas fa-fw fa-plane"></i>
                     <span>Ventas</span>
                 </a>
             </li>
@@ -77,9 +78,9 @@
                 <!-- End of Topbar -->
 
 
-                {% block content_admin %}
+                {% block content_ventas %}
 
-                {% endblock content_admin %}
+                {% endblock content_ventas %}
 
 
                 <!-- /.container-fluid -->
