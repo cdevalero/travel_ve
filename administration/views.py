@@ -392,11 +392,7 @@ def Add_AGE_AGE(request):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe el socio')
                 return redirect('Add_AGE_AGE')
-            '''try:
-                ciudad = AGE_AGE.objects.get(id_agencia=id_socio, id_socio=id_agencia)
-            except AGE_AGE.DoesNotExist:        
-                messages.error(request, 'Ya existe ese registro')
-                return redirect('Add_AGE_AGE')'''
+            
             if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
                 messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
                 return redirect('Add_AGE_AGE')
