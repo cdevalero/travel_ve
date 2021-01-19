@@ -2,6 +2,28 @@ from django.db import connection
 
 # Crear
 
+def Crear_Alojamiento(ciudad, pais, nombre):
+    with connection.cursor() as cursor:
+        cursor.execute ("INSERT INTO public.cgr_alojamientos(id_alojamiento, id_ciudad, id_pais, nombre)VALUES ((SELECT max(a.id_alojamiento) from cgr_alojamientos a) + 1, %s, %s, %s);",
+        [ciudad, pais, nombre])
+
+def Crear_Proveedor(alojamiento, nombre, tipo):
+    with connection.cursor() as cursor:
+        cursor.execute ("INSERT INTO public.cgr_proveedores(id_proveedor, id_alojamiento, nombre_proveedor, tipo_proveedor) VALUES ((SELECT max(p.id_proveedor) from cgr_proveedores p) + 1, %s, %s, %s);",
+        [alojamiento, nombre, tipo])
+
+def Crear_Asesor_viaje(nombre1, apellido1, apellido2, tlf, nombre2):
+    with connection.cursor() as cursor:
+        cursor.execute ("INSERT INTO public.cgr_asesores_de_viajes(id_asesor, primer_nombre, primer_apellido, segundo_apellido, telefono, segundo_nombre) VALUES ((SELECT max(a.id_asesor) from cgr_asesores_de_viajes a) + 1, %s, %s, %s, %s, %s);",
+        [nombre1, apellido1, apellido2, tlf, nombre2])
+
+def Crear_Agencia(nombre, tipo, alcance, web, tlf, calle, ciudad, pais, descripcion):
+    with connection.cursor() as cursor:
+        cursor.execute ("INSERT INTO public.cgr_agencias_de_viajes(id_agencia, nombre, tipo_de_operacion, alcance_geografico, web, telefono, calle_av, id_ciudad, id_pais, descripcion)VALUES ((SELECT max(a.id_agencia) from cgr_agencias_de_viajes a) + 1, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
+        [nombre, tipo, alcance, web, tlf, calle, ciudad, pais, descripcion])
+
+
+
 def Crear_Banco(nombre_banco):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_bancos(id_banco, nombre_banco) VALUES (DEFAULT,%s)', 
@@ -201,8 +223,8 @@ def Actualizar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciuda
 
 def Actualizar_AGE_AGE(agencia, socio, inicio, fin):
     with connection.cursor() as cursor:
-        cursor.execute ('UPDATE public.cgr_age_age SET id_agencia=%s, id_socio=%s, f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_socio=%s', 
-        [agencia, socio, inicio, fin, agencia, socio])
+        cursor.execute ('UPDATE public.cgr_age_age SET f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_socio=%s', 
+        [inicio, fin, agencia, socio])
 
 def Actualizar_Cupo(agencia, rally, cantidad):
     with connection.cursor() as cursor:

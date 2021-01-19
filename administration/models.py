@@ -218,7 +218,7 @@ class Agencias_de_viajes(models.Model):
     nombre = models.CharField(max_length=30)
     tipo_de_operacion = models.CharField(choices=OPERACION, max_length=1)
     alcance_geografico = models.CharField(choices=ALCANCE, max_length=1)
-    web = models.URLField(null=True, blank = True, max_length=30)
+    web = models.CharField(null=True, blank = True, max_length=30)
     telefono = models.IntegerField(null=True, blank = True)
     calle_av = models.TextField(null=True, blank = True, max_length=255)
     descripcion = models.TextField(null=True, blank = True, max_length=255)

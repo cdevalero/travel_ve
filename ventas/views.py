@@ -42,7 +42,7 @@ def Ventas_registrar_nuevo_cliente(request):
         except:
             messages.error(request, 'Entrada Invalida2')
             return redirect('Ventas_registrar_nuevo_cliente')
-        return redirect('index')
+        return redirect('Show_Clientes')
     form = Form_nuevo_registro_cliente()
     return render(request, 'ventas_registrar_cliente.html',{'form':form})
 

@@ -353,15 +353,22 @@ def Add_Agencia_de_viajes(request):
         form = Form_Agencia_de_viajes(request.POST)
         if form.is_valid():
 
-            id_ciudad = form.cleaned_data.get('id_ciudad')
-            id_pais = form.cleaned_data.get('id_pais')
+            nombre = form.data['nombre'] 
+            tipo_de_operacion = form.data['tipo_de_operacion'] 
+            alcance_geografico = form.data['alcance_geografico'] 
+            web = form.data['web'] 
+            telefono = form.data['telefono'] 
+            calle_av = form.data['calle_av'] 
+            id_ciudad = form.data['id_ciudad'] 
+            id_pais = form.data['id_pais'] 
+            descripcion = form.data['descripcion'] 
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Agencia_de_viajes')
-
-            form.save()
+            Crear_Agencia(nombre, tipo_de_operacion, alcance_geografico, web, telefono, calle_av, id_ciudad, id_pais, descripcion)
+            #form.save()
             return redirect ('Show_Agencia_de_viajes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -462,13 +469,14 @@ def Add_Alojamientos(request):
 
             id_ciudad = form.cleaned_data.get('id_ciudad')
             id_pais = form.cleaned_data.get('id_pais')
+            nombre = form.cleaned_data.get('nombre')
             try:
                 ciudad = Ciudades.objects.get(id_ciudad=id_ciudad, id_pais=id_pais)
             except Ciudades.DoesNotExist:        
                 messages.error(request, 'La ciudad no corresponde con el pais')
                 return redirect('Add_Alojamientos')
-
-            form.save()
+            Crear_Alojamiento(id_ciudad, id_pais, nombre)
+            #form.save()
             return redirect ('Show_Alojamientos')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -480,7 +488,11 @@ def Add_Proveedores(request):
     if request.method == 'POST':
         form = Form_Proveedores(request.POST)
         if form.is_valid():
-            form.save()
+            id_alojamiento = form.data['id_alojamiento']  
+            nombre_proveedor = form.cleaned_data.get('nombre_proveedor')
+            tipo_proveedor = form.cleaned_data.get('tipo_proveedor')
+            Crear_Proveedor(id_alojamiento, nombre_proveedor, tipo_proveedor)
+            #form.save()
             return redirect ('Show_Proveedores')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -522,7 +534,13 @@ def Add_Asesores_de_viajes(request):
     if request.method == 'POST':
         form = Form_Asesores_de_viajes(request.POST)
         if form.is_valid():
-            form.save()
+            primer_nombre = form.data['primer_nombre']  
+            primer_apellido = form.data['primer_apellido']
+            segundo_apellido = form.data['segundo_apellido']
+            telefono = form.data['telefono']
+            segundo_nombre = form.data['segundo_nombre']
+            Crear_Asesor_viaje(primer_nombre, primer_apellido, segundo_apellido, telefono, segundo_nombre)
+            #form.save()
             return redirect ('Show_Asesores_de_viajes')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -2202,12 +2220,6 @@ def Edit_AGE_AGE(request, id,id2):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe el socio')
                 return redirect('Show_AGE_AGE')
-            try:
-                ciudad = AGE_AGE.objects.get(id_agencia=id_socio, id_socio=id_agencia)
-            except Agencias_de_viajes.DoesNotExist:        
-                messages.error(request, 'Ya existe ese registro')
-                return redirect('Show_AGE_AGE')
-
             Actualizar_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
             return redirect ('Show_AGE_AGE')
         else:
