@@ -42,6 +42,8 @@ def Crear_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir
         [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden])
 
 def Crear_AGE_AGE(agencia, socio, inicio, fin):
+    if fin=='':
+        fin=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_age_age(id_agencia, id_socio, f_inicio, f_fin) VALUES (%s, %s, %s, %s)', 
         [agencia, socio, inicio, fin])
@@ -57,6 +59,8 @@ def Crear_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
         [cliente, agencia, fecha, numero])
 
 def Crear_PRO_AGE(agencia, proveedor, inicio, fin):
+    if fin=='':
+        fin=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_pro_age(id_agencia, id_proveedor, f_inicio, f_fin) VALUES (%s, %s, %s, %s)', 
         [agencia, proveedor, inicio, fin])
