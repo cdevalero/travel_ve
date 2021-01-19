@@ -252,7 +252,6 @@ CREATE SEQUENCE cgr_secuencia_asesores_de_viajes
 	maxvalue 100
 ;
 
-
 CREATE TABLE cgr_asesores_de_viajes
 (
 	id_asesor numeric NOT NULL DEFAULT nextval('cgr_secuencia_asesores_de_viajes'::regclass),
@@ -289,7 +288,6 @@ CREATE SEQUENCE cgr_secuencia_especializaciones
 	minvalue 1
 	maxvalue 100
 ;
-
 
 CREATE TABLE cgr_especializaciones
 (
@@ -538,7 +536,6 @@ CREATE TABLE cgr_puntuaciones
 	CONSTRAINT pk_puntuacion PRIMARY KEY (id_puntuacion)
 );
 
-
 ALTER TABLE cgr_premios 
 	ADD CONSTRAINT fk_id_rally_premio FOREIGN KEY (id_rally) REFERENCES cgr_rallies(id_rally);
 
@@ -646,10 +643,70 @@ ALTER TABLE cgr_detalle_viajeros
 
 ALTER TABLE cgr_participantes
 	ADD CONSTRAINT fk1_rallies FOREIGN KEY (id_rally) REFERENCES cgr_rallies(id_rally),
-	ADD CONSTRAINT fk2_registro_viajeros FOREIGN KEY (id_via_agencia,id_via_viajero ) REFERENCES cgr_registro_viajeros(id_agencia,id_viajero),
+	ADD CONSTRAINT fk2_registro_viajeros FOREIGN KEY (id_via_agencia,id_via_viajero) REFERENCES cgr_registro_viajeros(id_agencia,id_viajero),
 	ADD CONSTRAINT fk3_registro_clientes FOREIGN KEY (id_cli_agencia,id_cli_cliente) REFERENCES cgr_registro_clientes(id_agencia,id_cliente);
 
 ALTER TABLE cgr_puntuaciones
 	ADD CONSTRAINT fk1_rallies FOREIGN KEY (id_rally) REFERENCES cgr_rallies(id_rally),
 	ADD CONSTRAINT fk2_atracciones FOREIGN KEY (id_pais,id_ciudad,id_atraccion) REFERENCES cgr_atracciones(id_pais,id_ciudad,id_atraccion),
 	ADD CONSTRAINT fk3_paquetes_contrato FOREIGN KEY (id_paquete_contrato) REFERENCES cgr_paquetes_contrato(numero_factura);
+
+CREATE index cgr_index_premio on cgr_premios (id_rally);
+
+CREATE index cgr_index_ciudades on cgr_ciudades (id_pais);
+
+CREATE index cgr_index_atracciones on cgr_atracciones (id_ciudad, id_pais);
+
+CREATE index cgr_index_circuitos on cgr_circuitos (id_ciudad, id_pais, id_rally);
+
+CREATE index cgr_index_atr_cir on cgr_atr_cir (id_atraccion,id_ciudad_at,id_pais_at,id_circuito,id_rally_cir,id_ciudad_cir,id_pais_cir);
+
+CREATE index cgr_index_agencias_de_viajes on cgr_agencias_de_viajes (id_ciudad,id_pais);
+
+CREATE index cgr_index_age_age on cgr_age_age (id_agencia, id_socio);
+
+CREATE index cgr_index_cupos on cgr_cupos (id_agencia, id_rally);
+
+CREATE index cgr_index_registro_clientes on cgr_registro_clientes (id_cliente, id_agencia);
+
+CREATE index cgr_index_alojamientos on cgr_alojamientos (id_ciudad,id_pais);
+
+CREATE index cgr_index_proveedores on cgr_proveedores (id_alojamiento);
+
+CREATE index cgr_index_pro_age on cgr_pro_age (id_agencia, id_proveedor);
+
+CREATE index cgr_index_paquetes on cgr_paquetes (id_agencia);
+
+CREATE index cgr_index_especializaciones on cgr_especializaciones (id_areas_de_interes, id_atraccion,id_ciudad,id_pais, id_agencia, id_paquete,id_agencia_paquete, id_asesor);
+
+CREATE index cgr_index_precios_paquetes on cgr_precios_paquetes (id_paquete,id_agencia);
+
+CREATE index cgr_index_calendarios_anuales on cgr_calendarios_anuales (id_paquete,id_agencia);
+
+CREATE index cgr_index_descuentos on cgr_descuentos (id_agencia);
+
+CREATE index cgr_index_itinerarios on cgr_itinerarios (id_paquete,id_agencia, id_ciudad,id_pais);
+
+CREATE index cgr_index_itn_atr on cgr_itn_atr (id_itinerario,id_paquete ,id_agencia ,id_ciudad ,id_pais, id_atraccion,id_ciudad_at ,id_pais_at);
+
+CREATE index cgr_index_detalles_servicios on cgr_detalles_servicios (id_itinerario,id_paquete ,id_agencia ,id_ciudad ,id_pais);
+
+CREATE index cgr_index_alo_det on cgr_alo_det (id_detalle_servicio,id_itinerario,id_paquete,id_agencia,id_ciudad,id_pais, id_alojamiento);
+
+CREATE index cgr_index_instrumentos_de_pago on cgr_instrumentos_de_pago (doc_identidad_cliente, id_banco);
+
+CREATE index cgr_index_paquetes_contrato on cgr_paquetes_contrato (id_paquete,id_agencia, id_reg_cliente,id_reg_agencia, id_asesor);
+
+CREATE index cgr_index_formas_de_pago on cgr_formas_de_pago (id_instrumento,id_cliente, id_paquete_contrato);
+
+CREATE index cgr_index_viajeros on cgr_viajeros (id_ciudad,id_pais, id_paquete_contrato);
+
+CREATE index cgr_index_pai_via on cgr_pai_via (id_viajero, id_pais);
+
+CREATE index cgr_index_registro_viajeros on cgr_registro_viajeros (id_agencia, id_viajero);
+
+CREATE index cgr_index_detalle_viajeros on cgr_detalle_viajeros (id_viajero,id_agencia, id_paquete_contrato);
+
+CREATE index cgr_index_participantes on cgr_participantes (id_rally, id_via_agencia,id_via_viajero, id_cli_agencia,id_cli_cliente);
+
+CREATE index cgr_index_puntuaciones on cgr_puntuaciones (id_rally, id_pais,id_ciudad,id_atraccion, id_paquete_contrato);
