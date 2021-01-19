@@ -249,16 +249,6 @@ def Add_Premios(request):
     return render(request, 'create_edit/AddPremios.html',{'form':form})
 
 def Add_Ciudades(request):
-    '''if request.method == 'POST':
-        form = Form_Ciudades(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect ('Show_Ciudades')
-        else:
-            messages.error(request, 'Entrada Invalida')
-            return redirect('Add_Ciudades')
-    form = Form_Ciudades()
-    return render(request, 'create_edit/AddCiudades.html',{'form':form})'''
     if request.method == 'POST':
         form = Form_Ciudades(request.POST)
         if form.is_valid():
@@ -402,10 +392,13 @@ def Add_AGE_AGE(request):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe el socio')
                 return redirect('Add_AGE_AGE')
-            try:
+            '''try:
                 ciudad = AGE_AGE.objects.get(id_agencia=id_socio, id_socio=id_agencia)
-            except Agencias_de_viajes.DoesNotExist:        
+            except AGE_AGE.DoesNotExist:        
                 messages.error(request, 'Ya existe ese registro')
+                return redirect('Add_AGE_AGE')'''
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
                 return redirect('Add_AGE_AGE')
 
             Crear_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
@@ -517,7 +510,10 @@ def Add_PRO_AGE(request):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe la agencia')
                 return redirect('Add_pro_age')
-
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_pro_age')
+                
             Crear_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
             return redirect ('Show_pro_age')
         else:
