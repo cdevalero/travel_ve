@@ -122,10 +122,10 @@ def Crear_PAI_VIA(viajero, pais, numero):
         cursor.execute ('INSERT INTO public.cgr_pai_via(id_viajero, id_pais, nro_de_pasaporte) VALUES (%s, %s, %s)', 
         [viajero, pais, numero])
 
-def Crear_Registro_viajeros(agencia, viajero, registro, numero):
+def Crear_Registro_viajeros(agencia, viajero, registro, numero):                                                                        
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_registro_viajeros(id_agencia, id_viajero, f_registro, nro_registro) VALUES (%s, %s, %s, %s)', 
-        [agencia, viajero, registro, numero])
+        cursor.execute ('INSERT INTO public.cgr_registro_viajeros(id_agencia, id_viajero, f_registro, nro_registro) VALUES (%s, %s, %s, (SELECT max(r.nro_registro) from cgr_registro_viajeros r) + 1)', 
+        [agencia, viajero, registro])
 
 def Crear_Detalle_viajero(viajero, agencia, paquete_contrato):
     with connection.cursor() as cursor:

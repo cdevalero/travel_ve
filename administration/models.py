@@ -131,7 +131,7 @@ class Ciudades(models.Model):
     descripcion_ciudad = models.TextField(max_length=255)
 
     def __str__(self):
-        return self.nombre_ciudad
+        return self.nombre_ciudad + ', ' + str(self.id_pais)
 
     class Meta:
 

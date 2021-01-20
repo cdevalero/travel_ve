@@ -1,14 +1,14 @@
 {% extends 'base_admin.html' %}
 
 {% block title %}
-    Nuevo Cliente
+    Nuevo Viajer
 {% endblock title %}
 
 {% load crispy_forms_tags %}
 
 {% block content_admin %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Registrar nuevo cliente</h1>
+    <h1 class="h3 mb-2 text-gray-800">Registrar nuevo viajero</h1>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <a href="/" class="btn btn-primary" >Volver</a>
@@ -28,7 +28,7 @@
         <form action="" method="post" class="mt-2" autocomplete="off">
             {% csrf_token %}
             {{form|crispy}}
-            <button type="submit" formaction="{% url 'Ventas_registrar_nuevo_cliente' %}" class="btn btn-success">Crear!</button>
+            <button type="submit" class="btn btn-success">Crear!</button>
         </form>
       </div>
     </div>
