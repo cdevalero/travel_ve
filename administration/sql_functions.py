@@ -13,16 +13,28 @@ def Crear_Proveedor(alojamiento, nombre, tipo):
         [alojamiento, nombre, tipo])
 
 def Crear_Asesor_viaje(nombre1, apellido1, apellido2, tlf, nombre2):
+    if nombre2=='':
+        nombre2=None;
     with connection.cursor() as cursor:
         cursor.execute ("INSERT INTO public.cgr_asesores_de_viajes(id_asesor, primer_nombre, primer_apellido, segundo_apellido, telefono, segundo_nombre) VALUES ((SELECT max(a.id_asesor) from cgr_asesores_de_viajes a) + 1, %s, %s, %s, %s, %s);",
         [nombre1, apellido1, apellido2, tlf, nombre2])
 
 def Crear_Agencia(nombre, tipo, alcance, web, tlf, calle, ciudad, pais, descripcion):
+    if web=='':
+        web=None;
+    if tlf=='':
+        tlf=None;
+    if calle=='':
+        calle=None;
+    if ciudad=='':
+        ciudad=None;
+    if pais=='':
+        pais=None;
+    if descripcion=='':
+        descripcion=None;
     with connection.cursor() as cursor:
         cursor.execute ("INSERT INTO public.cgr_agencias_de_viajes(id_agencia, nombre, tipo_de_operacion, alcance_geografico, web, telefono, calle_av, id_ciudad, id_pais, descripcion)VALUES ((SELECT max(a.id_agencia) from cgr_agencias_de_viajes a) + 1, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
         [nombre, tipo, alcance, web, tlf, calle, ciudad, pais, descripcion])
-
-
 
 def Crear_Banco(nombre_banco):
     with connection.cursor() as cursor:
@@ -48,6 +60,7 @@ def Crear_Premio(id_premio, id_rally, posicion, descripcion_premio):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_premios(id_premio, id_rally, posicion, descripcion_premio) VALUES (%s, %s, %s, %s)', 
         [id_premio, id_rally, posicion, descripcion_premio])
+
 def Crear_Ciudad( pais, nombre, tipo, descripcion):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_ciudades(id_ciudad, id_pais, nombre_ciudad, tipo_ciudad, descripcion_ciudad) VALUES (DEFAULT, %s, %s, %s, %s)', 
@@ -59,6 +72,8 @@ def Crear_Circuito(orden, rally, ciudad, pais, dias):
         [orden, rally, ciudad, pais, dias])
 
 def Crear_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden):
+    if orden=='':
+        orden=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_atr_cir(id_atraccion, id_ciudad_at, id_pais_at, id_circuito, id_rally_cir, id_ciudad_cir, id_pais_cir, orden) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', 
         [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden])
@@ -71,6 +86,8 @@ def Crear_AGE_AGE(agencia, socio, inicio, fin):
         [agencia, socio, inicio, fin])
 
 def Crear_Cupo(agencia, rally, cantidad):
+    if cantidad=='':
+        cantidad=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_cupos(id_agencia, id_rally, cantidad) VALUES (%s, %s, %s)', 
         [agencia, rally, cantidad])
@@ -88,16 +105,24 @@ def Crear_PRO_AGE(agencia, proveedor, inicio, fin):
         [agencia, proveedor, inicio, fin])
 
 def Crear_Precio_paquete(inicio, paquete, agencia, fin, valor):
+    if fin=='':
+        fin=None;
+    if valor=='':
+        valor=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_precios_paquetes(f_inicio, id_paquete, id_agencia, f_fin, valor) VALUES (%s, %s, %s, %s, %s)', 
         [inicio, paquete, agencia, fin, valor])
 
 def Crear_Calendarios_anuales(salida, paquete, agencia, descripcion):
+    if descripcion=='':
+        descripcion=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_calendarios_anuales(f_salida, id_paquete, id_agencia, descripcion) VALUES (%s, %s, %s, %s)', 
         [salida, paquete, agencia, descripcion])
 
 def Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo):
+    if tiempo=='':
+        tiempo=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_itinerarios(orden, id_ciudad, id_pais, id_agencia, id_paquete, tiempo_estadia) VALUES (%s, %s, %s, %s, %s, %s)', 
         [orden, ciudad, pais, agencia, paquete, tiempo])
@@ -113,6 +138,8 @@ def Crear_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamien
         [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
 def Crear_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
+    if tipo_forma_pago=='':
+        tipo_forma_pago=None;
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_formas_de_pago(id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago) VALUES (%s, %s, %s, %s)', 
         [instrumento, cliente, paquete_contrato, tipo_forma_pago])
@@ -217,16 +244,22 @@ def Actualizar_Circuito(orden, rally, ciudad, pais, dias):
         [orden, rally, ciudad, pais, dias, orden, rally, ciudad, pais])
 
 def Actualizar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden):
+    if orden=='':
+        orden=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_atr_cir SET id_atraccion=%s, id_ciudad_at=%s, id_pais_at=%s, id_circuito=%s, id_rally_cir=%s, id_ciudad_cir=%s, id_pais_cir=%s, orden=%s WHERE id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s and id_circuito=%s and id_rally_cir=%s and id_ciudad_cir=%s and id_pais_cir=%s', 
         [atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir, orden, atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir])
 
 def Actualizar_AGE_AGE(agencia, socio, inicio, fin):
+    if fin=='':
+        fin=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_age_age SET f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_socio=%s', 
         [inicio, fin, agencia, socio])
 
 def Actualizar_Cupo(agencia, rally, cantidad):
+    if cantidad=='':
+        cantidad=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_cupos SET id_agencia=%s, id_rally=%s, cantidad=%s WHERE id_agencia=%s and id_rally=%s', 
         [agencia, rally, cantidad, agencia, rally])
@@ -237,21 +270,31 @@ def Actualizar_Registro_clientes(cliente, agencia, fecha, numero): # GUIA ------
         [cliente, agencia, fecha, numero, cliente, agencia])
 
 def Actualizar_PRO_AGE(agencia, proveedor, inicio, fin):
+    if fin=='':
+        fin=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_pro_age SET id_agencia=%s, id_proveedor=%s, f_inicio=%s, f_fin=%s WHERE id_agencia=%s and id_proveedor=%s', 
         [agencia, proveedor, inicio, fin, agencia, proveedor])
 
 def Actualizar_Precio_paquete(inicio, paquete, agencia, fin, valor):
+    if fin=='':
+        fin=None;
+    if valor=='':
+        valor=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_precios_paquetes SET f_inicio=%s, id_paquete=%s, id_agencia=%s, f_fin=%s, valor=%s WHERE f_inicio=%s and id_paquete=%s and id_agencia=%s', 
         [inicio, paquete, agencia, fin, valor, inicio, paquete, agencia])
 
 def Actualizar_Calendarios_anuales(salida, paquete, agencia, descripcion):
+    if descripcion=='':
+        descripcion=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_calendarios_anuales SET f_salida=%s, id_paquete=%s, id_agencia=%s, descripcion=%s WHERE f_salida=%s and id_paquete=%s and id_agencia=%s', 
         [salida, paquete, agencia, descripcion, salida, paquete, agencia])
 
 def Actualizar_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo):
+    if tiempo=='':
+        tiempo=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_itinerarios SET orden=%s, id_ciudad=%s, id_pais=%s, id_agencia=%s, id_paquete=%s, tiempo_estadia=%s WHERE orden=%s and id_ciudad=%s and id_pais=%s and id_agencia=%s and id_paquete=%s', 
         [orden, ciudad, pais, agencia, paquete, tiempo, orden, ciudad, pais, agencia, paquete])
@@ -267,6 +310,8 @@ def Actualizar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, aloj
         [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento, detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
 def Actualizar_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
+    if tipo_forma_pago=='':
+        tipo_forma_pago=None;
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_formas_de_pago SET id_instrumento=%s, id_cliente=%s, id_paquete_contrato=%s, tipo_forma_de_pago=%s WHERE id_instrumento=%s and id_cliente=%s and id_paquete_contrato=%s', 
         [instrumento, cliente, paquete_contrato, tipo_forma_pago, instrumento, cliente, paquete_contrato])

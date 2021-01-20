@@ -912,7 +912,7 @@ def Add_Registro_viajeros(request):
             id_agencia = form.data['id_agencia']  
             id_viajero = form.data['id_viajero']
             f_registro = form.data['f_registro']
-            nro_registro = form.data['nro_registro']
+            nro_registro = 1
             try:
                 validacion = Viajeros.objects.get(id_de_identidad=id_viajero)
             except Viajeros.DoesNotExist:        
@@ -930,6 +930,7 @@ def Add_Registro_viajeros(request):
             messages.error(request, 'Entrada Invalida')
             return redirect('Add_Registro_viajeros')
     form = Form_Registro_viajeros()
+    form.fields['nro_registro'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
 def Add_Detalle_viajeros(request):
@@ -2220,6 +2221,9 @@ def Edit_AGE_AGE(request, id,id2):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe el socio')
                 return redirect('Show_AGE_AGE')
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_AGE_AGE')
             Actualizar_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
             return redirect ('Show_AGE_AGE')
         else:
@@ -2389,7 +2393,9 @@ def Edit_PRO_AGE(request, id,id2):
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe la agencia')
                 return redirect('Show_pro_age')
-
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_pro_age')
             Actualizar_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
             return redirect ('Show_pro_age')
         else:
