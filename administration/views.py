@@ -195,15 +195,31 @@ def Add_Areas_de_interes(request):
 def Add_Paises(request):
     if request.method == 'POST':
         form = Form_Paises(request.POST)
-        
         if form.is_valid():
             nombre_pais = form.data['nombre_pais']  
             region_pais = form.data['region_pais']  
             continente_pais = form.data['continente_pais']  
             nacionalidad = form.data['nacionalidad']  
             descripcion_pais = form.data['descripcion_pais']  
+            if region_pais == "EU" and continente_pais == "Europa":
+                pass
+            elif region_pais == "AF_MO" and continente_pais == "Africa":
+                pass
+            elif region_pais == "AF_MO" and continente_pais == "Asia":
+                pass
+            elif region_pais == "AU_NZ_PAC" and continente_pais == "Oceania":
+                pass
+            elif region_pais == "AS" and continente_pais == "Asia":
+                pass
+            elif region_pais == "MEX_CEN_SUR" and continente_pais == "America":
+                pass
+            elif region_pais == "USA_CAN_CAR" and continente_pais == "America":
+                pass
+            else:
+                messages.error(request, 'El continento no se encuentra en la region')
+                return redirect('Add_paises')
             Crear_Pais(nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais)
-            #form.save()
+            
             return redirect ('Show_paises')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -214,19 +230,28 @@ def Add_Paises(request):
 def Add_Rallies(request):
     if request.method == 'POST':
         form = Form_Rallies(request.POST)
+        try:
+            del form.errors['duracion']    
+        except:
+            pass
         if form.is_valid():
             nombre_rally = form.data['nombre_rally'] 
             costo_participante = form.data['costo_participante'] 
             f_inicio = form.data['f_inicio'] 
             f_fin = form.data['f_fin'] 
             tipo_rally = form.data['tipo_rally'] 
-            duracion = form.data['duracion'] 
             total_cupo_participante = form.data['total_cupo_participante'] 
             # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
             if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
                 messages.error(request, 'Los Rally deben tener maximo una semana de duración')
                 return redirect('Add_rallies')
-            Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante)
+            ff = form.cleaned_data.get('f_fin')
+            fi = form.cleaned_data.get('f_inicio')
+            duracion = 1
+            while ff > fi:
+                duracion = duracion+1
+                fi = fi + timedelta(days=1)
+            Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante)  
             return redirect ('Show_rallies')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -906,6 +931,10 @@ def Add_Registro_viajeros(request):
         form = Form_Registro_viajeros(request.POST)
         try:
             del form.errors['id_agencia']    
+        except:
+            pass
+        try:
+            del form.errors['nro_registro']    
         except:
             pass
         if form.is_valid():
@@ -1909,6 +1938,25 @@ def Edit_Paises(request, id):
     if request.method == 'POST':
         form = Form_Paises(request.POST, instance= obj)
         if form.is_valid():
+            region_pais = form.data['region_pais']  
+            continente_pais = form.data['continente_pais'] 
+            if region_pais == "EU" and continente_pais == "Europa":
+                pass
+            elif region_pais == "AF_MO" and continente_pais == "Africa":
+                pass
+            elif region_pais == "AF_MO" and continente_pais == "Asia":
+                pass
+            elif region_pais == "AU_NZ_PAC" and continente_pais == "Oceania":
+                pass
+            elif region_pais == "AS" and continente_pais == "Asia":
+                pass
+            elif region_pais == "MEX_CEN_SUR" and continente_pais == "America":
+                pass
+            elif region_pais == "USA_CAN_CAR" and continente_pais == "America":
+                pass
+            else:
+                messages.error(request, 'El continento no se encuentra en la region')
+                return redirect('Show_paises')
             form.save()
             return redirect ('Show_paises')
         else:
@@ -1919,18 +1967,28 @@ def Edit_Paises(request, id):
 
 def Edit_Rallies(request, id):
     try:
-        obj = Paises.objects.get(id_rally=id)                   #---> cambiar id
-    except Paises.DoesNotExist:
+        obj = Rallies.objects.get(id_rally=id)                   #---> cambiar id
+    except Rallies.DoesNotExist:
         messages.error(request, 'No existe la entrada')
         return redirect('Show_rallies')                         #---> cambiar show
-
     if request.method == 'POST':
         form = Form_Rallies(request.POST, instance= obj)        #---> poner instance
+        try:
+            del form.errors['duracion']    
+        except:
+            pass
         if form.is_valid():
             # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
             if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
                 messages.error(request, 'Los Rally deben tener maximo una semana de duración')
                 return redirect('Add_rallies')
+            ff = form.cleaned_data.get('f_fin')
+            fi = form.cleaned_data.get('f_inicio')
+            duracion = 1
+            while ff > fi:
+                duracion = duracion+1
+                fi = fi + timedelta(days=1)
+            form['duracion'].value(duracion)
             form.save()
             return redirect ('Show_rallies')
         else:

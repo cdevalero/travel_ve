@@ -10,13 +10,13 @@ insert into cgr_bancos values (DEFAULT , 'Banplus');
 
 insert into cgr_clientes values (25385742, 'roberto', 'natural', 'ojeda', 'pacheco');
 insert into cgr_clientes values (25151252, 'ernesto', 'natural', 'avila', 'garcia');
-insert into cgr_clientes values (12547589, 'alvaro', 'juridico', 'santiago');
+insert into cgr_clientes values (12547589, 'Emprendimiento 123 C.A.', 'juridico');
 insert into cgr_clientes values (88774589, 'cristel', 'natural', 'andrade' );
-insert into cgr_clientes values (1025369, 'juan', 'natural', 'ojeda' );
+insert into cgr_clientes values (1025369, 'juan', 'natural', 'ojeda');
 insert into cgr_clientes values (25393752, 'joan', 'natural', 'rosas', 'cruz');
 insert into cgr_clientes values (5899658, 'Ysnardo', 'natural', 'Salgado' );
 insert into cgr_clientes values (44111222, 'Jualia ', 'natural', 'Curoto', 'Perez');
-insert into cgr_clientes values (47489956, 'Luis', 'juridico', 'Garcia');
+insert into cgr_clientes values (47489956, 'Luis', 'juridico', 'Garcia', 'Garnica');
 
 insert into cgr_areas_de_interes values (DEFAULT , 'Aventura', 'Visita a lugares exoticos y encuentros con la naturaleza');
 insert into cgr_areas_de_interes values (DEFAULT, 'Celebraciones especiales', 'Para lunas de miel, reencuentros, viajes familiares, celebraciones de cumpleaños, etc');
@@ -165,15 +165,15 @@ insert into cgr_atr_cir values (24, 12, 11, 7, 7, 12, 11, 7);
 insert into cgr_atr_cir values (13, 7, 7, 8, 8, 7, 7, 8);
 insert into cgr_atr_cir values (31, 16, 15, 9, 9, 16, 15, 9);
 
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Veltre' , 'T', 'I', 'www.veltra.com',+81345720292 ,'Ueno Ameyoko Shotengai', 16, 15, 'ofrece cientos de recorridos y actividades para viajeros de todo el mundo');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Travelzoo', 'T', 'L', 'www.travelzoo.com', +16469802805 , 'Second Avenue ', 21, 20, 'compañía de Internet que publica ofertas de más de 2,000 viajes, entretenimiento y negocios locales como restaurantes y spas');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Gadventures', 'R', 'I', 'www.gadventures.com', +5115988200  , 'WASHINGTON 1097', 17, 16, 'operador de tours guiados en grupos pequeños.');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Dreamtrips', 'R', 'I', 'www.dreamtrips.com' , +19728055100 , '75024', 24, 20, 'Como miembro de DreamTrips, reserve una variedad de vacaciones.');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Contiki' , 'W', 'I' , 'www.contiki.com', +18662668454 , 'Abbey Street' , 12, 11, 'es una compañía de turismo que atiende a personas de entre 18 y 35 años');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Tourradar', 'W' , 'I', ' www.tourradar.com', +6173108663, 'Fleischmarkt', 4, 4, 'TourRadar es una compañía global privada con sede en Viena, Austria, que opera un mercado en línea y un motor de reservas por Internet que se especializa en recorridos de varios días');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Airbnb', 'M', 'I', 'www.airbnb.com', +16289003316, 'Buchanan Street ', 24, 20, 'Airbnb es una compañía que ofrece una plataforma digital dedicada a la oferta de alojamientos a particulares y turísticos');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Klook Travel', 'M', 'N', 'www.klook.com',+85225211511 , '2 Lower Albert Rd', 13, 12, 'Descubre y reserva experiencias de viaje increíbles con Klook!');
-insert into cgr_agencias_de_viajes values (DEFAULT, 'Peek', 'M', 'I', 'www.peek.com', +16469802797, 'Lexington Avenue', 21, 20, 'Peek es una ventanilla única para descubrir y reservar increíbles actividades, recorridos y más');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Veltre' , 'T', 'I', 'www.veltra.com',8134572 ,'Ueno Ameyoko Shotengai', 16, 15, 'ofrece cientos de recorridos y actividades para viajeros de todo el mundo');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Travelzoo', 'T', 'L', 'www.travelzoo.com', 1646980 , 'Second Avenue ', 21, 20, 'compañía de Internet que publica ofertas de más de 2,000 viajes, entretenimiento y negocios locales como restaurantes y spas');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Gadventures', 'R', 'I', 'www.gadventures.com', 511598  , 'WASHINGTON 1097', 17, 16, 'operador de tours guiados en grupos pequeños.');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Dreamtrips', 'R', 'I', 'www.dreamtrips.com' , 1972805 , '75024', 24, 20, 'Como miembro de DreamTrips, reserve una variedad de vacaciones.');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Contiki' , 'W', 'I' , 'www.contiki.com', 18662668, 'Abbey Street' , 12, 11, 'es una compañía de turismo que atiende a personas de entre 18 y 35 años');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Tourradar', 'W' , 'I', ' www.tourradar.com', 617310, 'Fleischmarkt', 4, 4, 'TourRadar es una compañía global privada con sede en Viena, Austria, que opera un mercado en línea y un motor de reservas por Internet que se especializa en recorridos de varios días');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Airbnb', 'M', 'I', 'www.airbnb.com', 1628900, 'Buchanan Street ', 24, 20, 'Airbnb es una compañía que ofrece una plataforma digital dedicada a la oferta de alojamientos a particulares y turísticos');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Klook Travel', 'M', 'N', 'www.klook.com',8522521 , '2 Lower Albert Rd', 13, 12, 'Descubre y reserva experiencias de viaje increíbles con Klook!');
+insert into cgr_agencias_de_viajes values (DEFAULT, 'Peek', 'M', 'I', 'www.peek.com',1646980, 'Lexington Avenue', 21, 20, 'Peek es una ventanilla única para descubrir y reservar increíbles actividades, recorridos y más');
  
 insert into cgr_age_age values (1, 9, '2020-12-03', '2025-12-03');
 insert into cgr_age_age values (9, 8, '2020-12-03', '2025-12-03');

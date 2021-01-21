@@ -26,7 +26,7 @@ class Form_Paises(forms.ModelForm):
 class Form_Rallies(forms.ModelForm):
     class Meta:
         model = Rallies;
-        fields = ('nombre_rally', 'costo_participante', 'f_inicio', 'f_fin', 'tipo_rally', 'duracion', 'total_cupo_participante')
+        fields = ('nombre_rally', 'costo_participante', 'f_inicio', 'f_fin', 'tipo_rally', 'total_cupo_participante')
         widgets = {
             'f_inicio': DateInput(attrs={'type': 'date'}),
             'f_fin': DateInput(attrs={'type': 'date'})

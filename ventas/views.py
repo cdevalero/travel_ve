@@ -20,6 +20,10 @@ def Crear_nuevo_Registro_clientes(cliente, agencia, fecha):
 
 def Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2):
     with connection.cursor() as cursor:
+        if apellido1=='':
+            apellido1=None;
+        if apellido2=='':
+            apellido2=None;
         cursor.execute ('INSERT INTO public.cgr_clientes(doc_identidad_o_rif, nombre_cliente, tipo_cliente, primer_apellido, segundo_apellido)VALUES (%s, %s, %s, %s, %s)',
         [cedula, nombre, tipo, apellido1, apellido2])
 

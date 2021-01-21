@@ -53,7 +53,7 @@ def Crear_Area_de_interes(id_areas_de_interes, nombre_area_de_interes, descripci
 
 def Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante):
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)', 
+        cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES ((SELECT max(p.id_rally) from cgr_rallies p) + 1, %s, %s, %s, %s, %s, %s, %s)', 
         [nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante])
 
 def Crear_Premio(id_premio, id_rally, posicion, descripcion_premio):

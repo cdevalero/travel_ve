@@ -13,8 +13,8 @@ class Form_nuevo_registro_cliente(forms.Form):
     tipo = forms.ChoiceField(choices=PERSONA, label='Tipo')
     cedula = forms.IntegerField(label='Documento de Identidad / RIF')
     nombre = forms.CharField(label='Nombres', max_length=30)
-    apellido1 = forms.CharField(label='Primer Apellido', max_length=30)
-    apellido2 = forms.CharField(label='Segundo Apellido', max_length=30)
+    apellido1 = forms.CharField(label='Primer Apellido', max_length=30, required=False)
+    apellido2 = forms.CharField(label='Segundo Apellido', max_length=30, required=False)
     agencia = ModelChoiceField(Agencias_de_viajes.objects.all(), label='Agencia de Viajes')
 
 class Form_Ventas_Instrumentos_pago(forms.Form):

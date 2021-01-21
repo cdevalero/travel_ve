@@ -17,8 +17,8 @@ CREATE TABLE cgr_clientes
 	doc_identidad_o_rif numeric NOT NULL,
 	nombre_cliente varchar(75) NOT NULL,
 	tipo_cliente varchar(10) NOT NULL,
-	primer_apellido varchar(30) DEFAULT '',
-	segundo_apellido varchar(30) DEFAULT '',
+	primer_apellido varchar(30),
+	segundo_apellido varchar(30),
 	CONSTRAINT pk_clientes PRIMARY KEY (doc_identidad_o_rif),
 	CONSTRAINT chk_tipo_cliente CHECK(tipo_cliente in ('natural','juridico'))
 );
