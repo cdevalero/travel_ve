@@ -360,8 +360,12 @@ def Actualizar_Detalle_viajero(viajero, agencia, paquete_contrato):
 
 def Crear_nuevo_Registro_clientes(cliente, agencia, fecha):
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, (SELECT max(r.numero_registro) from cgr_registro_clientes r) + 1)', 
-        [cliente, agencia, fecha])
+        try:
+            cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, (SELECT max(r.numero_registro) from cgr_registro_clientes r) + 1)', 
+            [cliente, agencia, fecha])
+        except:
+            return 1
+        return 0
 
 def Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2):
     with connection.cursor() as cursor:
@@ -369,10 +373,56 @@ def Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2):
             apellido1=None;
         if apellido2=='':
             apellido2=None;
-        cursor.execute ('INSERT INTO public.cgr_clientes(doc_identidad_o_rif, nombre_cliente, tipo_cliente, primer_apellido, segundo_apellido)VALUES (%s, %s, %s, %s, %s)',
-        [cedula, nombre, tipo, apellido1, apellido2])
+        try: 
+            cursor.execute ('INSERT INTO public.cgr_clientes(doc_identidad_o_rif, nombre_cliente, tipo_cliente, primer_apellido, segundo_apellido)VALUES (%s, %s, %s, %s, %s)',
+            [cedula, nombre, tipo, apellido1, apellido2])
+        except:
+            return 1
+        return 0
 
 def Crear_nuevo_viajero(cedula, ciudad, pais, paq_con, nombre1, apellido1, apellido2, sexo, f_nac, nombre2):
      with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_viajeros(id_de_identidad, id_ciudad, id_pais, id_paquete_contrato, primer_nombre, primer_apellido, segundo_apellido, sexo, f_nacimiento, segundo_nombre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
-        [cedula, ciudad, pais, paq_con, nombre1, apellido1, apellido2, sexo, f_nac, nombre2])
+        try:
+            cursor.execute ('INSERT INTO public.cgr_viajeros(id_de_identidad, id_ciudad, id_pais, id_paquete_contrato, primer_nombre, primer_apellido, segundo_apellido, sexo, f_nacimiento, segundo_nombre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            [cedula, ciudad, pais, paq_con, nombre1, apellido1, apellido2, sexo, f_nac, nombre2])
+        except:
+            return 1
+        return 0
+
+def Crear_nuevo_PAI_VIA(viajero, pais, numero):
+    with connection.cursor() as cursor:
+        try: 
+            cursor.execute ('INSERT INTO public.cgr_pai_via(id_viajero, id_pais, nro_de_pasaporte) VALUES (%s, %s, %s)', 
+            [viajero, pais, numero])
+        except:
+            return 1
+        return 0
+
+def Crear_nuevo_Registro_viajeros(agencia, viajero, registro, numero):                                                                        
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_registro_viajeros(id_agencia, id_viajero, f_registro, nro_registro) VALUES (%s, %s, %s, (SELECT max(r.nro_registro) from cgr_registro_viajeros r) + 1)', 
+            [agencia, viajero, registro])
+        except:
+            return 1
+        return 0
+
+def Crear_nuevo_Proveedor(alojamiento, nombre, tipo):
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ("INSERT INTO public.cgr_proveedores(id_proveedor, id_alojamiento, nombre_proveedor, tipo_proveedor) VALUES ((SELECT max(p.id_proveedor) from cgr_proveedores p) + 1, %s, %s, %s);",
+            [alojamiento, nombre, tipo])
+        except:
+            return 1
+        return 0
+
+def Crear_nuevo_PRO_AGE(agencia, proveedor, inicio, fin):
+    if fin=='':
+        fin=None;
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_pro_age(id_agencia, id_proveedor, f_inicio, f_fin) VALUES (%s, %s, %s, %s)', 
+            [agencia, proveedor, inicio, fin])
+        except:
+            return 1
+        return 0

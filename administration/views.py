@@ -3418,16 +3418,12 @@ def Registrar_nuevo_cliente(request):
         apellido2 = form.data['apellido2']
         agencia = form.data['agencia']
         f_registro = date.today()
-        try:
-            Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2)
-        except:
+        if Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2) == 1:
             messages.error(request, 'Cliente ya agregado en sistema')
-            return redirect('Ventas_registrar_nuevo_cliente')
-        try:
-            Crear_nuevo_Registro_clientes(cedula, agencia, f_registro)
-        except:
+            return redirect('Registrar_nuevo_cliente')
+        if Crear_nuevo_Registro_clientes(cedula, agencia, f_registro) == 1:
             messages.error(request, 'Criente ya registrado en agencia de viajes')
-            return redirect('Ventas_registrar_nuevo_cliente')
+            return redirect('Registrar_nuevo_cliente')
         
         form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
         form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
@@ -3530,24 +3526,51 @@ def Registrar_nuevo_viajero(request):
         agencia = agencia.id_agencia
         f_registro = form.data['f_registro']
 
-        try:
-            Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2)
-        except:
+        if Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2) == 1:
             messages.error(request, 'Error al agregar Viajero')
-            return redirect('ventas_registrar_viajero')
-        try:
-            Crear_PAI_VIA(cedula, pais, pasaporte)
-        except:
+            return redirect('Registrar_nuevo_viajero')
+        if Crear_nuevo_PAI_VIA(cedula, pais, pasaporte) == 1:
             messages.error(request, 'Error al agregar pasaporte viajero')
-            return redirect('ventas_registrar_viajero')
-        try:
-            Crear_Registro_viajeros(agencia, cedula, f_registro, '1')
-        except:
+            return redirect('Registrar_nuevo_viajero')
+        if Crear_Registro_viajeros(agencia, cedula, f_registro, '1') ==1:
             messages.error(request, 'Error al registrar viajero')
-            return redirect('ventas_registrar_viajero')
+            return redirect('Registrar_nuevo_viajero')
 
         return redirect('Show_Viajeros')
     
     form = Form_nuevo_registro_viajero()
     return render(request, 'registrar_nuevo_viajero.html',{'form':form})
+
+def Registrar_nuevo_socio_proveedor(request):
+    if request.method == 'POST':
+        form = Form_nuevo_socio_proveedor(request.POST)
+
+        nombre = form.data['nombre']
+        tipo = form.data['tipo']
+        alojamiento = form.data['alojamiento']
+        agencia = form.data['agencia']
+        f_inicio = form.data['f_inicio']
+        f_fin = form.data['f_fin']
+
+
+        if form.is_valid():
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Registrar_nuevo_socio_proveedor')
+        
+        if Crear_nuevo_Proveedor(alojamiento,nombre,tipo) == 1:
+            messages.error(request, 'Error al agregar proveedor')
+            return redirect('Show_Proveedores')
+
+        pro = Proveedores.objects.get(nombre_proveedor=nombre)
+        
+        if Crear_PRO_AGE(agencia,pro.id_proveedor,f_inicio,f_fin) == 1:
+            messages.error(request, 'Error al vincular la agencia con el proveedor')
+            return redirect('Show_pro_age')
+
+        return redirect('Show_pro_age')
+    
+    form = Form_nuevo_socio_proveedor()
+    return render(request, 'registrar_nuevo_socio_proveedor.html',{'form':form})
+
 

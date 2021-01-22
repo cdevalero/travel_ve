@@ -164,4 +164,5 @@ urlpatterns = [
     path('Rn_intrumento_1/', Rn_intrumento_1, name="Rn_intrumento_1"),
     path('Rn_intrumento_2/', Rn_intrumento_2, name="Rn_intrumento_2"),
     path('Registrar_nuevo_viajero/', Registrar_nuevo_viajero, name="Registrar_nuevo_viajero"),
+    path('Registrar_nuevo_socio_proveedor/', Registrar_nuevo_socio_proveedor, name="Registrar_nuevo_socio_proveedor"),
 ]

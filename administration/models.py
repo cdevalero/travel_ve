@@ -299,7 +299,7 @@ class Alojamientos(models.Model):
     lugar = CompositeForeignKey(Ciudades, on_delete=PROTECT, to_fields={'id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'})
 
     def __str__(self):
-        return str(self.id_alojamiento)
+        return self.nombre
 
 
     class Meta:

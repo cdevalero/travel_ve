@@ -239,7 +239,7 @@ class Form_nuevo_registro_viajero(forms.Form):
         ('M', 'Masculino'),
     }
     cedula = forms.IntegerField(label='Documento de Identidad')
-    nombre1 = forms.CharField(label='Primer nombre', max_length=30)
+    nombre1 = forms.CharField(label='Primer nombre nombre', max_length=30)
     nombre2 = forms.CharField(label='Segundo nombre', max_length=30, required=False)
     apellido1 = forms.CharField(label='Primer Apellido', max_length=30)
     apellido2 = forms.CharField(label='Segundo Apellido', max_length=30)
@@ -251,4 +251,14 @@ class Form_nuevo_registro_viajero(forms.Form):
     f_registro = forms.DateField(label='Fecha de registro',  widget=DateInput(attrs={'type': 'date'}))
     paquete = ModelChoiceField(Paquetes_contrato.objects.all(), label='Paquete contrato')
 
-    
+class Form_nuevo_socio_proveedor(forms.Form):
+    CATEGORIA = (
+        ('exclusivo','Exclusivo'),
+        ('multiagencias','Multiagencias'),
+    )
+    nombre = forms.CharField(label='Nombre de Proveedor', max_length=30)
+    tipo = forms.ChoiceField(choices=CATEGORIA, label='Tipo de Proveedor')
+    alojamiento = ModelChoiceField(Alojamientos.objects.all(), label='Alojamiento')
+    agencia = ModelChoiceField(Agencias_de_viajes.objects.all(), label='Agencia de Viajes')
+    f_inicio = forms.DateField(label='Inicio de asociacion', widget=DateInput(attrs={'type': 'date'}))
+    f_fin = forms.DateField(label='Fin de asociacion', required=False, widget=DateInput(attrs={'type': 'date'}))
