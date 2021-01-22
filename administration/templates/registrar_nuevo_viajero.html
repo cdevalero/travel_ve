@@ -1,17 +1,17 @@
 {% extends 'base_admin.html' %}
 
 {% block title %}
-    Form Instrumentos_de_pago
+    Nuevo Viajero
 {% endblock title %}
 
 {% load crispy_forms_tags %}
 
 {% block content_admin %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Instrumentos_de_pago</h1>
+    <h1 class="h3 mb-2 text-gray-800">Registrar nuevo viajero</h1>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <a href="{% url 'Show_Instrumentos_de_pago' %}" class="btn btn-primary" >Volver</a>
+        <a href="/" class="btn btn-primary" >Volver</a>
       </div>
       <div class="card-body">
         {% if messages %}
@@ -28,8 +28,7 @@
         <form action="" method="post" class="mt-2" autocomplete="off">
             {% csrf_token %}
             {{form|crispy}}
-            <button type="submit" formaction="{% url 'Ventas_intrumento_1' %}" class="btn btn-success">Crear!</button>
-            <button type="submit" formaction="{% url 'Ventas_intrumento_2' %}" class="btn btn-success">Agregar Otro metodo de pago!</button>
+            <button type="submit" class="btn btn-success">Crear!</button>
         </form>
       </div>
     </div>

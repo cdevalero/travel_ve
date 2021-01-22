@@ -6,6 +6,7 @@ from .forms import *
 from django.contrib import messages
 from datetime import timedelta
 from .sql_functions import *
+from datetime import date
 
 # SHOW -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -550,6 +551,16 @@ def Add_PRO_AGE(request):
                 messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
                 return redirect('Add_pro_age')
                 
+            val = Proveedores.objects.get(id_proveedor=id_proveedor)
+            if val.tipo_proveedor == 'exclusivo':
+                try:
+                    val = PRO_AGE.objects.get(id_proveedor=id_proveedor)
+                except PRO_AGE.DoesNotExist:        
+                    Crear_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
+                    return redirect ('Show_pro_age')
+                messages.error(request, 'Este proveedor es exclusivo de otra agencia')
+                return redirect('Add_pro_age')
+
             Crear_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
             return redirect ('Show_pro_age')
         else:
@@ -2446,6 +2457,17 @@ def Edit_Proveedores(request, id):
     if request.method == 'POST':
         form = Form_Proveedores(request.POST, instance= obj)
         if form.is_valid():
+
+            
+            if form.data['tipo_proveedor'] == 'exclusivo':
+                obj = PRO_AGE.objects.filter(id_proveedor=id)
+                f = 0
+                for o in obj:
+                    f=f+1
+                if f>=2:
+                    messages.error(request, 'Existen varias agencias asociadas a este proveedor')
+                    return redirect('Show_Proveedores')
+
             form.save()
             return redirect ('Show_Proveedores')
         else:
@@ -3379,3 +3401,153 @@ def Edit_Puntuaciones(request, id):
             return redirect('Show_Puntuaciones')
     form = Form_Puntuaciones(instance= obj)
     return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
+
+
+
+
+
+#Otros--------------------------------------------------------------------------------------------------------------------
+
+def Registrar_nuevo_cliente(request):
+    if request.method == 'POST':
+        form = Form_nuevo_registro_cliente(request.POST)
+        cedula = form.data['cedula']
+        tipo = form.data['tipo']
+        nombre = form.data['nombre']
+        apellido1 = form.data['apellido1']
+        apellido2 = form.data['apellido2']
+        agencia = form.data['agencia']
+        f_registro = date.today()
+        try:
+            Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2)
+        except:
+            messages.error(request, 'Cliente ya agregado en sistema')
+            return redirect('Ventas_registrar_nuevo_cliente')
+        try:
+            Crear_nuevo_Registro_clientes(cedula, agencia, f_registro)
+        except:
+            messages.error(request, 'Criente ya registrado en agencia de viajes')
+            return redirect('Ventas_registrar_nuevo_cliente')
+        
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    form = Form_nuevo_registro_cliente()
+    return render(request, 'registrar_nuevo_cliente.html',{'form':form})
+
+def Rn_intrumento_1(request):
+    form = Form_Instrumentos_de_pago(request.POST)
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['id_banco']!='':
+        messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['numero_zelle']=='':
+        messages.error(request, 'Falto Vincular numero zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['email_zelle']=='':
+        messages.error(request, 'Falto Vincular Email zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['id_banco']=='':
+        messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['numero_zelle']!='':
+        messages.error(request, 'No se puede vincular numero zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['email_zelle']!='':
+        messages.error(request, 'No se puede vincular email zelle')
+        return redirect('Show_Clientes')
+    try:
+        form.save()
+    except:
+        messages.error(request, 'Error al registrar instrumento de pago')
+    return redirect ('Show_Clientes')
+
+def Rn_intrumento_2(request):
+    form = Form_Instrumentos_de_pago(request.POST)
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['id_banco']!='':
+        messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['numero_zelle']=='':
+        messages.error(request, 'Falto Vincular numero zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['email_zelle']=='':
+        messages.error(request, 'Falto Vincular Email zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['id_banco']=='':
+        messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['numero_zelle']!='':
+        messages.error(request, 'No se puede vincular numero zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['email_zelle']!='':
+        messages.error(request, 'No se puede vincular email zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+    try:
+        form.save()
+    except:
+        messages.error(request, 'Error al registrar instrumento de pago')
+    cedula = form.data['doc_identidad_cliente']
+    form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+    form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+    return render(request, 'rn_instrumento_pago.html',{'form':form_i})
+
+def Registrar_nuevo_viajero(request):
+    if request.method == 'POST':
+        form = Form_nuevo_registro_cliente(request.POST)
+
+        cedula = form.data['cedula']
+        nombre1 = form.data['nombre1']
+        nombre2 = form.data['nombre2']
+        apellido1 = form.data['apellido1']
+        apellido2 = form.data['apellido2']
+        sexo = form.data['sexo']
+        f_nacimento = form.data['f_nacimento']
+        ciudad = form.data['ciudad']
+        pais_de_ciudad = Ciudades.objects.get(id_ciudad=ciudad)
+        pais_de_ciudad = Paises.objects.get(nombre_pais=pais_de_ciudad.id_pais)
+        pais_de_ciudad = pais_de_ciudad.id_pais
+        pasaporte = form.data['pasaporte']
+        pais = form.data['pais']
+        paquete = form.data['paquete']
+        agencia = Paquetes_contrato.objects.get(numero_factura=paquete)
+        agencia = agencia.id_agencia
+        f_registro = form.data['f_registro']
+
+        try:
+            Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2)
+        except:
+            messages.error(request, 'Error al agregar Viajero')
+            return redirect('ventas_registrar_viajero')
+        try:
+            Crear_PAI_VIA(cedula, pais, pasaporte)
+        except:
+            messages.error(request, 'Error al agregar pasaporte viajero')
+            return redirect('ventas_registrar_viajero')
+        try:
+            Crear_Registro_viajeros(agencia, cedula, f_registro, '1')
+        except:
+            messages.error(request, 'Error al registrar viajero')
+            return redirect('ventas_registrar_viajero')
+
+        return redirect('Show_Viajeros')
+    
+    form = Form_nuevo_registro_viajero()
+    return render(request, 'registrar_nuevo_viajero.html',{'form':form})
+

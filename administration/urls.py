@@ -159,4 +159,9 @@ urlpatterns = [
     path('Edit_Participantes/<id>/<id2>', Edit_Participantes, name="Edit_Participantes"),
     path('Edit_Puntuaciones/<id>', Edit_Puntuaciones, name="Edit_Puntuaciones"),
 
+
+    path('Registrar_nuevo_cliente/', Registrar_nuevo_cliente, name="Registrar_nuevo_cliente"),
+    path('Rn_intrumento_1/', Rn_intrumento_1, name="Rn_intrumento_1"),
+    path('Rn_intrumento_2/', Rn_intrumento_2, name="Rn_intrumento_2"),
+    path('Registrar_nuevo_viajero/', Registrar_nuevo_viajero, name="Registrar_nuevo_viajero"),
 ]

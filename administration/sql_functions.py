@@ -351,3 +351,28 @@ def Actualizar_Detalle_viajero(viajero, agencia, paquete_contrato):
     with connection.cursor() as cursor:
         cursor.execute ('UPDATE public.cgr_detalle_viajeros SET id_viajero=%s, id_agencia=%s, id_paquete_contrato=%s WHERE id_viajero=%s and id_agencia=%s and id_paquete_contrato=%s', 
         [viajero, agencia, paquete_contrato, viajero, agencia, paquete_contrato])
+
+
+
+
+
+#otros---------------------------------------------------------------------------------------------------
+
+def Crear_nuevo_Registro_clientes(cliente, agencia, fecha):
+    with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, (SELECT max(r.numero_registro) from cgr_registro_clientes r) + 1)', 
+        [cliente, agencia, fecha])
+
+def Crear_nuevo_Cliente(cedula, tipo, nombre, apellido1, apellido2):
+    with connection.cursor() as cursor:
+        if apellido1=='':
+            apellido1=None;
+        if apellido2=='':
+            apellido2=None;
+        cursor.execute ('INSERT INTO public.cgr_clientes(doc_identidad_o_rif, nombre_cliente, tipo_cliente, primer_apellido, segundo_apellido)VALUES (%s, %s, %s, %s, %s)',
+        [cedula, nombre, tipo, apellido1, apellido2])
+
+def Crear_nuevo_viajero(cedula, ciudad, pais, paq_con, nombre1, apellido1, apellido2, sexo, f_nac, nombre2):
+     with connection.cursor() as cursor:
+        cursor.execute ('INSERT INTO public.cgr_viajeros(id_de_identidad, id_ciudad, id_pais, id_paquete_contrato, primer_nombre, primer_apellido, segundo_apellido, sexo, f_nacimiento, segundo_nombre) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
+        [cedula, ciudad, pais, paq_con, nombre1, apellido1, apellido2, sexo, f_nac, nombre2])
