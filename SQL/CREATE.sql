@@ -306,17 +306,17 @@ CREATE TABLE cgr_especializaciones
 
 CREATE TABLE cgr_precios_paquetes
 (
-	f_inicio  timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+	f_inicio  date NOT NULL,
 	id_paquete numeric NOT NULL,
 	id_agencia numeric NOT NULL,
-	f_fin timestamp, 
+	f_fin date, 
 	valor numeric,
 	CONSTRAINT pk_precios_paquetes PRIMARY KEY (f_inicio,id_paquete,id_agencia)
 );
 
 CREATE TABLE cgr_calendarios_anuales
 (
-	f_salida  timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+	f_salida  date NOT NULL,
 	id_paquete numeric NOT NULL,
 	id_agencia numeric NOT NULL,
 	descripcion varchar,

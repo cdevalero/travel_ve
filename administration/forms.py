@@ -79,7 +79,7 @@ class Form_Cupos(forms.ModelForm):
 class Form_Registro_clientes(forms.ModelForm):
     class Meta:
         model = Registro_clientes;
-        fields = ('id_cliente','id_agencia','f_registro','numero_registro')
+        fields = ('id_cliente','id_agencia','f_registro')
         widgets = {
             'f_registro': DateInput(attrs={'type': 'date'})
         }
@@ -121,12 +121,19 @@ class Form_Especializaciones(forms.ModelForm):
 class Form_Precios_paquetes(forms.ModelForm):
     class Meta:
         model = Precios_paquetes;
-        fields = ('f_inicio','id_paquete','id_agencia','f_fin','valor')
+        fields = ('f_inicio','f_fin','id_paquete','id_agencia','valor')
+        widgets = {
+            'f_inicio': DateInput(attrs={'type': 'date'}),
+            'f_fin': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Calendarios_anuales(forms.ModelForm):
     class Meta:
         model = Calendarios_anuales;
         fields = ('f_salida','id_paquete','id_agencia','descripcion')
+        widgets = {
+            'f_salida': DateInput(attrs={'type': 'date'})
+        }
 
 class Form_Descuentos(forms.ModelForm):
     class Meta:

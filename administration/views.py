@@ -245,6 +245,9 @@ def Add_Rallies(request):
             if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
                 messages.error(request, 'Los Rally deben tener maximo una semana de duración')
                 return redirect('Add_rallies')
+            if form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio'):
+                messages.error(request, 'La fecha fin no es la adecuanda')
+                return redirect('Add_rallies')
             ff = form.cleaned_data.get('f_fin')
             fi = form.cleaned_data.get('f_inicio')
             duracion = 1
@@ -472,13 +475,13 @@ def Add_Registro_clientes(request):
             id_cliente = form.data['id_cliente']
             id_agencia = form.data['id_agencia']
             f_registro = form.data['f_registro']
-            numero_registro = form.data['numero_registro']
+            
             try:
                 validacion = Clientes.objects.get(doc_identidad_o_rif=id_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'No existe el cliente')
                 return redirect('Add_Registro_clientes')
-            Crear_Registro_clientes(id_cliente, id_agencia, f_registro, numero_registro)
+            Crear_Registro_clientes(id_cliente, id_agencia, f_registro, 1)
             #form.save()
             return redirect ('Show_Registro_clientes')
         else:
@@ -627,6 +630,9 @@ def Add_Precios_paquetes(request):
             id_agencia = form.data['id_agencia']
             f_fin = form.data['f_fin']
             valor = form.data['valor']
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_Precios_paquetes')
             try:
                 validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
             except Paquetes.DoesNotExist:        
@@ -665,6 +671,15 @@ def Add_Descuentos(request):
     if request.method == 'POST':
         form = Form_Descuentos(request.POST)
         if form.is_valid():
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_Descuentos')
+            if form.cleaned_data.get('cant_per_gratis')!=None and form.cleaned_data.get('tipo_descuento')!= 'viajerosgratis':
+                messages.error(request, 'No puedes agregar personas gratis a ese tipo de descuento')
+                return redirect('Add_Descuentos')
+            if form.cleaned_data.get('porcentaje')==None and form.cleaned_data.get('tipo_descuento')!= 'viajerosgratis':
+                messages.error(request, 'Falta agregar porcentaje de descuento')
+                return redirect('Add_Descuentos')
             form.save()
             return redirect ('Show_Descuentos')
         else:
@@ -781,7 +796,7 @@ def Add_ALO_DET(request):
             id_pais = form.data['id_pais']
             id_alojamiento = form.data['id_alojamiento']
             try:
-                validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+                validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, id_itinerario=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Detalles_servicios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete y detalle servicio')
                 return redirect('Add_ALO_DET')
@@ -803,6 +818,24 @@ def Add_Instrumentos_de_pago(request):
                 validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'Cliente no existe')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('id_banco')!=None:
+                messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('numero_zelle')==None:
+                messages.error(request, 'Falto Vincular numero zelle')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('email_zelle')==None:
+                messages.error(request, 'Falto Vincular Email zelle')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('id_banco')==None:
+                messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('numero_zelle')!=None:
+                messages.error(request, 'No se puede vincular numero zelle')
+                return redirect('Add_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('email_zelle')!=None:
+                messages.error(request, 'No se puede vincular email zelle')
                 return redirect('Add_Instrumentos_de_pago')
             form.save()
             return redirect ('Show_Instrumentos_de_pago')
@@ -832,7 +865,7 @@ def Add_Paquetes_contrato(request):
             except Paquetes.DoesNotExist:        
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Paquetes_contrato')
-
+            
             form.save()
             return redirect ('Show_Paquetes_contrato')
         else:
@@ -1007,7 +1040,7 @@ def Add_Participantes(request):
                 messages.error(request, 'Error, Viajero no pertenece a la agencia')
                 return redirect('Add_Participantes')
             try:
-                validacion = Registro_viajeros.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
+                validacion = Registro_clientes.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
             except Registro_clientes.DoesNotExist:        
                 messages.error(request, 'Error, Cliente no pertenece a la agencia')
                 return redirect('Add_Participantes')
@@ -1120,18 +1153,18 @@ def Delete_Premios(request, id, id2):
         rallie = Rallies.objects.get(nombre_rally=id2)
     except Rallies.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
-        return redirect('Show_rallies')
+        return redirect('Show_premios')
     try:
         obj = Premios.objects.filter(id_rally=rallie.id_rally).get(id_premio=id)
     except Premios.DoesNotExist:        
         messages.error(request, 'No existe la entrada')
-        return redirect('Show_rallies')
+        return redirect('Show_premios')
     try:
         obj.delete()
     except ProtectedError:
         messages.error(request, 'Existen registros vinculados')
-        return redirect('Show_rallies')
-    return redirect('Show_rallies')
+        return redirect('Show_premios')
+    return redirect('Show_premios')
 
 def Delete_Ciudades(request, id, id2):
     try:
@@ -1195,9 +1228,7 @@ def Delete_Circuitos(request, id,id2,id3,id4):
     except Circuitos.DoesNotExist:        
         messages.error(request, 'No existe la 4')
         return redirect('Show_Circuitos')
-    try:
-        Borrar_Circuito(id, rallie.id_rally, ciudad.id_ciudad, pais.id_pais)
-    except ProtectedError:
+    if Borrar_Circuito(id, rallie.id_rally, ciudad.id_ciudad, pais.id_pais) == 1:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_Circuitos')
     return redirect('Show_Circuitos')  
@@ -1239,12 +1270,12 @@ def Delete_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
         messages.error(request, 'No existe la entrada7')
         return redirect('Show_atr_cir')
     try:
-        obj = ATR_CIR.objects.filter(id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_at.id_ciudad,id_pais_cir=pais_at.id_pais).get(id_atraccion=id)
+        obj = ATR_CIR.objects.filter(id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_cir.id_ciudad,id_pais_cir=pais_cir.id_pais).get(id_atraccion=id)
     except ATR_CIR.DoesNotExist:        
         messages.error(request, 'No existe la entrada8')
         return redirect('Show_atr_cir')
     try:
-        Borrar_ATR_CIR(atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais, circuito.orden_circuito, rallie.id_rally, ciudad_at.id_ciudad, pais_at.id_pais)
+        Borrar_ATR_CIR(atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais, circuito.orden_circuito, rallie.id_rally, ciudad_cir.id_ciudad, pais_cir.id_pais)
     except ProtectedError:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_atr_cir')
@@ -1591,12 +1622,9 @@ def Delete_ITN_ATR(request, id,id2,id3,id4,id5,id6,id7,id8):
     except ITN_ATR.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_ITN_ATR')
-    try:
-        Borrar_ITN_ATR(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete, atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais)
-    except ProtectedError:
+    if Borrar_ITN_ATR(id, ciudad.id_ciudad, pais.id_pais, agencia.id_agencia, paquete.id_paquete, atraccion.id_atraccion, ciudad_at.id_ciudad, pais_at.id_pais) == 1:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_ITN_ATR')
-    
     return redirect('Show_ITN_ATR')
 
 def Delete_Detalles_servicios(request, id,id2,id3,id4,id5,id6):
@@ -1678,9 +1706,7 @@ def Delete_ALO_DET(request, id,id2,id3,id4,id5,id6,id7):
     except ALO_DET.DoesNotExist:        
         messages.error(request, 'No existe la entrada6')
         return redirect('Show_ALO_DET')
-    try:
-        Borrar_ALO_DET(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais, alojamiento.id_alojamiento)
-    except ProtectedError:
+    if Borrar_ALO_DET(id, itinerario.orden, paquete.id_paquete, agencia.id_agencia, ciudad.id_ciudad, pais.id_pais, alojamiento.id_alojamiento) == 1:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_ALO_DET')
     
@@ -1799,9 +1825,7 @@ def Delete_Registro_viajeros(request, id,id2):
     except Registro_viajeros.DoesNotExist:        
         messages.error(request, 'No existe la entrada2')
         return redirect('Show_Registro_viajeros')
-    try:
-        Borrar_Registro_viajeros(agencia.id_agencia, viajero.id_de_identidad)
-    except ProtectedError:
+    if Borrar_Registro_viajeros(agencia.id_agencia, viajero.id_de_identidad) == 1:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_Registro_viajeros')
     
@@ -1978,18 +2002,29 @@ def Edit_Rallies(request, id):
         except:
             pass
         if form.is_valid():
+            nombre_rally = form.data['nombre_rally'] 
+            costo_participante = form.data['costo_participante'] 
+            f_inicio = form.data['f_inicio'] 
+            f_fin = form.data['f_fin'] 
+            tipo_rally = form.data['tipo_rally'] 
+            total_cupo_participante = form.data['total_cupo_participante'] 
+            id_rally = id
             # DEBERIA DE EXISTIR UNA RESTRICCION DE QUE SOLO PUEDE HABER 3 RALLIES AL AÑO
             if form.cleaned_data.get('f_fin') > form.cleaned_data.get('f_inicio') + timedelta(days=7):
                 messages.error(request, 'Los Rally deben tener maximo una semana de duración')
-                return redirect('Add_rallies')
+                return redirect('Show_rallies')
+            if form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio'):
+                messages.error(request, 'La fecha fin no es la adecuanda')
+                return redirect('Show_rallies')
             ff = form.cleaned_data.get('f_fin')
             fi = form.cleaned_data.get('f_inicio')
             duracion = 1
             while ff > fi:
                 duracion = duracion+1
                 fi = fi + timedelta(days=1)
-            form['duracion'].value(duracion)
-            form.save()
+
+            act_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante, id_rally)
+        
             return redirect ('Show_rallies')
         else:
             messages.error(request, 'Entrada Invalida')
@@ -2168,7 +2203,7 @@ def Edit_ATR_CIR(request, id,id2,id3,id4,id5,id6,id7):
         messages.error(request, 'No existe la entrada7')
         return redirect('Show_atr_cir')
     try:
-        obj = ATR_CIR.objects.filter(id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_at.id_ciudad,id_pais_cir=pais_at.id_pais).get(id_atraccion=id)
+        obj = ATR_CIR.objects.filter(id_ciudad_at=ciudad_at.id_ciudad,id_pais_at=pais_at.id_pais,id_circuito=circuito.orden_circuito,id_rally_cir=rallie.id_rally,id_ciudad_cir=ciudad_cir.id_ciudad,id_pais_cir=pais_cir.id_pais).get(id_atraccion=id)
     except ATR_CIR.DoesNotExist:        
         messages.error(request, 'No existe la entrada8')
         return redirect('Show_atr_cir')
@@ -2281,7 +2316,7 @@ def Edit_AGE_AGE(request, id,id2):
                 return redirect('Show_AGE_AGE')
             if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
                 messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
-                return redirect('Add_AGE_AGE')
+                return redirect('Show_AGE_AGE')
             Actualizar_AGE_AGE(id_agencia, id_socio, f_inicio, f_fin)
             return redirect ('Show_AGE_AGE')
         else:
@@ -2359,13 +2394,13 @@ def Edit_Registro_clientes(request, id,id2):
             id_cliente = form.data['id_cliente']
             id_agencia = form.data['id_agencia']
             f_registro = form.data['f_registro']
-            numero_registro = form.data['numero_registro']
+            
             try:
                 validacion = Clientes.objects.get(doc_identidad_o_rif=id_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'No existe el cliente')
                 return redirect('Show_Registro_clientes')
-            Actualizar_Registro_clientes(id_cliente, id_agencia, f_registro, numero_registro)
+            Actualizar_Registro_clientes(id_cliente, id_agencia, f_registro, 1)
             #form.save()
             return redirect ('Show_Registro_clientes')
         else:
@@ -2446,14 +2481,15 @@ def Edit_PRO_AGE(request, id,id2):
             id_proveedor = form.data['id_proveedor']
             f_inicio = form.data['f_inicio']
             f_fin = form.data['f_fin']
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Show_pro_age')
             try:
                 validacion = Agencias_de_viajes.objects.get(id_agencia=id_agencia)
             except Agencias_de_viajes.DoesNotExist:        
                 messages.error(request, 'No existe la agencia')
                 return redirect('Show_pro_age')
-            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
-                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
-                return redirect('Add_pro_age')
+            
             Actualizar_PRO_AGE(id_agencia, id_proveedor, f_inicio, f_fin)
             return redirect ('Show_pro_age')
         else:
@@ -2506,7 +2542,6 @@ def Edit_Paquetes(request, id,id2):
             messages.error(request, 'Entrada Invalida')
             return redirect('Show_Paquetes')
     form = Form_Paquetes(instance= obj)
-    form.fields['id_paquete'].widget.attrs['readonly'] = True
     form.fields['id_agencia'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
@@ -2552,7 +2587,6 @@ def Edit_Especializaciones(request, id,id2):
             return redirect('Show_Especializaciones')
     form = Form_Especializaciones(instance= obj)
     form.fields['id_areas_de_interes'].widget.attrs['readonly'] = True
-    form.fields['id_especializacion'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddEspecializaciones.html',{'form':form})
 
 def Edit_Precios_paquetes(request, id,id2,id3):
@@ -2584,6 +2618,9 @@ def Edit_Precios_paquetes(request, id,id2,id3):
             id_agencia = form.data['id_agencia']
             f_fin = form.data['f_fin']
             valor = form.data['valor']
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Add_Precios_paquetes')
             try:
                 validacion = Paquetes.objects.get(id_paquete=id_paquete, id_agencia=id_agencia)
             except Paquetes.DoesNotExist:        
@@ -2653,6 +2690,15 @@ def Edit_Descuentos(request, id,id2):
     if request.method == 'POST':
         form = Form_Descuentos(request.POST, instance= obj)
         if form.is_valid():
+            if (form.cleaned_data.get('f_fin')!=None) and (form.cleaned_data.get('f_fin') < form.cleaned_data.get('f_inicio')):
+                messages.error(request, 'Fecha Fin debe ser mayor a fecha inicio')
+                return redirect('Show_Descuentos')
+            if form.cleaned_data.get('cant_per_gratis')!=None and form.cleaned_data.get('tipo_descuento')!= 'viajerosgratis':
+                messages.error(request, 'No puedes agregar personas gratis a ese tipo de descuento')
+                return redirect('Show_Descuentos')
+            if form.cleaned_data.get('porcentaje')==None and form.cleaned_data.get('tipo_descuento')!= 'viajerosgratis':
+                messages.error(request, 'Falta agregar porcentaje de descuento')
+                return redirect('Show_Descuentos')
             form.save()
             return redirect ('Show_Descuentos')
         else:
@@ -2928,7 +2974,7 @@ def Edit_ALO_DET(request, id,id2,id3,id4,id5,id6,id7): #NO TIENE FUNCION, TODAS 
             id_pais = form.data['id_pais']
             id_alojamiento = form.data['id_alojamiento']
             try:
-                validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, orden=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
+                validacion = Detalles_servicios.objects.get(id_detalle_servicio=id_detalle_servicio, id_itinerario=id_itinerario, id_ciudad=id_ciudad, id_pais=id_pais, id_agencia=id_agencia, id_paquete=id_paquete)
             except Detalles_servicios.DoesNotExist:        
                 messages.error(request, 'Error con la union de itinerario, ciudad, pais, agencia, paquete y detalle servicio')
                 return redirect('Show_ALO_DET')
@@ -2967,6 +3013,24 @@ def Edit_Instrumentos_de_pago(request, id,id2):
                 validacion = Clientes.objects.get(doc_identidad_o_rif=doc_identidad_cliente)
             except Clientes.DoesNotExist:        
                 messages.error(request, 'Cliente no existe')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('id_banco')!=None:
+                messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('numero_zelle')==None:
+                messages.error(request, 'Falto Vincular numero zelle')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') == 'zelle' and form.cleaned_data.get('email_zelle')==None:
+                messages.error(request, 'Falto Vincular Email zelle')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('id_banco')==None:
+                messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('numero_zelle')!=None:
+                messages.error(request, 'No se puede vincular numero zelle')
+                return redirect('Show_Instrumentos_de_pago')
+            if form.cleaned_data.get('tipo_instrumento') != 'zelle' and form.cleaned_data.get('email_zelle')!=None:
+                messages.error(request, 'No se puede vincular email zelle')
                 return redirect('Show_Instrumentos_de_pago')
             form.save()
             return redirect ('Show_Instrumentos_de_pago')
@@ -3188,6 +3252,7 @@ def Edit_Registro_viajeros(request, id,id2):
     form = Form_Registro_viajeros(instance= obj)
     form.fields['id_viajero'].widget.attrs['readonly'] = True
     form.fields['id_agencia'].widget.attrs['readonly'] = True
+    
     return render(request, 'create_edit/AddRegistro_viajeros.html',{'form':form})
 
 def Edit_Detalle_viajeros(request, id,id2,id3): #NO TIENE FUNCION, TODAS SUS COLUMNAS SON PK, POR LO QUE ESTAN BLOQUEADAS Y NO SE PUEDEN EDITAR
@@ -3268,7 +3333,7 @@ def Edit_Participantes(request, id,id2):
                 messages.error(request, 'Error, Viajero no pertenece a la agencia')
                 return redirect('Show_Participantes')
             try:
-                validacion = Registro_viajeros.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
+                validacion = Registro_clientes.objects.get(id_cliente=id_cli_cliente, id_agencia=id_cli_agencia)
             except Registro_clientes.DoesNotExist:        
                 messages.error(request, 'Error, Cliente no pertenece a la agencia')
                 return redirect('Show_Participantes')

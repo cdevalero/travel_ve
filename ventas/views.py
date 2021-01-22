@@ -63,6 +63,24 @@ def Ventas_registrar_nuevo_cliente(request):
 
 def Ventas_intrumento_1(request):
     form = Form_Instrumentos_de_pago(request.POST)
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['id_banco']!=None:
+        messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['numero_zelle']==None:
+        messages.error(request, 'Falto Vincular numero zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['email_zelle']==None:
+        messages.error(request, 'Falto Vincular Email zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['id_banco']==None:
+        messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['numero_zelle']!=None:
+        messages.error(request, 'No se puede vincular numero zelle')
+        return redirect('Show_Clientes')
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['email_zelle']!=None:
+        messages.error(request, 'No se puede vincular email zelle')
+        return redirect('Show_Clientes')
     try:
         form.save()
     except:
@@ -71,6 +89,42 @@ def Ventas_intrumento_1(request):
 
 def Ventas_intrumento_2(request):
     form = Form_Instrumentos_de_pago(request.POST)
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['id_banco']!=None:
+        messages.error(request, 'El tipo de instrumento no debe estar vinculado con un banco')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['numero_zelle']==None:
+        messages.error(request, 'Falto Vincular numero zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] == 'zelle' and form.data['email_zelle']==None:
+        messages.error(request, 'Falto Vincular Email zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['id_banco']==None:
+        messages.error(request, 'El tipo de instrumento debe estar vinculado con un banco')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['numero_zelle']!=None:
+        messages.error(request, 'No se puede vincular numero zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
+    if form.data['tipo_instrumento'] != 'zelle' and form.data['email_zelle']!=None:
+        messages.error(request, 'No se puede vincular email zelle')
+        cedula = form.data['doc_identidad_cliente']
+        form_i = Form_Instrumentos_de_pago(initial={'doc_identidad_cliente': cedula})
+        form_i.fields['doc_identidad_cliente'].widget.attrs['readonly'] = True
+        return render(request, 'ventas_instrumento_pago.html',{'form':form_i})
     try:
         form.save()
     except:

@@ -388,7 +388,7 @@ class Especializaciones(models.Model):
     id_paquete = models.IntegerField()
     id_agencia_paquete = models.IntegerField()
     id_asesor = models.ForeignKey(Asesores_de_viajes, on_delete=models.PROTECT, related_name='id_asesor_es', db_column='id_asesor')
-    comentarios = models.TextField(max_length=255)
+    comentarios = models.TextField(max_length=255, null=True, blank=True)
 
     paquete = CompositeForeignKey(Paquetes, on_delete=PROTECT, to_fields={'id_paquete': 'id_paquete', 'id_agencia': 'id_agencia_paquete'})
     lugar = CompositeForeignKey(Atracciones, on_delete=PROTECT, to_fields={'id_atraccion': 'id_atraccion','id_ciudad': 'id_ciudad', 'id_pais': 'id_pais'})
@@ -405,10 +405,10 @@ class Especializaciones(models.Model):
 
 class Precios_paquetes(models.Model):
     
-    f_inicio = models.DateTimeField(primary_key=True)
+    f_inicio = models.DateField(primary_key=True)
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
-    f_fin = models.DateTimeField(null=True, blank=True)
+    f_fin = models.DateField(null=True, blank=True)
     valor = models.IntegerField(null=True, blank=True)
 
     paquete = CompositeForeignKey(Paquetes, on_delete=PROTECT, to_fields={'id_paquete': 'id_paquete', 'id_agencia': 'id_agencia'})
@@ -425,7 +425,7 @@ class Precios_paquetes(models.Model):
         ordering = ['f_inicio']
 
 class Calendarios_anuales(models.Model):
-    f_salida = models.DateTimeField(primary_key=True)
+    f_salida = models.DateField(primary_key=True)
     id_paquete = models.IntegerField()
     id_agencia = models.IntegerField()
     descripcion = models.TextField(max_length=255, null=True, blank=True)

@@ -56,6 +56,11 @@ def Crear_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, d
         cursor.execute ('INSERT INTO public.cgr_rallies(id_rally, nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante) VALUES ((SELECT max(p.id_rally) from cgr_rallies p) + 1, %s, %s, %s, %s, %s, %s, %s)', 
         [nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante])
 
+def act_Rally(nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante, id_rally):
+    with connection.cursor() as cursor:
+        cursor.execute ('UPDATE public.cgr_rallies SET nombre_rally=%s, costo_participante=%s, f_inicio=%s, f_fin=%s, tipo_rally=%s, duracion=%s, total_cupo_participante=%s WHERE id_rally=%s',
+        [nombre_rally, costo_participante, f_inicio, f_fin, tipo_rally, duracion, total_cupo_participante, id_rally])
+
 def Crear_Premio(id_premio, id_rally, posicion, descripcion_premio):
     with connection.cursor() as cursor:
         cursor.execute ('INSERT INTO public.cgr_premios(id_premio, id_rally, posicion, descripcion_premio) VALUES (%s, %s, %s, %s)', 
@@ -94,8 +99,8 @@ def Crear_Cupo(agencia, rally, cantidad):
 
 def Crear_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s, %s)', 
-        [cliente, agencia, fecha, numero])
+        cursor.execute ('INSERT INTO public.cgr_registro_clientes(id_cliente, id_agencia, f_registro, numero_registro) VALUES (%s, %s, %s,  (SELECT max(r.numero_registro) from cgr_registro_clientes r) + 1)', 
+        [cliente, agencia, fecha])
 
 def Crear_PRO_AGE(agencia, proveedor, inicio, fin):
     if fin=='':
@@ -163,8 +168,12 @@ def Crear_Detalle_viajero(viajero, agencia, paquete_contrato):
 
 def Borrar_Circuito(orden, rally, ciudad, pais):
     with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_circuitos WHERE orden_circuito=%s and id_rally=%s and id_ciudad=%s and id_pais=%s ", 
-        [orden, rally, ciudad, pais])
+        try:
+            cursor.execute ("DELETE FROM public.cgr_circuitos WHERE orden_circuito=%s and id_rally=%s and id_ciudad=%s and id_pais=%s ", 
+            [orden, rally, ciudad, pais])
+        except:
+            return 1
+        return 0
 
 def Borrar_ATR_CIR(atraccion, ciudad_at, pais_at, circuito, rally_cir, ciudad_cir, pais_cir):
     with connection.cursor() as cursor:
@@ -208,13 +217,21 @@ def Borrar_Itinerarios(orden, ciudad, pais, agencia, paquete):
 
 def Borrar_ITN_ATR(itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at):
     with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_itn_atr WHERE id_itinerario=%s and id_ciudad=%s and id_pais=%s id_agencia=%s and id_paquete=%s and id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s ", 
-        [itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at])
+        try:
+            cursor.execute ("DELETE FROM public.cgr_itn_atr WHERE id_itinerario=%s and id_ciudad=%s and id_pais=%s id_agencia=%s and id_paquete=%s and id_atraccion=%s and id_ciudad_at=%s and id_pais_at=%s ", 
+            [itinerario, ciudad, pais, agencia, paquete, atraccion, ciudad_at, pais_at])
+        except:
+            return 1
+        return 0
 
 def Borrar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento):
     with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_alo_det WHERE id_detalle_servicio=%s and id_itinerario=%s and id_paquete=%s id_agencia=%s and id_ciudad=%s and id_pais=%s and id_alojamiento=%s ", 
-        [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
+        try:
+            cursor.execute ("DELETE FROM public.cgr_alo_det WHERE id_detalle_servicio=%s and id_itinerario=%s and id_paquete=%s id_agencia=%s and id_ciudad=%s and id_pais=%s and id_alojamiento=%s ", 
+            [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
+        except:
+            return 1
+        return 0
 
 def Borrar_Forma_de_pago(instrumento, cliente, paquete_contrato):
     with connection.cursor() as cursor:
@@ -228,8 +245,12 @@ def Borrar_PAI_VIA(viajero, pais):
 
 def Borrar_Registro_viajeros(agencia, viajero):
     with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_registro_viajeros WHERE id_agencia=%s and id_viajero=%s ", 
-        [agencia, viajero])
+        try:
+            cursor.execute ("DELETE FROM public.cgr_registro_viajeros WHERE id_agencia=%s and id_viajero=%s ", 
+            [agencia, viajero])
+        except:
+            return 1
+        return 0
 
 def Borrar_Detalle_viajero(viajero, agencia, paquete_contrato):
     with connection.cursor() as cursor:
@@ -266,8 +287,8 @@ def Actualizar_Cupo(agencia, rally, cantidad):
 
 def Actualizar_Registro_clientes(cliente, agencia, fecha, numero): # GUIA --------
     with connection.cursor() as cursor:
-        cursor.execute ('UPDATE public.cgr_registro_clientes SET id_cliente=%s, id_agencia=%s, f_registro=%s, numero_registro=%s WHERE id_cliente=%s and id_agencia=%s', 
-        [cliente, agencia, fecha, numero, cliente, agencia])
+        cursor.execute ('UPDATE public.cgr_registro_clientes SET id_cliente=%s, id_agencia=%s, f_registro=%s WHERE id_cliente=%s and id_agencia=%s', 
+        [cliente, agencia, fecha, cliente, agencia])
 
 def Actualizar_PRO_AGE(agencia, proveedor, inicio, fin):
     if fin=='':
