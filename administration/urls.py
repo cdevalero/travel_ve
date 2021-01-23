@@ -165,4 +165,30 @@ urlpatterns = [
     path('Rn_intrumento_2/', Rn_intrumento_2, name="Rn_intrumento_2"),
     path('Registrar_nuevo_viajero/', Registrar_nuevo_viajero, name="Registrar_nuevo_viajero"),
     path('Registrar_nuevo_socio_proveedor/', Registrar_nuevo_socio_proveedor, name="Registrar_nuevo_socio_proveedor"),
+
+    path('nuevo_paquete_view/', nuevo_paquete_view, name="nuevo_paquete_view"),
+
+    path('paquete_datos_basicos/', paquete_datos_basicos, name="paquete_datos_basicos"),
+
+    path('paquete_itinerario_a/', paquete_itinerario_a, name="paquete_itinerario_a"),
+    path('paquete_itinerario_c/', paquete_itinerario_c, name="paquete_itinerario_c"),
+    path('paquete_itinerario_d/', paquete_itinerario_d, name="paquete_itinerario_d"),
+
+    path('paquete_atr_itn_a/', paquete_atr_itn_a, name="paquete_atr_itn_a"),
+    path('paquete_atr_itn_b/', paquete_atr_itn_b, name="paquete_atr_itn_b"),
+    path('paquete_atr_itn_c/', paquete_atr_itn_c, name="paquete_atr_itn_c"),
+    path('paquete_atr_itn_d/', paquete_atr_itn_d, name="paquete_atr_itn_d"),
+
+    path('paquete_det_ser_a/', paquete_det_ser_a, name="paquete_det_ser_a"),
+    path('paquete_det_ser_b/', paquete_det_ser_b, name="paquete_det_ser_b"),
+    path('paquete_det_ser_c/', paquete_det_ser_c, name="paquete_det_ser_c"),
+
+    path('paquete_alo_det_a/', paquete_alo_det_a, name="paquete_alo_det_a"),
+    path('paquete_alo_det_b/', paquete_alo_det_b, name="paquete_alo_det_b"),
+
+    path('paquete_cal_a/', paquete_cal_a, name="paquete_cal_a"),
+    path('paquete_cal_b/', paquete_cal_b, name="paquete_cal_b"),
+
+    path('paquete_precio/', paquete_precio, name="paquete_precio"),
+
 ]

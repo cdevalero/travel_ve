@@ -2,6 +2,7 @@ from django import forms
 from django.db.models import fields
 from django.forms import DateInput
 from django.forms.models import ModelChoiceField
+from django.forms.widgets import Textarea
 from .models import *
 
 class Form_Bancos(forms.ModelForm):
@@ -262,3 +263,88 @@ class Form_nuevo_socio_proveedor(forms.Form):
     agencia = ModelChoiceField(Agencias_de_viajes.objects.all(), label='Agencia de Viajes')
     f_inicio = forms.DateField(label='Inicio de asociacion', widget=DateInput(attrs={'type': 'date'}))
     f_fin = forms.DateField(label='Fin de asociacion', required=False, widget=DateInput(attrs={'type': 'date'}))
+
+
+
+
+class Form_nuevo_paquete_basico(forms.Form):
+    agencia = ModelChoiceField(Agencias_de_viajes.objects.all(), label='Agencia de Viajes')
+    nombre = forms.CharField(label='Nombre del paquete', max_length=30)
+    Duracion = forms.IntegerField(label='Duracion (en dias)')
+    personas = forms.IntegerField(label='Numero de personas')
+    descripcion = forms.CharField(label='Descripcion', max_length=255, widget=Textarea())
+    disponible = forms.BooleanField(label='Disponible', required=False)
+
+class Form_nuevo_paquete_itinerario(forms.Form):
+    orden = forms.IntegerField(label='Orden')
+    ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad')
+    max = forms.IntegerField(label='Tiempo de estadia (tiempo MAXIMO que puedes pasar en este tramo)')
+    tiempo = forms.IntegerField(label='Tiempo de estadia (Menor o igual al tiempo maximo) *Si es 0 el registro se anula')
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+
+class Form_nuevo_paquete_itn_atr(forms.Form):
+    orden = forms.IntegerField(label='Orden')
+    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion')
+    itn = forms.IntegerField(label='Itinerario')
+    ciudad = forms.IntegerField(label='')
+    pais = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    paquete = forms.IntegerField(label='')
+    max = forms.IntegerField(label='')
+    def __init__(self, ciudad, *args, **kwargs):
+        super(Form_nuevo_paquete_itn_atr, self).__init__(*args, **kwargs)
+        self.fields['atraccion'].queryset = Atracciones.objects.filter(id_ciudad=ciudad)
+
+class Form_nuevo_paquete_itn_atr_post(forms.Form):
+    orden = forms.IntegerField(label='Orden')
+    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion')
+    itn = forms.IntegerField(label='Itinerario')
+    ciudad = forms.IntegerField(label='Ciudad')
+    pais = forms.IntegerField(label='Pais')
+    agencia = forms.IntegerField(label='Agencia')
+    paquete = forms.IntegerField(label='Paquete')
+    max = forms.IntegerField(label='Tiempo restante de viaje')
+   
+class Form_nuevo_paquete_det_ser(forms.Form):
+    BOLETO = {
+        ('boleto_avion', 'Boleto de avion'),
+        ('boleto_tren', 'Boleto de tren'),
+        ('boleto_autobus', 'Boleto de Autobus'),
+        ('cama_alq', 'Cama de alquiler'),
+        ('alojamiento', 'Alojamiento'),
+        ('otro', 'otros'),
+    }
+    itinerario = forms.IntegerField(label='Itinerario')
+    tipo = forms.ChoiceField(choices=BOLETO, label='Tipo')
+    descripcion = forms.CharField(label='Descripcion', max_length=255, widget=Textarea())
+    comida = forms.BooleanField(label='Incluye Comida', required=False)
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    ciudad = forms.IntegerField(label='')
+    pais = forms.IntegerField(label='')
+    max = forms.IntegerField(label='')
+    
+class Form_nuevo_paquete_alo_det(forms.Form):
+    detalle = forms.IntegerField(label='')
+    alojamiento = forms.ModelChoiceField(Alojamientos.objects.all(), label='Alojamiento')
+    itn = forms.IntegerField(label='')
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    ciudad = forms.IntegerField(label='')
+    pais = forms.IntegerField(label='')
+    max = forms.IntegerField(label='')
+
+class Form_nuevo_paquete_calendario(forms.Form):
+    salida = forms.DateField(label='Fecha de salidad', widget=DateInput(attrs={'type': 'date'}))
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    descripcion = forms.CharField(label='Descripcion', max_length=255, widget=Textarea()) 
+
+class Form_nuevo_paquete_precio(forms.Form):
+    inicio = forms.DateField(label='Fecha Inicio', widget=DateInput(attrs={'type': 'date'}))
+    fin = forms.DateField(label='Fecha Fin', widget=DateInput(attrs={'type': 'date'}))
+    valor = forms.IntegerField(label='Valor')
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    

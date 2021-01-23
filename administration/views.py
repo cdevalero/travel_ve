@@ -2565,6 +2565,10 @@ def Edit_Paquetes(request, id,id2):
             return redirect('Show_Paquetes')
     form = Form_Paquetes(instance= obj)
     form.fields['id_agencia'].widget.attrs['readonly'] = True
+    form.fields['nombre_paquete'].widget.attrs['readonly'] = True
+    form.fields['duracion_dias'].widget.attrs['readonly'] = True
+    form.fields['descripcion_turistica'].widget.attrs['readonly'] = True
+    form.fields['numero_personas'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddPaquetes.html',{'form':form})
 
 def Edit_Especializaciones(request, id,id2):
@@ -3564,7 +3568,7 @@ def Registrar_nuevo_socio_proveedor(request):
 
         pro = Proveedores.objects.get(nombre_proveedor=nombre)
         
-        if Crear_PRO_AGE(agencia,pro.id_proveedor,f_inicio,f_fin) == 1:
+        if Crear_nuevo_PRO_AGE(agencia,pro.id_proveedor,f_inicio,f_fin) == 1:
             messages.error(request, 'Error al vincular la agencia con el proveedor')
             return redirect('Show_pro_age')
 
@@ -3574,3 +3578,555 @@ def Registrar_nuevo_socio_proveedor(request):
     return render(request, 'registrar_nuevo_socio_proveedor.html',{'form':form})
 
 
+# Nuevo Paquete --------------------------------------------------------------------------------------------------------------------------------
+
+def nuevo_paquete_view(request):
+    class basico:
+        agencia = 1
+    return render(request, 'base_paquete.html',{'basico':basico})
+
+
+def paquete_datos_basicos(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_basico(request.POST)
+
+            agencia = form.data['agencia']
+            nombre = form.data['nombre']
+            duracion = form.data['Duracion']
+            personas = form.data['personas']
+            descripcion = form.data['descripcion']
+            disponible = form.data['disponible']
+            if Crear_nuevo_paquete_datos_basicos(agencia, nombre, duracion, descripcion, disponible, personas)==1:
+                messages.error(request, 'Error al crear paquete')
+                return render(request, 'nuevo_paquete/datos_basicos.html',{'form':form})
+            id_paquete = Paquetes.objects.latest('id_paquete')
+
+            form = Form_nuevo_paquete_itinerario(initial={'orden': 1, 'paquete': id_paquete.id_paquete, 'agencia': agencia, 'max': duracion})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['readonly'] = True
+            return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+    form = Form_nuevo_paquete_basico()
+    return render(request, 'nuevo_paquete/datos_basicos.html',{'form':form})
+
+
+def paquete_itinerario_a(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            orden = form.data['orden']
+            tiempo = form.data['tiempo']
+            max = int(form.data['max']) - int(tiempo)
+
+            ciudad = form.data['ciudad']
+            pais = Ciudades.objects.get(id_ciudad=ciudad)
+            pais = Paises.objects.get(nombre_pais=pais.id_pais)
+            pais = pais.id_pais            
+
+            try:
+                Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo)
+            except:
+                messages.error(request, 'Error al crear Itinerario')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            form = Form_nuevo_paquete_itn_atr(ciudad, initial={'itn': orden, 'orden': 1, 'ciudad': ciudad, 'pais': pais, 'agencia': agencia, 'paquete': paquete, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['itn'].widget.attrs['readonly'] = True
+            form.fields['ciudad'].widget.attrs['hidden'] = True
+            form.fields['pais'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+
+def paquete_itinerario_b(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            orden = form.data['orden']
+            tiempo = form.data['tiempo']
+            max = int(form.data['max']) - int(tiempo)
+
+            ciudad = form.data['ciudad']
+            pais = Ciudades.objects.get(id_ciudad=ciudad)
+            pais = Paises.objects.get(nombre_pais=pais.id_pais)
+            pais = pais.id_pais            
+
+            try:
+                Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo)
+            except:
+                messages.error(request, 'Error al crear Itinerario')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_det_ser(initial={'itinerario': orden, 'ciudad': ciudad, 'pais': pais, 'agencia': agencia, 'paquete': paquete, 'max': max})
+            form.fields['itinerario'].widget.attrs['readonly'] = True
+            form.fields['ciudad'].widget.attrs['hidden'] = True
+            form.fields['pais'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_det_ser.html',{'form':form})
+
+def paquete_itinerario_c(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            orden = form.data['orden']
+            tiempo = form.data['tiempo']
+            max = int(form.data['max']) - int(tiempo)
+
+            ciudad = form.data['ciudad']
+            pais = Ciudades.objects.get(id_ciudad=ciudad)
+            pais = Paises.objects.get(nombre_pais=pais.id_pais)
+            pais = pais.id_pais            
+
+            try:
+                Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo)
+            except:
+                messages.error(request, 'Error al crear Itinerario')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            orden = int(form.data['orden']) + 1
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_itinerario(initial={'orden': orden, 'paquete': paquete, 'agencia': agencia, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['readonly'] = True
+            return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+def paquete_itinerario_d(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            orden = form.data['orden']
+            tiempo = form.data['tiempo']
+            max = int(form.data['max']) - int(tiempo)
+
+            ciudad = form.data['ciudad']
+            pais = Ciudades.objects.get(id_ciudad=ciudad)
+            pais = Paises.objects.get(nombre_pais=pais.id_pais)
+            pais = pais.id_pais            
+
+            try:
+                Crear_Itinerarios(orden, ciudad, pais, agencia, paquete, tiempo)
+            except:
+                messages.error(request, 'Error al crear Itinerario')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            orden = int(form.data['orden']) + 1
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_calendario(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+
+
+def paquete_atr_itn_a(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itn_atr_post(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            ciudad = form.data['ciudad']        #dato ya no me interesa
+            pais = form.data['pais']            #dato ya no me interesa
+            atraccion = form.data['atraccion']  #dato ya no me interesa
+
+            orden = form.data['orden']          #dato ya no me interesa
+
+            itn = form.data['itn']              #dato ya no me interesa
+
+            try:
+                Crear_ITN_ATR(itn, ciudad, pais, agencia, paquete, atraccion, ciudad, pais, orden)
+            except:
+                messages.error(request, 'Error al vincular atraccion')
+                return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+
+            itn = int(form.data['itn']) + 1
+            max = form.data['max']
+
+            form = Form_nuevo_paquete_itinerario(initial={'orden': itn, 'paquete': paquete, 'agencia': agencia, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['readonly'] = True
+            return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+def paquete_atr_itn_b(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itn_atr_post(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            ciudad = form.data['ciudad']        
+            pais = form.data['pais']            
+            atraccion = form.data['atraccion']  #dato ya no me interesa
+
+            orden = int(form.data['orden']) + 1  
+
+            itn = form.data['itn']       
+
+            max = form.data['max']       
+
+            try:
+                Crear_ITN_ATR(itn, ciudad, pais, agencia, paquete, atraccion, ciudad, pais, orden)
+            except:
+                messages.error(request, 'Error al vincular atraccion')
+                return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+
+            form = Form_nuevo_paquete_itn_atr(ciudad, initial={'itn': itn, 'orden': orden, 'ciudad': ciudad, 'pais': pais, 'agencia': agencia, 'paquete': paquete, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['itn'].widget.attrs['readonly'] = True
+            form.fields['ciudad'].widget.attrs['hidden'] = True
+            form.fields['pais'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+
+def paquete_atr_itn_c(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itn_atr_post(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            ciudad = form.data['ciudad']        
+            pais = form.data['pais']            
+            atraccion = form.data['atraccion']  #dato ya no me interesa
+
+            orden = form.data['orden'] 
+
+            itn = form.data['itn']       
+
+            max = form.data['max']       
+
+            try:
+                Crear_ITN_ATR(itn, ciudad, pais, agencia, paquete, atraccion, ciudad, pais, orden)
+            except:
+                messages.error(request, 'Error al vincular atraccion')
+                return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+        
+            form = Form_nuevo_paquete_det_ser(initial={'itinerario': orden, 'ciudad': ciudad, 'pais': pais, 'agencia': agencia, 'paquete': paquete, 'max': max})
+            form.fields['itinerario'].widget.attrs['readonly'] = True
+            form.fields['ciudad'].widget.attrs['hidden'] = True
+            form.fields['pais'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_det_ser.html',{'form':form})
+
+def paquete_atr_itn_d(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itn_atr_post(request.POST)
+
+            agencia = form.data['agencia']
+            paquete = form.data['paquete']
+
+            ciudad = form.data['ciudad']        
+            pais = form.data['pais']            
+            atraccion = form.data['atraccion']  #dato ya no me interesa
+
+            orden = form.data['orden'] 
+
+            itn = form.data['itn']       
+
+            max = form.data['max']       
+
+            try:
+                Crear_ITN_ATR(itn, ciudad, pais, agencia, paquete, atraccion, ciudad, pais, orden)
+            except:
+                messages.error(request, 'Error al vincular atraccion')
+                return render(request, 'nuevo_paquete/paq_atr_itn.html',{'form':form})
+        
+            form = Form_nuevo_paquete_calendario(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+
+
+def paquete_det_ser_a(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            itinerario = form.data['itinerario']
+            max = form.data['max']
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            tipo = form.data['tipo']
+            descripcion = form.data['descripcion']
+            comida = form.data['comida']
+            
+            
+            ciudad = form.data['ciudad']   
+            pais = form.data['pais']          
+
+            try:
+                Crear_nuevo_paquete_detalle_servicio(itinerario, paquete, agencia, ciudad, pais, tipo, descripcion, comida)
+            except:
+                messages.error(request, 'Error al crear Detalle servicio')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            #------------------------------------------------------------------------------------
+
+            if tipo == 'alojamiento':
+                id_detalle = Detalles_servicios.objects.latest('id_detalle_servicio')
+                form = Form_nuevo_paquete_alo_det(initial={'detalle': id_detalle.id_detalle_servicio, 'itn': itinerario, 'paquete': paquete, 'agencia': agencia, 'max': max, 'pais': pais, 'ciudad': ciudad})
+                form.fields['detalle'].widget.attrs['hidden'] = True
+                form.fields['itn'].widget.attrs['hidden'] = True
+                form.fields['paquete'].widget.attrs['hidden'] = True
+                form.fields['agencia'].widget.attrs['hidden'] = True
+                form.fields['max'].widget.attrs['hidden'] = True
+                form.fields['pais'].widget.attrs['hidden'] = True
+                form.fields['ciudad'].widget.attrs['hidden'] = True
+                return render(request, 'nuevo_paquete/paq_alo_det.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            itinerario = int(form.data['itinerario']) + 1
+
+            form = Form_nuevo_paquete_itinerario(initial={'orden': itinerario, 'paquete': paquete, 'agencia': agencia, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['readonly'] = True
+            return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+def paquete_det_ser_b(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            itinerario = form.data['itinerario']
+            max = form.data['max']
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            tipo = form.data['tipo']
+            descripcion = form.data['descripcion']
+            comida = form.data['comida']
+            
+            ciudad = form.data['ciudad']   
+            pais = form.data['pais']          
+
+            try:
+                Crear_nuevo_paquete_detalle_servicio(itinerario, paquete, agencia, ciudad, pais, tipo, descripcion, comida)
+            except:
+                messages.error(request, 'Error al crear Detalle servicio')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            if tipo == 'alojamiento':
+                id_detalle = Detalles_servicios.objects.latest('id_detalle_servicio')
+                form = Form_nuevo_paquete_alo_det(initial={'detalle': id_detalle.id_detalle_servicio, 'itn': itinerario, 'paquete': paquete, 'agencia': agencia, 'max': max, 'pais': pais, 'ciudad': ciudad})
+                form.fields['detalle'].widget.attrs['hidden'] = True
+                form.fields['itn'].widget.attrs['hidden'] = True
+                form.fields['paquete'].widget.attrs['hidden'] = True
+                form.fields['agencia'].widget.attrs['hidden'] = True
+                form.fields['max'].widget.attrs['hidden'] = True
+                form.fields['pais'].widget.attrs['hidden'] = True
+                form.fields['ciudad'].widget.attrs['hidden'] = True
+                return render(request, 'nuevo_paquete/paq_alo_det.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_det_ser(initial={'itinerario': itinerario, 'ciudad': ciudad, 'pais': pais, 'agencia': agencia, 'paquete': paquete, 'max': max})
+            form.fields['itinerario'].widget.attrs['readonly'] = True
+            form.fields['ciudad'].widget.attrs['hidden'] = True
+            form.fields['pais'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_det_ser.html',{'form':form})
+
+def paquete_det_ser_c(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            itinerario = form.data['itinerario']
+            max = form.data['max']
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            tipo = form.data['tipo']
+            descripcion = form.data['descripcion']
+            comida = form.data['comida']
+            
+            ciudad = form.data['ciudad']   
+            pais = form.data['pais']          
+
+            try:
+                Crear_nuevo_paquete_detalle_servicio(itinerario, paquete, agencia, ciudad, pais, tipo, descripcion, comida)
+            except:
+                messages.error(request, 'Error al crear Detalle servicio')
+                return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+            if tipo == 'alojamiento':
+                id_detalle = Detalles_servicios.objects.latest('id_detalle_servicio')
+                form = Form_nuevo_paquete_alo_det(initial={'detalle': id_detalle.id_detalle_servicio, 'itn': itinerario, 'paquete': paquete, 'agencia': agencia, 'max': max, 'pais': pais, 'ciudad': ciudad})
+                form.fields['detalle'].widget.attrs['hidden'] = True
+                form.fields['itn'].widget.attrs['hidden'] = True
+                form.fields['paquete'].widget.attrs['hidden'] = True
+                form.fields['agencia'].widget.attrs['hidden'] = True
+                form.fields['max'].widget.attrs['hidden'] = True
+                form.fields['pais'].widget.attrs['hidden'] = True
+                form.fields['ciudad'].widget.attrs['hidden'] = True
+                return render(request, 'nuevo_paquete/paq_alo_det.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_calendario(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+
+
+def paquete_alo_det_a(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            detalle = form.data['detalle']
+            itn = form.data['itn']
+            max = form.data['max']
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+            alojamiento = form.data['alojamiento']
+            
+            ciudad = form.data['ciudad']   
+            pais = form.data['pais']          
+
+            try:
+                Crear_ALO_DET(detalle, itn, paquete, agencia, ciudad, pais, alojamiento)
+            except:
+                messages.error(request, 'Error al vincular alojamiento')
+                return render(request, 'nuevo_paquete/paq_alo_det.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            itinerario = int(form.data['itn']) + 1
+
+            form = Form_nuevo_paquete_itinerario(initial={'orden': itinerario, 'paquete': paquete, 'agencia': agencia, 'max': max})
+            form.fields['orden'].widget.attrs['readonly'] = True
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            form.fields['max'].widget.attrs['readonly'] = True
+            return render(request, 'nuevo_paquete/itinerario_paq.html',{'form':form})
+
+def paquete_alo_det_b(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_itinerario(request.POST)
+
+            detalle = form.data['detalle']
+            itn = form.data['itn']
+            max = form.data['max']
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+            alojamiento = form.data['alojamiento']
+            
+            ciudad = form.data['ciudad']   
+            pais = form.data['pais']          
+
+            try:
+                Crear_ALO_DET(detalle, itn, paquete, agencia, ciudad, pais, alojamiento)
+            except:
+                messages.error(request, 'Error al vincular alojamiento')
+                return render(request, 'nuevo_paquete/paq_alo_det.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_calendario(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+
+
+def paquete_cal_a(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_calendario(request.POST)
+
+            
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            salida = form.data['salida']
+            descripcion = form.data['descripcion']
+
+            try:
+                Crear_Calendarios_anuales(salida, paquete, agencia, descripcion)
+            except:
+                messages.error(request, 'Error al al agregar fecha')
+                return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_precio(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_precio.html',{'form':form})
+
+def paquete_cal_b(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_calendario(request.POST)
+
+            
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            salida = form.data['salida']
+            descripcion = form.data['descripcion']
+
+            try:
+                Crear_Calendarios_anuales(salida, paquete, agencia, descripcion)
+            except:
+                messages.error(request, 'Error al al agregar fecha')
+                return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            form = Form_nuevo_paquete_calendario(initial={'paquete': paquete, 'agencia': agencia})
+            form.fields['paquete'].widget.attrs['hidden'] = True
+            form.fields['agencia'].widget.attrs['hidden'] = True
+            return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
+
+def paquete_precio(request):
+    if request.method == 'POST':
+            form = Form_nuevo_paquete_precio(request.POST)
+
+            
+            paquete = form.data['paquete']
+            agencia = form.data['agencia']
+
+            inicio = form.data['inicio']
+            fin = form.data['fin']
+            valor = form.data['valor']
+
+            try:
+                Crear_Precio_paquete(inicio, paquete, agencia, fin, valor)
+            except:
+                messages.error(request, 'Error al colocar el precio')
+                return render(request, 'nuevo_paquete/paq_precio.html',{'form':form})
+            
+            #----------------------------------------------------------------------------
+
+            return render(request, 'index.html')
