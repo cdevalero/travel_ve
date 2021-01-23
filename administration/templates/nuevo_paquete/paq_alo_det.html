@@ -26,6 +26,7 @@
             {% csrf_token %}
             {{form|crispy}}
             <button type="submit" formaction="{% url 'paquete_alo_det_a' %}" class="btn btn-success">Continuar Itinerario</button>
+            <button type="submit" formaction="{% url 'paquete_alo_det_c' %}" class="btn btn-success">Continuar Detalle</button>
             <button type="submit" formaction="{% url 'paquete_alo_det_b' %}" class="btn btn-danger">Terminar Itinerarios</button>
         </form>
       </div>

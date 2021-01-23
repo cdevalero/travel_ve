@@ -279,13 +279,13 @@ class Form_nuevo_paquete_itinerario(forms.Form):
     orden = forms.IntegerField(label='Orden')
     ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad')
     max = forms.IntegerField(label='Tiempo de estadia (tiempo MAXIMO que puedes pasar en este tramo)')
-    tiempo = forms.IntegerField(label='Tiempo de estadia (Menor o igual al tiempo maximo) *Si es 0 el registro se anula')
+    tiempo = forms.IntegerField(label='Tiempo de estadia (Menor o igual al tiempo maximo) *Si es 0, Se termina el itinerario')
     paquete = forms.IntegerField(label='')
     agencia = forms.IntegerField(label='')
 
 class Form_nuevo_paquete_itn_atr(forms.Form):
     orden = forms.IntegerField(label='Orden')
-    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion')
+    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion (Si no se escoge ninguna, la entrada no se guardara)', required=False)
     itn = forms.IntegerField(label='Itinerario')
     ciudad = forms.IntegerField(label='')
     pais = forms.IntegerField(label='')
@@ -314,6 +314,7 @@ class Form_nuevo_paquete_det_ser(forms.Form):
         ('cama_alq', 'Cama de alquiler'),
         ('alojamiento', 'Alojamiento'),
         ('otro', 'otros'),
+        ('-----', '-----'),
     }
     itinerario = forms.IntegerField(label='Itinerario')
     tipo = forms.ChoiceField(choices=BOLETO, label='Tipo')
@@ -327,7 +328,20 @@ class Form_nuevo_paquete_det_ser(forms.Form):
     
 class Form_nuevo_paquete_alo_det(forms.Form):
     detalle = forms.IntegerField(label='')
-    alojamiento = forms.ModelChoiceField(Alojamientos.objects.all(), label='Alojamiento')
+    alojamiento = forms.ModelChoiceField(Alojamientos.objects.all(), label='Alojamiento', required=False)
+    itn = forms.IntegerField(label='')
+    paquete = forms.IntegerField(label='')
+    agencia = forms.IntegerField(label='')
+    ciudad = forms.IntegerField(label='')
+    pais = forms.IntegerField(label='')
+    max = forms.IntegerField(label='')
+    def __init__(self, ciudad, *args, **kwargs):
+        super(Form_nuevo_paquete_alo_det, self).__init__(*args, **kwargs)
+        self.fields['alojamiento'].queryset = Alojamientos.objects.filter(id_ciudad=ciudad)
+
+class Form_nuevo_paquete_alo_det_post(forms.Form):
+    detalle = forms.IntegerField(label='')
+    alojamiento = forms.ModelChoiceField(Alojamientos.objects.all(), label='Alojamiento', required=False)
     itn = forms.IntegerField(label='')
     paquete = forms.IntegerField(label='')
     agencia = forms.IntegerField(label='')

@@ -433,6 +433,8 @@ def Crear_nuevo_PRO_AGE(agencia, proveedor, inicio, fin):
 
 def Crear_nuevo_paquete_datos_basicos(agencia, nombre, dia, descripcion, disponible, personas):
     with connection.cursor() as cursor:
+        if disponible=='':
+            disponible=None;
         try:
             cursor.execute ('INSERT INTO public.cgr_paquetes(id_paquete, id_agencia, nombre_paquete, duracion_dias, descripcion_turistica, disponible, numero_personas) VALUES ((SELECT max(r.id_paquete) from cgr_paquetes r) + 1, %s, %s, %s, %s, %s, %s)', 
             [agencia, nombre, dia, descripcion, disponible, personas])
@@ -442,6 +444,8 @@ def Crear_nuevo_paquete_datos_basicos(agencia, nombre, dia, descripcion, disponi
 
 def Crear_nuevo_paquete_detalle_servicio(itn, paq, age, ciu, pai, tipo, des, com):
     with connection.cursor() as cursor:
+        if com=='':
+            com=None;
         try:
             cursor.execute ('INSERT INTO public.cgr_detalles_servicios(id_detalle_servicio, id_itinerario, id_paquete, id_agencia, id_ciudad, id_pais, tipo_detalle, descripcion, comida) VALUES ((SELECT max(r.id_detalle_servicio) from cgr_detalles_servicios r) + 1, %s, %s, %s, %s, %s, %s, %s, %s)', 
             [itn, paq, age, ciu, pai, tipo, des, com])

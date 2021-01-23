@@ -185,6 +185,7 @@ urlpatterns = [
 
     path('paquete_alo_det_a/', paquete_alo_det_a, name="paquete_alo_det_a"),
     path('paquete_alo_det_b/', paquete_alo_det_b, name="paquete_alo_det_b"),
+    path('paquete_alo_det_c/', paquete_alo_det_c, name="paquete_alo_det_c"),
 
     path('paquete_cal_a/', paquete_cal_a, name="paquete_cal_a"),
     path('paquete_cal_b/', paquete_cal_b, name="paquete_cal_b"),
