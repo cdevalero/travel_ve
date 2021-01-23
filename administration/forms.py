@@ -357,7 +357,7 @@ class Form_nuevo_paquete_calendario(forms.Form):
 
 class Form_nuevo_paquete_precio(forms.Form):
     inicio = forms.DateField(label='Fecha Inicio', widget=DateInput(attrs={'type': 'date'}))
-    fin = forms.DateField(label='Fecha Fin', widget=DateInput(attrs={'type': 'date'}))
+    fin = forms.DateField(label='Fecha Fin', required=False , widget=DateInput(attrs={'type': 'date'}))
     valor = forms.IntegerField(label='Valor')
     paquete = forms.IntegerField(label='')
     agencia = forms.IntegerField(label='')

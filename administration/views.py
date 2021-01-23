@@ -650,6 +650,22 @@ def Add_Precios_paquetes(request):
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Add_Precios_paquetes')
 
+            try:
+                val = Precios_paquetes.objects.filter(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Precios_paquetes.DoesNotExist:        
+                Crear_Precio_paquete(f_inicio, id_paquete, id_agencia, f_fin, valor)
+                return redirect ('Show_Precios_paquetes')
+
+            for o in val:
+                if (o.f_inico < form.cleaned_data.get('f_fin')):
+                    messages.error(request, 'Error, En ese rango de fechas ya existe un paquete activo')
+                    return redirect('Add_Precios_paquetes')
+                if (o.f_fin==None) or (o.f_fin > form.cleaned_data.get('f_inicio') or (o.f_inico < form.cleaned_data.get('f_fin'))):
+                    messages.error(request, 'Error, En ese rango de fechas ya existe un paquete activo')
+                    return redirect('Add_Precios_paquetes')
+
+            #return HttpResponse(True)
+
             Crear_Precio_paquete(f_inicio, id_paquete, id_agencia, f_fin, valor)
             return redirect ('Show_Precios_paquetes')
         else:
@@ -2653,6 +2669,20 @@ def Edit_Precios_paquetes(request, id,id2,id3):
                 messages.error(request, 'Error, el paquete no pertenece a la agencia')
                 return redirect('Show_Precios_paquetes')
 
+            try:
+                val = Precios_paquetes.objects.filter(id_paquete=id_paquete, id_agencia=id_agencia)
+            except Precios_paquetes.DoesNotExist:        
+                Crear_Precio_paquete(f_inicio, id_paquete, id_agencia, f_fin, valor)
+                return redirect ('Show_Precios_paquetes')
+
+            for o in val:
+                if (o.f_fin==None) or (o.f_fin > form.cleaned_data.get('f_inicio')):
+                    messages.error(request, 'Error, En ese rango de fechas ya existe un paquete activo')
+                    return redirect('Add_Precios_paquetes')
+                if (o.f_inico < form.cleaned_data.get('f_fin')):
+                    messages.error(request, 'Error, En ese rango de fechas ya existe un paquete activo')
+                    return redirect('Add_Precios_paquetes')
+
             Actualizar_Precio_paquete(f_inicio, id_paquete, id_agencia, f_fin, valor)
             return redirect ('Show_Precios_paquetes')
         else:
@@ -4102,7 +4132,12 @@ def paquete_precio(request): #Precio - FIN
             agencia = form.data['agencia']
 
             inicio = form.data['inicio']
-            fin = form.data['fin']
+
+            try:
+                fin = form.data['fin']
+            except:
+                fin = ''
+            
             valor = form.data['valor']
 
             if form.is_valid():
@@ -4176,3 +4211,5 @@ def front_alojamiento(ciudad, detalle, itinerario, paquete, agencia, max, pais):
     form.fields['pais'].widget.attrs['hidden'] = True
     form.fields['ciudad'].widget.attrs['hidden'] = True
     return form
+
+
