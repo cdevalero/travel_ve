@@ -1,0 +1,116 @@
+{% extends 'base_ventas.html' %}
+
+{% block title %}
+Paquetes
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block content_ventas %}
+<div class="container-fluid">
+	<h1 class="h3 mb-2 text-gray-800">Paquetes</h1>
+	<div class="card shadow mb-4">
+		<div class="card-body">
+			{% if messages %}
+			<div class="row mt-3 mb-3">
+				<div class="col-12">
+					{% for message in messages %}
+					<div class="alert alert-{{ message.tags }}">
+						{{ message }}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+			{% endif %}
+
+			{% if paquetes %}
+
+
+			{% for paq in paquetes %}
+			<ul>
+				<div>
+					<div class="card shadow mb-2">
+						<div class="card-body">
+							<h4>{{paq.nombre_paquete}}, por {{paq.id_agencia}}</h4>
+							<div>
+								<span>	
+									{% if ciudades %}	
+										{% if itinerarios %}
+											{% for i in itinerarios %}
+												{% if i.id_paquete == paq.id_paquete %}
+													{% for c in ciudades %}
+														{% if i.id_ciudad == c.id_ciudad %}
+															{{c}}
+														{% endif %}	
+													{% endfor %}	
+												{% endif %}
+											{% endfor %}
+										{% endif %}	
+									{% endif %}	
+								</span>
+							</div>
+							<div>
+								<span>Nro de Personas: {{paq.numero_personas}}</span>
+							</div>
+							<p class="text-card-descripcion">{{paq.descripcion_turistica}}</p>
+							<div class="row">
+								<div class="col-md-6 first-button">
+									<div class="text-button2">
+										<a>
+											{% if precio %}
+												{% for pre in precio %}
+													{% if pre.id_paquete == paq.id_paquete %}
+														{% if itinerarios %}
+															{% if pais %}
+																
+																{% for iti in itinerarios %}
+																	
+																	{% if iti.id_paquete == paq.id_paquete %}
+																		
+																		{% for pai in pais %}
+																			
+																			{% if iti.id_pais == pai.id_pais %}
+																				
+																				{% if pai.continente_pais == 'Europa' %}
+																					€ {{pre.valor}}
+																				{% else %}
+																					$ {{pre.valor}}
+																				{% endif %}
+																					
+																			{% endif %}
+																				
+																		{% endfor %}
+																			
+																	{% endif %}
+																		
+																{% endfor %}
+																	
+															{% endif %}	
+														{% endif %}
+													{% endif %}		
+												{% endfor %}
+											{% endif %}	
+										</a>
+									</div>
+								</div>
+								<div class="col-md-6 second-button">
+									<div class="text-button">
+										<a href="{{paq.id_paquete}}">Ver mas</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ul>
+			{% endfor %}
+
+
+			{% else %}
+			<h3>No existen paquetes</h3>
+			{% endif %}
+
+		</div>
+	</div>
+</div>
+{% endblock content_ventas %}
