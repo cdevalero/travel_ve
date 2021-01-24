@@ -71,9 +71,9 @@ Paquetes
 																			
 																			{% if iti.id_pais == pai.id_pais %}
 																				
-																				{% if pai.continente_pais == 'Europa' %}
+																				{% if pai.continente_pais == 'Europa' and iti.orden == 1 %}
 																					€ {{pre.valor}}
-																				{% else %}
+																				{% elif iti.orden == 1 %}
 																					$ {{pre.valor}}
 																				{% endif %}
 																					
@@ -94,8 +94,8 @@ Paquetes
 									</div>
 								</div>
 								<div class="col-md-6 second-button">
-									<div class="text-button">
-										<a href="{{paq.id_paquete}}">Ver mas</a>
+									<div class="text-button"> 
+										<a href="{% url 'ver_mas_paquete' paq.id_paquete%}">Ver mas</a>
 									</div>
 								</div>
 							</div>

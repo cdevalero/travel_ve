@@ -70,9 +70,46 @@ def Buscar_Paquete(request):
                         for pre in precio:
                             if pre.id_paquete == i.id_paquete:
                                 if p.continente_pais == 'Europa':
-                                    pre.valor = int(int(pre.valor)*1.22)
+                                    pre.valor = int(int(pre.valor)/1.22)
 
             return render(request, 'ver_paquetes.html',{'paquetes':paquete, 'ciudades':city, 'precio':precio, 'itinerarios':itinerarios,'pais': pais})
     form = Form_Buscar_paquerte()
     return render(request, 'buscar.html',{'form':form})
+
+def ver_mas_paquete(request, id):
+    paquete = Paquetes.objects.get(id_paquete=id)
+    precio = Precios_paquetes.objects.filter(id_paquete=id)
+    calendario = Calendarios_anuales.objects.filter(id_paquete=id)
+    itinerario = Itinerarios.objects.filter(id_paquete=id)
+    atracciones = ITN_ATR.objects.filter(id_paquete= id)
+    detalle = Detalles_servicios.objects.filter(id_paquete= id)
+
+    alo_det = ALO_DET.objects.filter(id_paquete= id)
+
+    a_atracciones = Atracciones.objects.all()
+    a_ciudades = Ciudades.objects.all()
+    a_alojamiento = Alojamientos.objects.all()
+    pais = Paises.objects.all()
+
+    for i in itinerario:
+        for p in pais:
+            if i.id_pais == p.id_pais:
+                for pre in precio:
+                    if pre.id_paquete == i.id_paquete:
+                            if p.continente_pais == 'Europa':
+                                pre.valor = int(int(pre.valor)/1.22)
+    
+    return render(request, 'ver_mas_paq.html',{     'paq':paquete, 
+                                                    'precio': precio, 
+                                                    'calendario': calendario, 
+                                                    'itinerario':itinerario,
+                                                    'atracciones':atracciones,
+                                                    'detalle':detalle,
+                                                    'alo_det': alo_det,
+                                                    'nombre_atr': a_atracciones,
+                                                    'nombre_c':a_ciudades,
+                                                    'pais':pais,
+                                                    'nombre_alo': a_alojamiento
+    })
+
 

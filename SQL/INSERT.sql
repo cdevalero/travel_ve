@@ -296,14 +296,14 @@ insert into cgr_descuentos values (DEFAULT, 8, '2020-10-07', 'adultos', null, nu
 insert into cgr_descuentos values (DEFAULT, 9, '2020-09-28', 'desnino', '2021-09-28', null, 55);
  
 insert into cgr_itinerarios values (1, 1, 1, 1, 1, 5); 
-insert into cgr_itinerarios values (2, 2, 1, 1, 1, 7); 
-insert into cgr_itinerarios values (3,  3, 3, 5, 5, 3); 
-insert into cgr_itinerarios values (4, 4, 3, 24, 20, 1); 
-insert into cgr_itinerarios values (5, 5, 6, 24, 20, 2); 
-insert into cgr_itinerarios values (6, 6, 6, 21, 20, 1); 
-insert into cgr_itinerarios values (7, 7, 7, 13, 12, 1); 
-insert into cgr_itinerarios values (8, 8, 8, 13, 12, 4); 
-insert into cgr_itinerarios values (9, 9, 9, 9, 9, 1); 
+insert into cgr_itinerarios values (1, 2, 1, 1, 1, 7); 
+insert into cgr_itinerarios values (1,  3, 3, 5, 5, 3); 
+insert into cgr_itinerarios values (1, 4, 3, 24, 20, 1); 
+insert into cgr_itinerarios values (1, 5, 6, 24, 20, 2); 
+insert into cgr_itinerarios values (1, 6, 6, 21, 20, 1); 
+insert into cgr_itinerarios values (1, 7, 7, 13, 12, 1); 
+insert into cgr_itinerarios values (1, 8, 8, 13, 12, 4); 
+insert into cgr_itinerarios values (1, 9, 9, 9, 9, 1); 
 
 insert into cgr_itn_atr values (1, 1, 1, 1, 1, 1, 1, 1, 1);
 insert into cgr_itn_atr values (2, 2, 1, 1, 1, 2, 1, 1, 2 ); 
