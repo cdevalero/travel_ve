@@ -11,5 +11,7 @@ urlpatterns = [
     path('ventas_ver_mas_paquete/<id>/<agente>/<cliente>', ventas_ver_mas_paquete, name="ventas_ver_mas_paquete"),
     path('ventas_comprar_paquete/<paquete>/<agente>/<cliente>/<precio>/<fecha>/<agencia>', ventas_comprar_paquete, name="ventas_comprar_paquete"),
     path('ventas_presupuesto/<paquete>/<agente>/<cliente>/<precio>/<fecha>/<agencia>', ventas_presupuesto, name="ventas_presupuesto"),
-    path('ventas_presupuesto/<paquete>/<agente>/<cliente>/<precio>/<fecha>/<agencia>', ventas_presupuesto, name="ventas_presupuesto"),
+    path('ventas_intrumento/<cliente>/<contrato>/<tipo>/<descuento>', ventas_intrumento, name="ventas_intrumento"),
+    path('ventas_ver_presupuesto/<id_contrato>/<tipo>/<descuento>', ventas_ver_presupuesto, name="ventas_ver_presupuesto"),
+    path('confirmar_presupuesto/<contrato>', confirmar_presupuesto, name="confirmar_presupuesto"),
 ]

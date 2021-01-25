@@ -456,10 +456,10 @@ def Crear_nuevo_paquete_detalle_servicio(itn, paq, age, ciu, pai, tipo, des, com
 def Crear_paquete_presupuesto(paquete, agencia, cliente, presupuesto, fecha, email, costo, viajeros, f_viaje, asesor):
     with connection.cursor() as cursor:
         if asesor=='0':
-            web=None;
+            asesor=None;
         try:
             cursor.execute ('INSERT INTO public.cgr_paquetes_contrato(numero_factura, id_paquete, id_agencia, id_reg_cliente, id_reg_agencia, presupuesto, f_aprobacion, f_emision, email_validacion, total_costo_calculado, numer_de_viajeros, f_viaje, id_asesor)VALUES ((SELECT max(r.numero_factura) from cgr_paquetes_contrato r) + 1, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', 
-            [paquete, agencia, cliente, agencia, presupuesto, fecha, fehca, email, costo, viajeros, f_viaje, asesor])
+            [paquete, agencia, cliente, agencia, presupuesto, fecha, fecha, email, costo, viajeros, f_viaje, asesor])
         except:
             return 1
         return 0
@@ -469,11 +469,11 @@ def Crear_nuevo_instrumento(cliente, monto, tipo, banco, numero, email):
         if banco=='':
             banco=None;
         if numero=='':
-            banco=None;
+            numero=None;
         if email=='':
-            banco=None;
+            email=None;
         try:
-            cursor.execute ('INSERT INTO public.cgr_instrumentos_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle) VALUES (?, %s, %s, %s, %s, %s, %s)', 
+            cursor.execute ('INSERT INTO public.cgr_instrumentos_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle) VALUES ((SELECT max(r.id_instrumento) from cgr_instrumentos_de_pago r) + 1, %s, %s, %s, %s, %s, %s)', 
             [cliente, monto, tipo, banco, numero, email])
         except:
             return 1

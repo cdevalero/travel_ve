@@ -24,82 +24,91 @@ Paquetes
 			{% endif %}
 
 			{% if paquetes %}
-
+			
+			<div class="card-body">
+				<div>
+					<a href="{% url 'ventas_buscar_paquete' agente cliente %}" class="btn btn-primary">Volver</a>
+				</div>
+			</div>
+			
 
 			{% for paq in paquetes %}
 			<ul>
 				<div>
 					<div class="card shadow mb-2">
-						<div class="card-body">
-							<h4>{{paq.nombre_paquete}}, por {{paq.id_agencia}}</h4>
-							<div>
-								<span>	
-									{% if ciudades %}	
-										{% if itinerarios %}
-											{% for i in itinerarios %}
-												{% if i.id_paquete == paq.id_paquete %}
-													{% for c in ciudades %}
-														{% if i.id_ciudad == c.id_ciudad %}
-															{{c}}
-														{% endif %}	
-													{% endfor %}	
-												{% endif %}
-											{% endfor %}
-										{% endif %}	
-									{% endif %}	
-								</span>
-							</div>
-							<div>
-								<span>Nro de Personas: {{paq.numero_personas}}</span>
-							</div>
-							<p class="text-card-descripcion">{{paq.descripcion_turistica}}</p>
-							<div class="row">
-								<div class="col-md-6 first-button">
-									<div class="text-button2">
-										<a>
-											{% if precio %}
-												{% for pre in precio %}
-													{% if pre.id_paquete == paq.id_paquete %}
-														{% if itinerarios %}
-															{% if pais %}
-																
-																{% for iti in itinerarios %}
-																	
-																	{% if iti.id_paquete == paq.id_paquete %}
-																		
-																		{% for pai in pais %}
-																			
-																			{% if iti.id_pais == pai.id_pais %}
-																				
-																				{% if pai.continente_pais == 'Europa' and iti.orden == 1 %}
-																					€ {{pre.valor}}
-																				{% elif iti.orden == 1 %}
-																					$ {{pre.valor}}
-																				{% endif %}
-																					
-																			{% endif %}
-																				
-																		{% endfor %}
-																			
-																	{% endif %}
-																		
-																{% endfor %}
-																	
+						
+						
+							<div class="card-body">
+								<h4>{{paq.nombre_paquete}}, por {{paq.id_agencia}}</h4>
+								<div>
+									<span>	
+										{% if ciudades %}	
+											{% if itinerarios %}
+												{% for i in itinerarios %}
+													{% if i.id_paquete == paq.id_paquete %}
+														{% for c in ciudades %}
+															{% if i.id_ciudad == c.id_ciudad %}
+																{{c}}
 															{% endif %}	
-														{% endif %}
-													{% endif %}		
+														{% endfor %}	
+													{% endif %}
 												{% endfor %}
 											{% endif %}	
-										</a>
-									</div>
+										{% endif %}	
+									</span>
 								</div>
-								<div class="col-md-6 second-button">
-									<div class="text-button"> 
-										<a href="{% url 'ventas_ver_mas_paquete' paq.id_paquete agente cliente%}">Ver mas</a>
+								<div>
+									<span>Nro de Personas: {{paq.numero_personas}}</span>
+								</div>
+								<p class="text-card-descripcion">{{paq.descripcion_turistica}}</p>
+								<div class="row">
+									<div class="col-md-6 first-button">
+										<div class="text-button2">
+											<a>
+												{% if precio %}
+													{% for pre in precio %}
+														{% if pre.id_paquete == paq.id_paquete %}
+															{% if itinerarios %}
+																{% if pais %}
+																	
+																	{% for iti in itinerarios %}
+																		
+																		{% if iti.id_paquete == paq.id_paquete %}
+																			
+																			{% for pai in pais %}
+																				
+																				{% if iti.id_pais == pai.id_pais %}
+																					
+																					{% if pai.continente_pais == 'Europa' and iti.orden == 1 %}
+																						€ {{pre.valor}}
+																					{% elif iti.orden == 1 %}
+																						$ {{pre.valor}}
+																					{% endif %}
+																						
+																				{% endif %}
+																					
+																			{% endfor %}
+																				
+																		{% endif %}
+																			
+																	{% endfor %}
+																		
+																{% endif %}	
+															{% endif %}
+														{% endif %}		
+													{% endfor %}
+												{% endif %}	
+											</a>
+										</div>
+									</div>
+									<div class="col-md-6 second-button">
+										<div class="text-button"> 
+											<a href="{% url 'ventas_ver_mas_paquete' paq.id_paquete agente cliente%}">Ver mas</a>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+
 					</div>
 				</div>
 			</ul>
@@ -108,6 +117,11 @@ Paquetes
 
 			{% else %}
 			<h3>No existen paquetes</h3>
+			<div class="card-body">
+				<div>
+					<a href="{% url 'ventas_buscar_paquete' agente cliente %}" class="btn btn-primary">Volver</a>
+				</div>
+			</div>
 			{% endif %}
 
 		</div>

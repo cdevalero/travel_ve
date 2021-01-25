@@ -16,7 +16,7 @@ class Form_Seleccionar_agente(forms.Form):
         ('natural','Natural'),
         ('juridico','Juridico'),
     )
-    agente = ModelChoiceField(Asesores_de_viajes.objects.all(), label='Si se desea escoger un Asesor de Viajes', required=False)
+    agente = ModelChoiceField(Asesores_de_viajes.objects.all(), label='Asesor de Viajes', required=False, help_text='Si lo desea puede escoger un asesor para planificar el viaje')
     cliente = forms.IntegerField(label='identificacion del Cliente')
     tipo = forms.ChoiceField(choices=PERSONA, label='Tipo de cliente')
     nombre = forms.CharField(label='Nombre del Cliente')
@@ -51,7 +51,7 @@ class Form_ventas_descuneto_forma_post(forms.Form):
     tipo = forms.ChoiceField(choices=TRAMITES, label='Forma de pago')
     descuento =  ModelChoiceField(Descuentos.objects.all(), label='Descuentos disponibles', required=False)
 
-class Form_ventas_instrumento:
+class Form_ventas_instrumento(forms.Form):
     INSTRUMENTO = {
         ('TDC', 'Tarjeta de Credito'),
         ('TDD', 'Tarjeta de Debito'),
@@ -62,5 +62,5 @@ class Form_ventas_instrumento:
     monto = forms.IntegerField(label='Monto', help_text='Debe ser igual a la deuda, si es menor se agregara otro instrumento de pago')
     tipo = forms.ChoiceField(choices=INSTRUMENTO, label='Tipo de Pago')
     banco =  ModelChoiceField(Bancos.objects.all(), label='Banco', required=False, help_text='No usar en caso de pago Zelle')
-    numero = forms.IntegerField(label='Numero Zelle', help_text='Solo pago Zelle')
-    email = forms.IntegerField(label='Email Zelle', help_text='Solo pago Zelle')
+    numero = forms.IntegerField(label='Numero Zelle', help_text='Solo pago Zelle', required=False)
+    email = forms.EmailField(label='Email Zelle', help_text='Solo pago Zelle', required=False)

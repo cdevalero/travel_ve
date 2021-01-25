@@ -124,6 +124,8 @@ def seleccionar_asesor(request):
             agente = form.data['agente']
         except:
             agente = '0'
+        if agente == '':
+            agente = '0'
         cliente = form.data['cliente']
 
         tipo = form.data['tipo']
@@ -273,19 +275,39 @@ def ventas_presupuesto(request, paquete, agente, cliente, precio, fecha, agencia
     try:
         descuento = form.data['descuento']
     except:
-        descuento = ''
+        descuento = '0'
+    if descuento == '':
+        descuento = '0'
     email = form.data['email']
+
+    euro = 0
+    itinerario = Itinerarios.objects.filter(id_paquete=paquete)
+    a_ciudades = Ciudades.objects.all() 
+    pais = Paises.objects.all()
+
+    for i in itinerario:
+        for c in a_ciudades:
+            if i.id_ciudad == c.id_ciudad:
+                for p in pais:
+                    if c.id_pais == p.id_pais:
+                        if p.continente_pais == 'Europa':
+                            euro = euro + 1
+    if euro >0:
+        precio = int(int(precio)*1.22)
 
     viajero = Paquetes.objects.get(id_paquete= paquete)
 
     ventas_registrar_cliente(cliente, agencia)
-    Crear_paquete_presupuesto(paquete, agencia, cliente, precio, date.today(), email, precio, viajero, fecha, agente)
+    if Crear_paquete_presupuesto(paquete, agencia, cliente, precio, date.today(), email, precio, viajero.numero_personas, fecha, agente)==1:
+        return HttpResponse('error')
+
     contrato = Paquetes_contrato.objects.latest('numero_factura')
 
-    form_i = Form_ventas_instrumento(initial={'max': precio})
+    form_i = Form_ventas_instrumento(initial={'max': int(precio)})
     form_i.fields['max'].widget.attrs['readonly'] = True
+    
     return render(request, 'venta/ventas_instrumento.html',
-    {'cliente':cliente, 'contrato':contrato, 'tipo': tipo, 'descuento':descuento, 'form':form_i})
+    {'cliente':cliente, 'contrato':contrato.numero_factura, 'tipo': tipo, 'descuento':descuento, 'form':form_i})
 
 def ventas_registrar_cliente(cliente, agencia):
     try:
@@ -364,7 +386,7 @@ def ventas_intrumento(request, cliente, contrato, tipo, descuento):
         {'cliente':cliente, 'contrato':contrato, 'tipo': tipo, 'descuento':descuento, 'form':form_i})
 
     if Crear_nuevo_instrumento(cliente, monto, tipo_i, banco, numero, email)== 1:
-        messages.error(request, 'Error al crear Intrumento')
+        messages.error(request, 'Error al registrar Instrumento')
         form_i = Form_ventas_instrumento(initial={'max': form.data['max']})
         form_i.fields['max'].widget.attrs['readonly'] = True
         return render(request, 'venta/ventas_instrumento.html',
@@ -373,8 +395,9 @@ def ventas_intrumento(request, cliente, contrato, tipo, descuento):
     instrumento = Instrumentos_de_pago.objects.latest('id_instrumento')
 
     try:
-        Crear_Forma_de_pago(instrumento, cliente, contrato, tipo_f)
+        Crear_Forma_de_pago(instrumento.id_instrumento, cliente, contrato, tipo_f)
     except:
+        messages.error(request, instrumento.id_instrumento)
         max = max + monto
     
     max = max - monto
@@ -386,5 +409,70 @@ def ventas_intrumento(request, cliente, contrato, tipo, descuento):
         {'cliente':cliente, 'contrato':contrato, 'tipo': tipo, 'descuento':descuento, 'form':form_i})
     
     else:
-        return HttpResponse('hola')
+        return ventas_ver_presupuesto(request, contrato, tipo, descuento)
 
+def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura= id_contrato)
+
+    paquete = Paquetes.objects.get(id_paquete=paq_contrato.id_paquete)
+
+    precio = paq_contrato.presupuesto
+
+    email = paq_contrato.email_validacion
+
+    cliente = Clientes.objects.get(doc_identidad_o_rif= paq_contrato.id_reg_cliente)
+
+    formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
+
+    fecha = paq_contrato.f_emision
+
+    itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
+
+    atracciones = ITN_ATR.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    detalle = Detalles_servicios.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    alo_det = ALO_DET.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    if descuento != '0':
+        descuento = Descuentos.objects.get(id_descuento= descuento)
+    else:
+        descuento = None
+
+    euro = 0
+    instrumento = Instrumentos_de_pago.objects.filter(doc_identidad_cliente=paq_contrato.id_reg_cliente)
+    a_atracciones = Atracciones.objects.all()
+    a_ciudades = Ciudades.objects.all() 
+    a_alojamiento = Alojamientos.objects.all()
+    pais = Paises.objects.all()
+
+    for i in itinerario:
+        for c in a_ciudades:
+            if i.id_ciudad == c.id_ciudad:
+                for p in pais:
+                    if c.id_pais == p.id_pais:
+                        if p.continente_pais == 'Europa':
+                            euro = euro + 1
+ 
+    return render(request, 'venta/presupuesto.html',{     'paq':paquete, #
+                                                    'valor': precio, #
+                                                    'email': email,
+                                                    'cliente': cliente,#
+                                                    'formas': formas_pago, #
+                                                    'fecha': fecha,#
+                                                    'itinerario':itinerario,#
+                                                    'atracciones':atracciones,#
+                                                    'detalle':detalle,#
+                                                    'alo_det': alo_det,#
+                                                    'nombre_atr': a_atracciones,#
+                                                    'nombre_c':a_ciudades,#
+                                                    'euro':euro,#
+                                                    'instrumento':instrumento,#
+                                                    'tipo':tipo,#
+                                                    'descuento':descuento,#
+                                                    'contrato':id_contrato,#
+                                                    'nombre_alo': a_alojamiento
+    })
+
+def confirmar_presupuesto(request, contrato):
+    pass

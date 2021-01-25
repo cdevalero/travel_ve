@@ -24,7 +24,7 @@
         <form action="" method="post" class="mt-2" autocomplete="off">
             {% csrf_token %}
             {{form|crispy}}
-            <button type="submit" formaction="{% url 'ventas_presupuesto' paquete agente cliente precio fecha agencia %}" class="btn btn-success">Enviar</button>
+            <button type="submit" formaction="{% url 'ventas_intrumento' cliente contrato tipo descuento%}" class="btn btn-success">Enviar</button>
         </form>
       </div>
     </div>
