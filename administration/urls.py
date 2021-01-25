@@ -113,7 +113,7 @@ urlpatterns = [
     path('Delete_ALO_DET/<id>/<id2>/<id3>/<id4>/<id5>/<id6>/<id7>', Delete_ALO_DET, name="Delete_ALO_DET"),
     path('Delete_Instrumentos_de_pago/<id>/<id2>', Delete_Instrumentos_de_pago, name="Delete_Instrumentos_de_pago"),
     path('Delete_Paquetes_contrato/<id>', Delete_Paquetes_contrato, name="Delete_Paquetes_contrato"),
-    path('Delete_Formas_de_pago/<id>/<id2>/<id3>', Delete_Formas_de_pago, name="Delete_Formas_de_pago"),
+    path('Delete_Formas_de_pago/<id>', Delete_Formas_de_pago, name="Delete_Formas_de_pago"),
     path('Delete_Viajeros/<id>', Delete_Viajeros, name="Delete_Viajeros"),
     path('Delete_PAI_VIA/<id>/<id2>', Delete_PAI_VIA, name="Delete_PAI_VIA"),
     path('Delete_Registro_viajeros/<id>/<id2>', Delete_Registro_viajeros, name="Delete_Registro_viajeros"),
@@ -151,7 +151,7 @@ urlpatterns = [
     path('Edit_ALO_DET/<id>/<id2>/<id3>/<id4>/<id5>/<id6>/<id7>', Edit_ALO_DET, name="Edit_ALO_DET"),
     path('Edit_Instrumentos_de_pago/<id>/<id2>', Edit_Instrumentos_de_pago, name="Edit_Instrumentos_de_pago"),
     path('Edit_Paquetes_contrato/<id>', Edit_Paquetes_contrato, name="Edit_Paquetes_contrato"),
-    path('Edit_Formas_de_pago/<id>/<id2>/<id3>', Edit_Formas_de_pago, name="Edit_Formas_de_pago"),
+    path('Edit_Formas_de_pago/<id>', Edit_Formas_de_pago, name="Edit_Formas_de_pago"),
     path('Edit_Viajeros/<id>', Edit_Viajeros, name="Edit_Viajeros"),
     path('Edit_PAI_VIA/<id>/<id2>', Edit_PAI_VIA, name="Edit_PAI_VIA"),
     path('Edit_Registro_viajeros/<id>/<id2>', Edit_Registro_viajeros, name="Edit_Registro_viajeros"),
@@ -191,5 +191,6 @@ urlpatterns = [
     path('paquete_cal_b/', paquete_cal_b, name="paquete_cal_b"),
 
     path('paquete_precio/', paquete_precio, name="paquete_precio"),
+    path('paquete_fin/<id>', paquete_fin, name="paquete_fin"),
 
 ]

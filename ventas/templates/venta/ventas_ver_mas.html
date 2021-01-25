@@ -144,9 +144,17 @@ Paquetes
                             </div>
                             <div class="col-md-4 second-button">
                                 <div class="text-button">
-                                    <h5>
-                                        <a href="#">Comprar</a>
-                                    </h5>
+                                    
+                                    {% for pre in precio %}
+                                        
+                                        {% if pre.id_paquete == paq.id_paquete %}
+                                            <h5>
+                                                <a href="{% url 'ventas_comprar_paquete' paq.id_paquete age cli pre.valor cal.f_salida paq.id_agencia %}">Comprar</a>
+                                            </h5>
+                                        {% endif %}
+                                            
+                                    {% endfor %}
+                                        
                                 </div>
                             </div>
                         </div>
@@ -162,3 +170,12 @@ Paquetes
     </div>
 </div>
 {% endblock content_ventas %}
+
+
+
+
+
+
+
+
+

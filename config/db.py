@@ -1,7 +1,7 @@
 POSTGRES = {
 	'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'py',
+        'NAME': 'test',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',

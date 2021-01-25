@@ -1,4 +1,4 @@
-{% extends 'base_ventas.html' %}
+{% extends 'base_paquete.html' %}
 
 {% block title %}
 Paquetes
@@ -6,7 +6,7 @@ Paquetes
 
 {% load crispy_forms_tags %}
 
-{% block content_ventas %}
+{% block content_paquete %}
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-body">
@@ -142,13 +142,6 @@ Paquetes
                                     </h5>
                                 </div>
                             </div>
-                            <div class="col-md-4 second-button">
-                                <div class="text-button">
-                                    <h5>
-                                        <a href="#">Comprar</a>
-                                    </h5>
-                                </div>
-                            </div>
                         </div>
                         <br>
                     </div>
@@ -161,4 +154,4 @@ Paquetes
         </div>
     </div>
 </div>
-{% endblock content_ventas %}
+{% endblock content_paquete %}

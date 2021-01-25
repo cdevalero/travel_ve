@@ -355,15 +355,15 @@ insert into cgr_paquetes_contrato values (DEFAULT, 5, 6, 25151252, 2, 600, '2021
 insert into cgr_paquetes_contrato values (DEFAULT, 3, 3, 47489956, 4, 350, '2021-03-13', '2021-03-15', 'luisgar@yahoo.com', 350, 3, '2021-05-05', 8);
 insert into cgr_paquetes_contrato values (DEFAULT, 8, 8, 25393752, 3, 1500, '2021-05-04', '2021-05-06', 'jrosas@yahoo.com', 1500, 5, '2021-08-20', 9);
 
-insert into cgr_formas_de_pago values (1, 25385742, 2, 'parcial');
-insert into cgr_formas_de_pago values (2, 25151252, 3, 'cuotas');
-insert into cgr_formas_de_pago values (3, 12547589, 4, 'parcial');
-insert into cgr_formas_de_pago values (4, 88774589, 3, 'parcial'); 
-insert into cgr_formas_de_pago values (5, 1025369, 4, 'cuotas'); 
-insert into cgr_formas_de_pago values (6, 25393752, 5, 'cuotas'); 
-insert into cgr_formas_de_pago values (7, 5899658, 9, 'parcial'); 
-insert into cgr_formas_de_pago values (8, 44111222, 7, 'parcial');
-insert into cgr_formas_de_pago values (9, 47489956, 1, 'parcial');
+insert into cgr_formas_de_pago values (DEFAULT, 1, 25385742, 2, 'parcial');
+insert into cgr_formas_de_pago values (DEFAULT, 2, 25151252, 3, 'cuotas');
+insert into cgr_formas_de_pago values (DEFAULT, 3, 12547589, 4, 'parcial');
+insert into cgr_formas_de_pago values (DEFAULT, 4, 88774589, 3, 'parcial'); 
+insert into cgr_formas_de_pago values (DEFAULT, 5, 1025369, 4, 'cuotas'); 
+insert into cgr_formas_de_pago values (DEFAULT, 6, 25393752, 5, 'cuotas'); 
+insert into cgr_formas_de_pago values (DEFAULT, 7, 5899658, 9, 'parcial'); 
+insert into cgr_formas_de_pago values (DEFAULT, 8, 44111222, 7, 'parcial');
+insert into cgr_formas_de_pago values (DEFAULT, 9, 47489956, 1, 'parcial');
 
 insert into cgr_viajeros values ( 25385742, 1, 1, 1, 'roberto', 'ojeda', 'pacheco','M' , '1960-08-09', null); 
 insert into cgr_viajeros values ( 25151252, 1, 1, 1, 'ernesto', 'avila', 'garcia','M' , '1955-12-07', null);
