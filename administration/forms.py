@@ -362,3 +362,20 @@ class Form_nuevo_paquete_precio(forms.Form):
     paquete = forms.IntegerField(label='')
     agencia = forms.IntegerField(label='')
     
+class Form_nuevo_registro_viajero_compra(forms.Form):
+    GENERO = {
+        ('F', 'Femenino'),
+        ('M', 'Masculino'),
+    }
+    cedula = forms.IntegerField(label='Documento de Identidad')
+    nombre1 = forms.CharField(label='Primer nombre nombre', max_length=30)
+    nombre2 = forms.CharField(label='Segundo nombre', max_length=30, required=False)
+    apellido1 = forms.CharField(label='Primer Apellido', max_length=30)
+    apellido2 = forms.CharField(label='Segundo Apellido', max_length=30)
+    sexo = forms.ChoiceField(choices=GENERO, label='Sexo')
+    f_nacimento = forms.DateField(label='Fecha de nacimeinto', widget=DateInput(attrs={'type': 'date'}))
+    ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad donde recide')
+    pasaporte = forms.IntegerField(label='Pasaporte')
+    pais = ModelChoiceField(Paises.objects.all(), label='Nacionalidad')
+    f_registro = forms.DateField(label='',  widget=DateInput(attrs={'type': 'date'}))
+    paquete = ModelChoiceField(Paquetes_contrato.objects.all(), label='')

@@ -171,7 +171,7 @@ Paquetes
                             <div class="col-md-12 first-button">
                                 <div class="text-button">
                                     <h5>
-                                        Descuento: {{descuento.tipo_descuento}}
+                                        Descuento: {{descuento}}
                                     </h5>
                                 </div>
                             </div>
@@ -200,16 +200,37 @@ Paquetes
                                 </h5>
                             </div>
                         </div>
-                        <div class="col-md-4 second-button">
-                            <div class="text-button">
-                                
-                                <h5>
-                                    <a href="{% url 'confirmar_presupuesto' contrato numero tipo descuento %}">Comprar</a>
-                                </h5>
+                    </div>
+                    <br>
+                    <br>
+                    <h2>Viajeros</h2>
+                    
+                    {% for v in viajero %}
+                        <div class="row">
+                            <div class="col-md-12 first-button">
+                                <div class="text-button">
+                                    <h4>
+                                        Id: {{v.id_de_identidad}}
+                                    </h4>
+                                    <h4>
+                                        {{v.primer_nombre}} {{v.primer_apellido}} {{v.segundo_apellido}}
+                                    </h4>
                                     
+                                    {% for pas in pasaporte %}
+                                        
+                                        {% if pas.id_viajero == v.id_de_identidad %}
+                                            <h5>
+                                                {{pas.id_pais}} - pasaporte: {{pas.nro_de_pasaporte}}
+                                            </h5>
+                                        {% endif %}
+                                            
+                                    {% endfor %}
+                                        
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
+                        
                         
                 </div>
             </div>

@@ -3510,6 +3510,7 @@ def Registrar_nuevo_viajero(request):
         agencia = Paquetes_contrato.objects.get(numero_factura=paquete)
         agencia = agencia.id_agencia
         f_registro = form.data['f_registro']
+        return HttpResponse(f_registro)
 
         if Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2) == 1:
             messages.error(request, 'Error al agregar Viajero')

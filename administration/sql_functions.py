@@ -478,3 +478,12 @@ def Crear_nuevo_instrumento(cliente, monto, tipo, banco, numero, email):
         except:
             return 1
         return 0
+
+def Cambiar_paquete_contrato(fecha, viajeros, paquete):
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('UPDATE public.cgr_paquetes_contrato SET f_emision=%s, numer_de_viajeros=%s WHERE numero_factura=%s', 
+            [fecha, viajeros, paquete])
+        except:
+            return 1
+        return 0
