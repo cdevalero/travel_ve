@@ -25,7 +25,7 @@
             {% csrf_token %}
             {{form|crispy}}
             <button type="submit" formaction="{% url 'ventas_registrar_viajeros' contrato cuenta numero tipo descuento %}" class="btn btn-success">Enviar</button>
-            <button type="submit" formaction="{% url 'ver_contrato' contrato cuenta tipo descuento %}" class="btn btn-danger">Terminar</button>
+            <button type="submit" formaction="{% url 'ventas_registrar_viajeros_terminar' contrato cuenta numero tipo descuento %}" class="btn btn-danger">Terminar</button>
         </form>
       </div>
     </div>

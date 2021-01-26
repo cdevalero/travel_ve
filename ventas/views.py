@@ -424,7 +424,7 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
 
     formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
 
-    fecha = paq_contrato.f_emision
+    fecha = paq_contrato.f_viaje
 
     itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
 
@@ -475,6 +475,7 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
                                                     'numero': paq_contrato.numer_de_viajeros
     })
 
+#---------------------------------------
 
 def confirmar_presupuesto(request, contrato, numero, tipo, descuento):
     form = Form_nuevo_registro_viajero_compra(initial={'f_registro': date.today(), 'paquete':contrato})
@@ -484,7 +485,7 @@ def confirmar_presupuesto(request, contrato, numero, tipo, descuento):
 
 def ventas_registrar_viajeros(request, contrato, cuenta, numero, tipo, descuento):
     if int(cuenta) >= int(numero):
-        return redirect('ver_contrato', contrato, cuenta, tipo)
+        return redirect('ventas_registrar_viajeros_terminar', contrato, cuenta, numero, tipo, descuento)
 
     form = Form_nuevo_registro_viajero_compra(request.POST)
 
@@ -538,8 +539,6 @@ def ventas_registrar_viajeros(request, contrato, cuenta, numero, tipo, descuento
     return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
 def ventas_registrar_viajeros_terminar(request, contrato, cuenta, numero, tipo, descuento):
-    if int(cuenta) > int(numero):
-        return redirect('ver_contrato', contrato, cuenta, tipo)
 
     form = Form_nuevo_registro_viajero_compra(request.POST)
 
@@ -585,9 +584,7 @@ def ventas_registrar_viajeros_terminar(request, contrato, cuenta, numero, tipo, 
             messages.error(request, 'Error al registrar viajero')
             return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
-    return redirect('ver_contrato', contrato, cuenta, tipo)
-
-    
+    return redirect('ver_contrato', contrato, cuenta, tipo, descuento)
 
 def ver_contrato(request, id_contrato, numero, tipo, descuento):
 
@@ -609,7 +606,7 @@ def ver_contrato(request, id_contrato, numero, tipo, descuento):
 
     formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
 
-    fecha = paq_contrato.f_emision
+    fecha = paq_contrato.f_viaje
 
     itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
 
@@ -618,6 +615,8 @@ def ver_contrato(request, id_contrato, numero, tipo, descuento):
     detalle = Detalles_servicios.objects.filter(id_paquete= paq_contrato.id_paquete)
 
     alo_det = ALO_DET.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    registro_cli = Registro_clientes.objects.all()
 
     euro = 0
     instrumento = Instrumentos_de_pago.objects.filter(doc_identidad_cliente=paq_contrato.id_reg_cliente)
@@ -637,6 +636,17 @@ def ver_contrato(request, id_contrato, numero, tipo, descuento):
                         if p.continente_pais == 'Europa':
                             euro = euro + 1
  
+    prueba_fecha = fecha
+    prueba_dias = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
+
+    for p in prueba_dias:
+        dia = int(p.tiempo_estadia)
+        if p.orden == 1:
+            p.tiempo_estadia = prueba_fecha
+        else:
+            p.tiempo_estadia = prueba_fecha + timedelta(days=dia)
+        prueba_fecha= prueba_fecha 
+
     return render(request, 'venta/contrato.html',{     'paq':paquete, #
                                                     'valor': precio, #
                                                     'email': email,
@@ -657,7 +667,9 @@ def ver_contrato(request, id_contrato, numero, tipo, descuento):
                                                     'contrato':id_contrato,#
                                                     'nombre_alo': a_alojamiento,
                                                     'viajero': viajero,
-                                                    'numero': paq_contrato.numer_de_viajeros
+                                                    'registro_cli': registro_cli,
+                                                    'numero': paq_contrato.numer_de_viajeros,
+                                                    'prueba_dias': prueba_dias
     })
 
 

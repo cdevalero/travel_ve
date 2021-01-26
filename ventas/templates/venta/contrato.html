@@ -52,7 +52,15 @@ Paquetes
                     <div class="col-md-4">
                         <div class="title-day">
                             <h4>
-                                Parada {{i.orden}}
+
+                                {% for prueba in prueba_dias %}
+                                
+                                    {% if prueba.orden == i.orden %}
+                                        {{prueba.tiempo_estadia}}
+                                    {% endif %}
+                                        
+                                {% endfor %}
+                                    
                             </h4>
                             <h5>
                                 {% for c in nombre_c %}
@@ -215,6 +223,17 @@ Paquetes
                                     <h4>
                                         {{v.primer_nombre}} {{v.primer_apellido}} {{v.segundo_apellido}}
                                     </h4>
+                                    <h6>
+                                        
+                                        {% for rc in registro_cli %}
+                                            
+                                            {% if v.id_de_identidad == rc.id_cliente %}
+                                                Numero de registro: {{rc.numero_registro}}
+                                            {% endif %}
+                                                
+                                        {% endfor %}
+                                            
+                                    </h6>
                                     
                                     {% for pas in pasaporte %}
                                         
