@@ -447,13 +447,21 @@ CREATE TABLE cgr_paquetes_contrato
 	CONSTRAINT pk_paquetes_contrato PRIMARY KEY (numero_factura)
 );
 
+CREATE SEQUENCE cgr_secuencia_formas_de_pago
+	start with 1
+	increment 1
+	minvalue 1
+	maxvalue 10000
+;
+
 CREATE TABLE cgr_formas_de_pago
 (
+	id_forma numeric NOT NULL DEFAULT nextval('cgr_secuencia_formas_de_pago'::regclass),
 	id_instrumento numeric NOT NULL,
 	id_cliente numeric NOT NULL,
 	id_paquete_contrato numeric NOT NULL,
 	tipo_forma_de_pago varchar,
-	CONSTRAINT pk_forma_de_pago PRIMARY KEY (id_instrumento,id_cliente,id_paquete_contrato),
+	CONSTRAINT pk_forma_de_pago PRIMARY KEY (id_forma),
 	CONSTRAINT chk_tipo_forma_de_pago CHECK(tipo_forma_de_pago in ('parcial','cuotas'))
 );
 

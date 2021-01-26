@@ -97,7 +97,7 @@ class Rallies(models.Model):
     class Meta:
         db_table = 'cgr_rallies'
         ordering = ['id_rally']
-
+ 
 class Premios(models.Model):
     PREMIO = (
         (1,'1er'),
@@ -457,7 +457,7 @@ class Descuentos(models.Model):
     porcentaje = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.id_descuento) + '-' + self.id_agencia
+        return self.tipo_descuento + ' %' + str(self.porcentaje) + ' p: ' + str(self.cant_per_gratis)
 
     class Meta:
 
@@ -624,7 +624,8 @@ class Formas_de_pago(models.Model):
         ('parcial', 'Parcial'),
         ('cuotas', 'Cuotas'),
     }
-    id_instrumento = models.IntegerField(primary_key=True)
+    id_forma = models.AutoField(primary_key=True)
+    id_instrumento = models.IntegerField()
     id_cliente = models.IntegerField()
     id_paquete_contrato = models.IntegerField()
     tipo_forma_de_pago = models.CharField(max_length=30, choices=TRAMITES, null=True, blank=True)
@@ -633,14 +634,12 @@ class Formas_de_pago(models.Model):
     paquete = CompositeForeignKey(Paquetes_contrato, on_delete=PROTECT, to_fields={'numero_factura': 'id_paquete_contrato'})
 
     def __str__(self):
-        return str(self.id_instrumento)
+        return str(self.id_forma)
 
     class Meta:
 
-        unique_together = [('id_instrumento', 'id_cliente', 'id_paquete_contrato')]
-
         db_table = 'cgr_formas_de_pago'
-        ordering = ['id_instrumento']
+        ordering = ['id_forma']
 
 class Viajeros(models.Model):
     GENERO = {

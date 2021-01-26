@@ -146,7 +146,7 @@ def Crear_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago)
     if tipo_forma_pago=='':
         tipo_forma_pago=None;
     with connection.cursor() as cursor:
-        cursor.execute ('INSERT INTO public.cgr_formas_de_pago(id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago) VALUES (%s, %s, %s, %s)', 
+        cursor.execute ('INSERT INTO public.cgr_formas_de_pago(id_forma, id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago) VALUES ((SELECT max(r.id_forma) from cgr_formas_de_pago r) + 1,%s, %s, %s, %s)', 
         [instrumento, cliente, paquete_contrato, tipo_forma_pago])
 
 def Crear_PAI_VIA(viajero, pais, numero):
@@ -233,10 +233,10 @@ def Borrar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, alojamie
             return 1
         return 0
 
-def Borrar_Forma_de_pago(instrumento, cliente, paquete_contrato):
+def Borrar_Forma_de_pago(forma):
     with connection.cursor() as cursor:
-        cursor.execute ("DELETE FROM public.cgr_formas_de_pago WHERE id_instrumento=%s and id_cliente=%s and id_paquete_contrato=%s ", 
-        [instrumento, cliente, paquete_contrato])
+        cursor.execute ("DELETE FROM public.cgr_formas_de_pago WHERE id_forma=%s ", 
+        [forma])
 
 def Borrar_PAI_VIA(viajero, pais):
     with connection.cursor() as cursor:
@@ -330,12 +330,12 @@ def Actualizar_ALO_DET(detalle, itinerario, paquete, agencia, ciudad, pais, aloj
         cursor.execute ('UPDATE public.cgr_alo_det SET id_detalle_servicio=%s, id_itinerario=%s, id_paquete=%s, id_agencia=%s, id_ciudad=%s, id_pais=%s, id_alojamiento=%s WHERE id_detalle_servicio=%s and id_itinerario=%s and id_paquete=%s and id_agencia=%s and id_ciudad=%s and id_pais=%s and id_alojamiento=%s', 
         [detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento, detalle, itinerario, paquete, agencia, ciudad, pais, alojamiento])
 
-def Actualizar_Forma_de_pago(instrumento, cliente, paquete_contrato, tipo_forma_pago):
+def Actualizar_Forma_de_pago(forma, instrumento, cliente, paquete_contrato, tipo_forma_pago):
     if tipo_forma_pago=='':
         tipo_forma_pago=None;
     with connection.cursor() as cursor:
-        cursor.execute ('UPDATE public.cgr_formas_de_pago SET id_instrumento=%s, id_cliente=%s, id_paquete_contrato=%s, tipo_forma_de_pago=%s WHERE id_instrumento=%s and id_cliente=%s and id_paquete_contrato=%s', 
-        [instrumento, cliente, paquete_contrato, tipo_forma_pago, instrumento, cliente, paquete_contrato])
+        cursor.execute ('UPDATE public.cgr_formas_de_pago SET id_instrumento=%s, id_cliente=%s, id_paquete_contrato=%s, tipo_forma_de_pago=%s WHERE id_forma=%s', 
+        [instrumento, cliente, paquete_contrato, tipo_forma_pago, forma])
 
 def Actualizar_PAI_VIA(viajero, pais, numero):
     with connection.cursor() as cursor:
@@ -453,5 +453,28 @@ def Crear_nuevo_paquete_detalle_servicio(itn, paq, age, ciu, pai, tipo, des, com
             return 1
         return 0
 
+def Crear_paquete_presupuesto(paquete, agencia, cliente, presupuesto, fecha, email, costo, viajeros, f_viaje, asesor):
+    with connection.cursor() as cursor:
+        if asesor=='0':
+            asesor=None;
+        try:
+            cursor.execute ('INSERT INTO public.cgr_paquetes_contrato(numero_factura, id_paquete, id_agencia, id_reg_cliente, id_reg_agencia, presupuesto, f_aprobacion, f_emision, email_validacion, total_costo_calculado, numer_de_viajeros, f_viaje, id_asesor)VALUES ((SELECT max(r.numero_factura) from cgr_paquetes_contrato r) + 1, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', 
+            [paquete, agencia, cliente, agencia, presupuesto, fecha, fecha, email, costo, viajeros, f_viaje, asesor])
+        except:
+            return 1
+        return 0
 
-
+def Crear_nuevo_instrumento(cliente, monto, tipo, banco, numero, email):
+    with connection.cursor() as cursor:
+        if banco=='':
+            banco=None;
+        if numero=='':
+            numero=None;
+        if email=='':
+            email=None;
+        try:
+            cursor.execute ('INSERT INTO public.cgr_instrumentos_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle) VALUES ((SELECT max(r.id_instrumento) from cgr_instrumentos_de_pago r) + 1, %s, %s, %s, %s, %s, %s)', 
+            [cliente, monto, tipo, banco, numero, email])
+        except:
+            return 1
+        return 0

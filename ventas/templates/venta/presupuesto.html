@@ -1,0 +1,228 @@
+{% extends 'base_ventas.html' %}
+
+{% block title %}
+Paquetes
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block content_ventas %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4>
+                Numero de Factura: #{{contrato}}
+            </h4>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+            <div class="row mt-3 mb-3">
+                <div class="col-12">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="banner-caption">
+                <div class="line-dec"></div>
+                <h1>Paquete</h1>
+                <br>
+                <h2>{{paq.nombre_paquete}}</h2>
+                <div>
+                    <h5>{{paq.id_agencia}}</h5>
+                </div>
+                <div class="card-detalle">
+                    <span>{{paq.duracion_dias}} Dias - {{paq.numero_personas}} Personas</span>
+                </div>
+            </div>
+            <br>
+            <div>
+                <p class="descripcion-card">
+                    {{paq.descripcion_turistica}}
+                </p>
+            </div>
+
+            
+            {% for i in itinerario %}
+                <div class="col-md-12 day-bay">
+                    <div class="col-md-4">
+                        <div class="title-day">
+                            <h4>
+                                Parada {{i.orden}}
+                            </h4>
+                            <h5>
+                                {% for c in nombre_c %}
+                                    {% if c.id_ciudad == i.id_ciudad %}
+                                        {{c}}
+                                    {% endif %}
+                                {% endfor %}   
+                            </h5>
+                            <h6>
+                                Estadia: {{i.tiempo_estadia}} dias
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="body-timeline">
+                            <ul>
+                                {% for a in atracciones %}
+                                    {% if a.id_itinerario == i.orden %}
+                                        {% for na in nombre_atr %}
+                                            {% if na.id_atraccion == a.id_atraccion %}
+                                                <li>Visitar: {{na.nombre_atraccion}}e</li>
+                                            {% endif %} 
+                                        {% endfor %}  
+                                    {% endif %}
+                                {% endfor %}
+                                {% for d in detalle %}
+                                    {% if d.id_itinerario == i.orden %}
+                                        <li>Disfruta de: {{d.tipo_detalle}} 
+                                            
+                                            {% if d.comida == True %}
+                                               ---> (Incluye Comida)
+                                            {% endif %}
+                                                
+                                        </li>     
+                                    {% endif %} 
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+                
+            
+            <div class="card shadow mb-1">
+                <div class="card-body">
+                    <h1>Presupuesto</h1>
+                    <br>
+                    <h3>Datos del Cliente</h3>
+                    <div class="row">
+                        <div class="col-md-12 first-button">
+                            <div class="text-button">
+                                <h4>
+                                    Nombre: {{cliente.nombre_cliente}} 
+                                    {% if cliente.primer_apellido %}
+                                        {{cliente.primer_apellido}} 
+                                    {% endif %}
+                                    
+                                    {% if cliente.segundo_apellido %}
+                                        {{cliente.segundo_apellido}}
+                                    {% endif %}
+                                        
+                                </h4>
+                            </div>
+                            <div class="text-button">
+                                <h6>
+                                    
+                                    {% if cliente.tipo_cliente == 'natural' %}
+                                        ID
+                                    {% else %}
+                                        RIF
+                                    {% endif %}
+                                        : {{cliente.doc_identidad_o_rif}}
+                                </h6>
+                                <h6>
+                                    {{email}}
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Pago {{tipo}}</h3>
+                    
+                    {% for forma in formas %}
+                        
+                        {% for ins in instrumento %}
+                            
+                            {% if forma.id_instrumento == ins.id_instrumento %}
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-6 first-button">
+                                            <div class="text-button">
+                                                <h5>
+                                                    Monto: {{ins.monto}}
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 first-button">
+                                            <div class="text-button">
+                                                <span>{{ins.tipo_instrumento}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                                
+                        {% endfor %}
+                            
+                    {% endfor %}
+                        
+                    <br>
+                </div>
+                <div class="card-body">
+                    {% if descuento %}
+                        <div class="row">
+                            <div class="col-md-12 first-button">
+                                <div class="text-button">
+                                    <h5>
+                                        Descuento: {{descuento.tipo_descuento}}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <br>
+                    <div class="row">
+                        <div class="col-md-4 first-button">
+                            <div class="text-button">
+                                <h5>
+                                    {{fecha}}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 first-button">
+                            <div class="text-button">
+                                <h5>
+                                    
+                                    {% if euro == 0 %}
+                                        € 
+                                    {% else %}
+                                        $ 
+                                    {% endif %}
+                                    {{valor}}
+                                           
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 second-button">
+                            <div class="text-button">
+                                
+                                <h5>
+                                    <a href="{% url 'confirmar_presupuesto' contrato numero %}">Comprar</a>
+                                </h5>
+                                    
+                            </div>
+                        </div>
+                    </div>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content_ventas %}
+
+
+
+
+
+
+
+
+

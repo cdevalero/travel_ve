@@ -904,10 +904,6 @@ def Add_Paquetes_contrato(request):
 def Add_Formas_de_pago(request):
     if request.method == 'POST':
         form = Form_Formas_de_pago(request.POST)
-        try:
-            del form.errors['id_instrumento']    
-        except:
-            pass
         if form.is_valid():
 
             id_instrumento = form.data['id_instrumento']  
@@ -1770,29 +1766,9 @@ def Delete_Paquetes_contrato(request, id):
         return redirect('Show_Paquetes_contrato')
     return redirect('Show_Paquetes_contrato')
 
-def Delete_Formas_de_pago(request, id,id2,id3):
+def Delete_Formas_de_pago(request, id):
     try:
-        instrumentos = Instrumentos_de_pago.objects.get(id_instrumento=id)
-    except Instrumentos_de_pago.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        cliente = Clientes.objects.get(doc_identidad_o_rif=id2)
-    except Clientes.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        paq_cont = Paquetes_contrato.objects.get(numero_factura=id3)
-    except Paquetes_contrato.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        obj = Formas_de_pago.objects.filter(id_instrumento=instrumentos.id_instrumento,id_cliente=cliente.doc_identidad_o_rif,id_paquete_contrato=paq_cont.numero_factura).get(id_instrumento=id)
-    except Formas_de_pago.DoesNotExist:        
-        messages.error(request, 'No existe la entrada2')
-        return redirect('Show_Formas_de_pago')
-    try:
-        Borrar_Forma_de_pago(id, cliente.doc_identidad_o_rif, paq_cont.numero_factura)
+        Borrar_Forma_de_pago(id)
     except ProtectedError:
         messages.error(request, 'Existen registros vinculados')
         return redirect('Show_Formas_de_pago')
@@ -3131,33 +3107,14 @@ def Edit_Paquetes_contrato(request, id):
     form = Form_Paquetes_contrato(instance= obj)
     return render(request, 'create_edit/AddPaquetes_contrato.html',{'form':form})
 
-def Edit_Formas_de_pago(request, id,id2,id3):
+def Edit_Formas_de_pago(request, id):
     try:
-        instrumentos = Instrumentos_de_pago.objects.get(id_instrumento=id)
-    except Instrumentos_de_pago.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        cliente = Clientes.objects.get(doc_identidad_o_rif=id2)
-    except Clientes.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        paq_cont = Paquetes_contrato.objects.get(numero_factura=id3)
-    except Paquetes_contrato.DoesNotExist:        
-        messages.error(request, 'No existe la entrada1')
-        return redirect('Show_Formas_de_pago')
-    try:
-        obj = Formas_de_pago.objects.filter(id_instrumento=instrumentos.id_instrumento,id_cliente=cliente.doc_identidad_o_rif,id_paquete_contrato=paq_cont.numero_factura).get(id_instrumento=id)
+        obj = Formas_de_pago.objects.get(pk=id)
     except Formas_de_pago.DoesNotExist:        
-        messages.error(request, 'No existe la entrada2')
+        messages.error(request, 'No existe la entrada')
         return redirect('Show_Formas_de_pago')
     if request.method == 'POST':
         form = Form_Formas_de_pago(request.POST, instance= obj)
-        try:
-            del form.errors['id_instrumento']    
-        except:
-            pass
         if form.is_valid():
 
             id_instrumento = form.data['id_instrumento']  
@@ -3175,15 +3132,12 @@ def Edit_Formas_de_pago(request, id,id2,id3):
                 messages.error(request, 'Error, paquete contrato invalido')
                 return redirect('Show_Formas_de_pago')
 
-            Actualizar_Forma_de_pago(id_instrumento, id_cliente, id_paquete_contrato, tipo_forma_de_pago)
+            form.save()
             return redirect ('Show_Formas_de_pago')
         else:
             messages.error(request, 'Entrada Invalida')
             return redirect('Show_Formas_de_pago')
     form = Form_Formas_de_pago(instance= obj)
-    form.fields['id_instrumento'].widget.attrs['readonly'] = True
-    form.fields['id_cliente'].widget.attrs['readonly'] = True
-    form.fields['id_paquete_contrato'].widget.attrs['readonly'] = True
     return render(request, 'create_edit/AddFormas_de_pago.html',{'form':form})
 
 def Edit_Viajeros(request, id):
@@ -3435,9 +3389,6 @@ def Edit_Puntuaciones(request, id):
             return redirect('Show_Puntuaciones')
     form = Form_Puntuaciones(instance= obj)
     return render(request, 'create_edit/AddPuntuaciones.html',{'form':form})
-
-
-
 
 
 #Otros--------------------------------------------------------------------------------------------------------------------
@@ -4159,9 +4110,43 @@ def paquete_precio(request): #Precio - FIN
             
             #----------------------------------------------------------------------------
 
-            return render(request, 'index.html')
+            return redirect('paquete_fin',paquete)
 
+def paquete_fin(request, id):
+    paquete = Paquetes.objects.get(id_paquete=id)
+    precio = Precios_paquetes.objects.filter(id_paquete=id)
+    calendario = Calendarios_anuales.objects.filter(id_paquete=id)
+    itinerario = Itinerarios.objects.filter(id_paquete=id)
+    atracciones = ITN_ATR.objects.filter(id_paquete= id)
+    detalle = Detalles_servicios.objects.filter(id_paquete= id)
 
+    alo_det = ALO_DET.objects.filter(id_paquete= id)
+
+    a_atracciones = Atracciones.objects.all()
+    a_ciudades = Ciudades.objects.all() 
+    a_alojamiento = Alojamientos.objects.all()
+    pais = Paises.objects.all()
+
+    for i in itinerario:
+        for p in pais:
+            if i.id_pais == p.id_pais:
+                for pre in precio:
+                    if pre.id_paquete == i.id_paquete:
+                            if p.continente_pais == 'Europa':
+                                pre.valor = int(int(pre.valor)/1.22)
+    
+    return render(request, 'nuevo_paquete/paquete_fin.html',{       'paq':paquete, 
+                                                                    'precio': precio, 
+                                                                    'calendario': calendario, 
+                                                                    'itinerario':itinerario,
+                                                                    'atracciones':atracciones,
+                                                                    'detalle':detalle,
+                                                                    'alo_det': alo_det,
+                                                                    'nombre_atr': a_atracciones,
+                                                                    'nombre_c':a_ciudades,
+                                                                    'pais':pais,
+                                                                    'nombre_alo': a_alojamiento
+    })
 
 
 # -------------------------------------------------------

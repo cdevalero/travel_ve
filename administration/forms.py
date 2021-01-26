@@ -278,14 +278,14 @@ class Form_nuevo_paquete_basico(forms.Form):
 class Form_nuevo_paquete_itinerario(forms.Form):
     orden = forms.IntegerField(label='Orden')
     ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad')
-    max = forms.IntegerField(label='Tiempo de estadia (tiempo MAXIMO que puedes pasar en este tramo)')
-    tiempo = forms.IntegerField(label='Tiempo de estadia (Menor o igual al tiempo maximo) *Si es 0, Se termina el itinerario')
+    max = forms.IntegerField(label='Tiempo de estadia', help_text='tiempo MAXIMO que puedes pasar en este tramo')
+    tiempo = forms.IntegerField(label='Tiempo de estadia', help_text='Menor o igual al tiempo maximo, *Si es 0, Se termina el itinerario')
     paquete = forms.IntegerField(label='')
     agencia = forms.IntegerField(label='')
 
 class Form_nuevo_paquete_itn_atr(forms.Form):
     orden = forms.IntegerField(label='Orden')
-    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion (Si no se escoge ninguna, la entrada no se guardara)', required=False)
+    atraccion = forms.ModelChoiceField(Atracciones.objects.all(), label='Atraccion', help_text='Si no se escoge alguna, la entrada no se guardara', required=False)
     itn = forms.IntegerField(label='Itinerario')
     ciudad = forms.IntegerField(label='')
     pais = forms.IntegerField(label='')
