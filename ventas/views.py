@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from datetime import timedelta
 from administration.sql_functions import *
-from administration.forms import Form_Instrumentos_de_pago
+from administration.forms import Form_Instrumentos_de_pago, Form_nuevo_registro_viajero
 from datetime import date
 
 def index(request):
@@ -471,8 +471,131 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
                                                     'tipo':tipo,#
                                                     'descuento':descuento,#
                                                     'contrato':id_contrato,#
-                                                    'nombre_alo': a_alojamiento
+                                                    'nombre_alo': a_alojamiento,
+                                                    'numero': paq_contrato.numer_de_viajeros
     })
 
-def confirmar_presupuesto(request, contrato):
-    pass
+def confirmar_presupuesto(request, contrato, numero, tipo, descuento):
+    form = Form_nuevo_registro_viajero(initial={'f_registro': date.today(), 'paquete':contrato})
+    return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+
+def ventas_registrar_viajeros(request, contrato, numero, cuenta, tipo, descuento):
+    if int(cuenta) > int(numero):
+        return redirect('ver_contrato', contrato, cuenta, tipo)
+
+    form = Form_nuevo_registro_viajero(request.POST)
+
+    cedula = form.data['cedula']
+    nombre1 = form.data['nombre1']
+    nombre2 = form.data['nombre2']
+    apellido1 = form.data['apellido1']
+    apellido2 = form.data['apellido2']
+    sexo = form.data['sexo']
+    f_nacimento = form.data['f_nacimento']
+    ciudad = form.data['ciudad']
+    pais_de_ciudad = Ciudades.objects.get(id_ciudad=ciudad)
+    pais_de_ciudad = Paises.objects.get(nombre_pais=pais_de_ciudad.id_pais)
+    pais_de_ciudad = pais_de_ciudad.id_pais
+    pasaporte = form.data['pasaporte']
+    pais = form.data['pais']
+    paquete = form.data['paquete']
+    agencia = Paquetes_contrato.objects.get(numero_factura=paquete)
+    agencia = agencia.id_agencia
+    f_registro = form.data['f_registro']
+
+    if descuento != '0':
+        Calcular_Descuento(contrato, descuento, f_nacimento)
+
+    try:
+        validacion = Viajeros.objects.get(id_de_identidad= cedula)
+    except Viajeros.DoesNotExist:
+        if Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2) == 1:
+            messages.error(request, 'Error al agregar Viajero')
+            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+
+    try:
+        validacion = PAI_VIA.objects.get(id_viajero=cedula, id_pais=pais)
+    except PAI_VIA.DoesNotExist:
+        if Crear_nuevo_PAI_VIA(cedula, pais, pasaporte) == 1:
+            messages.error(request, 'Error al agregar pasaporte viajero')
+            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+
+    try:
+        validacion = Registro_viajeros.objects.get(id_viajero=cedula, id_agencia=agencia)
+    except Registro_viajeros.DoesNotExist:
+        if Crear_Registro_viajeros(agencia, cedula, f_registro, '1') ==1:
+            messages.error(request, 'Error al registrar viajero')
+            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+
+    cuenta = int(cuenta) + 1
+
+    form = Form_nuevo_registro_viajero(initial={'f_registro': date.today(), 'paquete':contrato})
+    return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+
+def ver_contrato(request, id_contrato, numero, tipo):
+
+    #### Actualizar
+
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura= id_contrato)
+
+    paquete = Paquetes.objects.get(id_paquete=paq_contrato.id_paquete)
+
+    precio = paq_contrato.presupuesto
+
+    email = paq_contrato.email_validacion
+
+    cliente = Clientes.objects.get(doc_identidad_o_rif= paq_contrato.id_reg_cliente)
+
+    formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
+
+    fecha = paq_contrato.f_emision
+
+    itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
+
+    atracciones = ITN_ATR.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    detalle = Detalles_servicios.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    alo_det = ALO_DET.objects.filter(id_paquete= paq_contrato.id_paquete)
+
+    euro = 0
+    instrumento = Instrumentos_de_pago.objects.filter(doc_identidad_cliente=paq_contrato.id_reg_cliente)
+    a_atracciones = Atracciones.objects.all()
+    a_ciudades = Ciudades.objects.all() 
+    a_alojamiento = Alojamientos.objects.all()
+    pais = Paises.objects.all()
+
+    for i in itinerario:
+        for c in a_ciudades:
+            if i.id_ciudad == c.id_ciudad:
+                for p in pais:
+                    if c.id_pais == p.id_pais:
+                        if p.continente_pais == 'Europa':
+                            euro = euro + 1
+ 
+    return render(request, 'venta/presupuesto.html',{     'paq':paquete, #
+                                                    'valor': precio, #
+                                                    'email': email,
+                                                    'cliente': cliente,#
+                                                    'formas': formas_pago, #
+                                                    'fecha': fecha,#
+                                                    'itinerario':itinerario,#
+                                                    'atracciones':atracciones,#
+                                                    'detalle':detalle,#
+                                                    'alo_det': alo_det,#
+                                                    'nombre_atr': a_atracciones,#
+                                                    'nombre_c':a_ciudades,#
+                                                    'euro':euro,#
+                                                    'instrumento':instrumento,#
+                                                    'tipo':tipo,#
+                                                    'contrato':id_contrato,#
+                                                    'nombre_alo': a_alojamiento,
+                                                    'numero': paq_contrato.numer_de_viajeros
+    })
+
+def Calcular_Descuento(contrato, descuento, fecha):
+    contrato = Paquetes_contrato.objects.get(numero_factura= contrato)
+    descuento = Descuentos.objects.get(id_descuento= descuento)
+
+    if descuento.tipo_descuento == 'descnino':
+        pass

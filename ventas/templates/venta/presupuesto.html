@@ -9,6 +9,11 @@ Paquetes
 {% block content_ventas %}
 <div class="container-fluid">
     <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h4>
+                Numero de Factura: #{{contrato}}
+            </h4>
+        </div>
         <div class="card-body">
             {% if messages %}
             <div class="row mt-3 mb-3">
@@ -199,7 +204,7 @@ Paquetes
                             <div class="text-button">
                                 
                                 <h5>
-                                    <a href="{% url 'confirmar_presupuesto' contrato %}">Comprar</a>
+                                    <a href="{% url 'confirmar_presupuesto' contrato numero %}">Comprar</a>
                                 </h5>
                                     
                             </div>

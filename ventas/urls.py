@@ -13,5 +13,5 @@ urlpatterns = [
     path('ventas_presupuesto/<paquete>/<agente>/<cliente>/<precio>/<fecha>/<agencia>', ventas_presupuesto, name="ventas_presupuesto"),
     path('ventas_intrumento/<cliente>/<contrato>/<tipo>/<descuento>', ventas_intrumento, name="ventas_intrumento"),
     path('ventas_ver_presupuesto/<id_contrato>/<tipo>/<descuento>', ventas_ver_presupuesto, name="ventas_ver_presupuesto"),
-    path('confirmar_presupuesto/<contrato>', confirmar_presupuesto, name="confirmar_presupuesto"),
+    path('confirmar_presupuesto/<contrato>/<numero>', confirmar_presupuesto, name="confirmar_presupuesto"),
 ]
