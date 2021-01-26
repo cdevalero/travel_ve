@@ -42,24 +42,29 @@ def Buscar_Paquete(request):
             if personas != '':
                 paquete = paquete.filter(numero_personas= personas)
 
+            no_en = paquete
+
             if ciudad != '':
-                no_en = paquete 
+                #no_en = paquete
                 try:
                     itinerarios = Itinerarios.objects.filter(id_ciudad=int(ciudad))
                 except Itinerarios.DoesNotExist: 
                     return render(request, 'buscar.html')
                 for i in itinerarios:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
-                paquete = paquete.difference(no_en)#
+                #paquete = paquete.difference(no_en)
 
             if fecha != '':
-                no_en = paquete 
+                #no_en = paquete 
                 try:
                     fechas = Calendarios_anuales.objects.filter(f_salida__range=(form.cleaned_data.get('fecha')-timedelta(days=7),form.cleaned_data.get('fecha')+timedelta(days=7)))
                 except Calendarios_anuales.DoesNotExist: 
                     return render(request, 'buscar.html')
                 for i in fechas:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
+                #paquete = paquete.difference(no_en)
+
+            if fecha != '' or ciudad != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()
@@ -82,7 +87,9 @@ def Buscar_Paquete(request):
 def ver_mas_paquete(request, id):
     paquete = Paquetes.objects.get(id_paquete=id)
     precio = Precios_paquetes.objects.filter(id_paquete=id)
+
     calendario = Calendarios_anuales.objects.filter(id_paquete=id)
+    
     itinerario = Itinerarios.objects.filter(id_paquete=id)
     atracciones = ITN_ATR.objects.filter(id_paquete= id)
     detalle = Detalles_servicios.objects.filter(id_paquete= id)
@@ -179,23 +186,26 @@ def ventas_buscar_paquete(request, agente, cliente):
                 paquete = paquete.filter(numero_personas= personas)
 
             if ciudad != '':
-                no_en = paquete 
+                #no_en = paquete
                 try:
                     itinerarios = Itinerarios.objects.filter(id_ciudad=int(ciudad))
                 except Itinerarios.DoesNotExist: 
                     return redirect('ventas_buscar_paquete', agente, cliente)
                 for i in itinerarios:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
-                paquete = paquete.difference(no_en)#
+                #paquete = paquete.difference(no_en)
 
             if fecha != '':
-                no_en = paquete 
+                #no_en = paquete 
                 try:
                     fechas = Calendarios_anuales.objects.filter(f_salida__range=(form.cleaned_data.get('fecha')-timedelta(days=7),form.cleaned_data.get('fecha')+timedelta(days=7)))
                 except Calendarios_anuales.DoesNotExist: 
                     return redirect('ventas_buscar_paquete', agente, cliente)
                 for i in fechas:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
+                #paquete = paquete.difference(no_en)
+
+            if fecha != '' or ciudad != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()
