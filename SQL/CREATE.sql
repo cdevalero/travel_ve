@@ -536,6 +536,7 @@ CREATE SEQUENCE cgr_secuencia_puntuacion
 CREATE TABLE cgr_puntuaciones
 (
 	id_puntuacion numeric NOT NULL DEFAULT nextval('cgr_secuencia_puntuacion'::regclass),
+	valoracion numeric NOT NULL,
 	id_rally numeric,
 	id_pais numeric,
 	id_ciudad numeric,

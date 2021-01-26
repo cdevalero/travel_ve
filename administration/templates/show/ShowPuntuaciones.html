@@ -35,6 +35,11 @@
                                 </th>
                                 <th>
                                     <div class="d-flex justify-content-center">
+                                        Valoracion
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex justify-content-center">
                                         Rally
                                     </div>
                                 </th>
@@ -70,6 +75,7 @@
                                 {% for pice in obj %}
                                     <tr>
                                         <td>{{pice.id_puntuacion}}</td>
+                                        <td>{{pice.valoracion}}</td>
                                         <td>{{pice.id_rally}}</td>
                                         <td>{{pice.id_pais}}</td>
                                         <td>{{pice.id_ciudad}}</td>

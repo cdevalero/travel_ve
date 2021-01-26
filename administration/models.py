@@ -746,6 +746,7 @@ class Participantes(models.Model):
 
 class Puntuaciones(models.Model):
     id_puntuacion = models.AutoField(primary_key=True)
+    valoracion = models.IntegerField()
     id_rally = models.ForeignKey(Rallies, on_delete=models.PROTECT, related_name='id_puntuacion_rally', null=True, blank=True, db_column='id_rally')
     id_paquete_contrato = models.IntegerField()
     id_ciudad = models.IntegerField(null=True, blank=True)

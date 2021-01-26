@@ -599,3 +599,15 @@ def Calcular_Descuento(contrato, descuento, fecha):
 
     if descuento.tipo_descuento == 'descnino':
         pass
+
+#-----------------------------------Punto 4
+def Mandar_Email():
+    pass
+
+def valoracion_pais():
+    pass
+ 
+def valoracion_ciudad():
+    pass
+
+def valoracion()
