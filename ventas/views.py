@@ -35,6 +35,11 @@ def Buscar_Paquete(request):
             except:
                 fecha = ''
 
+            try:
+                area = form.data['area']
+            except:
+                area = ''
+
             paquete = Paquetes.objects.filter(disponible=True)
             
             if agencia != '':
@@ -64,7 +69,15 @@ def Buscar_Paquete(request):
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
                 #paquete = paquete.difference(no_en)
 
-            if fecha != '' or ciudad != '':
+            if area != '':
+                try:
+                    especialidad = Especializaciones.objects.filter(id_areas_de_interes= area)
+                except Especializaciones.DoesNotExist:
+                    return render(request, 'buscar.html')
+                for i in especialidad:
+                    no_en = no_en.exclude(id_paquete= i.id_paquete)
+
+            if fecha != '' or ciudad != '' or area != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()
@@ -175,6 +188,12 @@ def ventas_buscar_paquete(request, agente, cliente):
                 fecha = form.data['fecha']
             except:
                 fecha = ''
+
+            try:
+                area = form.data['area']
+            except:
+                area = ''
+
             cliente = form.data['cliente']
             agente = form.data['agente']
 
@@ -205,7 +224,15 @@ def ventas_buscar_paquete(request, agente, cliente):
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
                 #paquete = paquete.difference(no_en)
 
-            if fecha != '' or ciudad != '':
+            if area != '':
+                try:
+                    especialidad = Especializaciones.objects.filter(id_areas_de_interes= area)
+                except Especializaciones.DoesNotExist:
+                    return render(request, 'buscar.html')
+                for i in especialidad:
+                    no_en = no_en.exclude(id_paquete= i.id_paquete)
+
+            if fecha != '' or ciudad != '' or area != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()

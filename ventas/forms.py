@@ -10,6 +10,7 @@ class Form_Buscar_paquerte(forms.Form):
     ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudades', required=False)
     personas = forms.IntegerField(label='Nro Personas', required=False)
     fecha = forms.DateField(label='Fecha Aproximada', required=False , widget=DateInput(attrs={'type': 'date'}))
+    area = ModelChoiceField(Areas_de_interes.objects.all(), label='Area de interes', required=False)
 
 class Form_Seleccionar_agente(forms.Form):
     PERSONA = (
@@ -30,6 +31,7 @@ class Form_ventas_buscar_paquete(forms.Form):
     agente = forms.IntegerField(label='')
     cliente = forms.IntegerField(label='')
     fecha = forms.DateField(label='Fecha Aproximada', required=False , widget=DateInput(attrs={'type': 'date'}))
+    area = ModelChoiceField(Areas_de_interes.objects.all(), label='Area de interes', required=False)
 
 class Form_ventas_descuneto_forma(forms.Form):
     TRAMITES = {
