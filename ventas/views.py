@@ -299,7 +299,7 @@ def ventas_presupuesto(request, paquete, agente, cliente, precio, fecha, agencia
         for c in a_ciudades:
             if i.id_ciudad == c.id_ciudad:
                 for p in pais:
-                    if c.id_pais == p.id_pais:
+                    if str(c.id_pais) == p.nombre_pais:
                         if p.continente_pais == 'Europa':
                             euro = euro + 1
     if euro >0:
@@ -455,14 +455,6 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
     a_ciudades = Ciudades.objects.all() 
     a_alojamiento = Alojamientos.objects.all()
     pais = Paises.objects.all()
-
-    for i in itinerario:
-        for c in a_ciudades:
-            if i.id_ciudad == c.id_ciudad:
-                for p in pais:
-                    if c.id_pais == p.id_pais:
-                        if p.continente_pais == 'Europa':
-                            euro = euro + 1
  
     return render(request, 'venta/presupuesto.html',{     'paq':paquete, #
                                                     'valor': precio, #
@@ -638,14 +630,6 @@ def ver_contrato(request, id_contrato, numero, tipo, descuento):
     if descuento == '0':
         descuento = None
 
-    for i in itinerario:
-        for c in a_ciudades:
-            if i.id_ciudad == c.id_ciudad:
-                for p in pais:
-                    if c.id_pais == p.id_pais:
-                        if p.continente_pais == 'Europa':
-                            euro = euro + 1
- 
     prueba_fecha = fecha
     prueba_dias = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
 

@@ -146,7 +146,7 @@ Paquetes
                                         <div class="col-md-6 first-button">
                                             <div class="text-button">
                                                 <h5>
-                                                    Monto: {{ins.monto}}
+                                                    Monto: $ {{ins.monto}}
                                                 </h5>
                                             </div>
                                         </div>
@@ -189,13 +189,8 @@ Paquetes
                         <div class="col-md-4 first-button">
                             <div class="text-button">
                                 <h5>
-                                    
-                                    {% if euro == 0 %}
-                                        € 
-                                    {% else %}
-                                        $ 
-                                    {% endif %}
-                                    {{valor}}
+
+                                    $ {{valor}}
                                            
                                 </h5>
                             </div>
