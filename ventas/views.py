@@ -7,7 +7,9 @@ from datetime import timedelta
 from administration.sql_functions import *
 from administration.forms import Form_Instrumentos_de_pago, Form_nuevo_registro_viajero
 from datetime import date
-
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 def index(request):
     return render(request, 'index.html')
 
@@ -601,13 +603,41 @@ def Calcular_Descuento(contrato, descuento, fecha):
         pass
 
 #-----------------------------------Punto 4
-def Mandar_Email():
-    pass
 
-def valoracion_pais():
-    pass
+
+
+def Envio_Email(request, id_contrato):
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    template = render_to_string('venta/email.html', {'id_contrato': int(paq_contrato.numero_factura)})
+    email = EmailMessage(
+        'Valoraciones',
+        template,
+        settings.EMAIL_HOST_USER,
+        [paq_contrato.email_validacion],
+    )
+    email.fail_silently=False
+    email.send()
+    return render(request, 'index.html')
+    
+
+def mostrar_valoracion_pais(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_pais(request.POST)
+        if form.is_valid():
+            #Crear_puntuacion_pais(nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais)
+            pass
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    form = Form_valoracion_pais(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_paises.html',{'form':form})
  
-def valoracion_ciudad():
-    pass
+def valoraciones_ciudades(request, id_contrato):
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    form = Form_valoracion_pais(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_paises.html',{'form':form})
 
-def valoracion()
+def valoracion():
+    pass

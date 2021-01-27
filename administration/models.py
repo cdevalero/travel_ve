@@ -369,7 +369,7 @@ class Paquetes(models.Model):
     numero_personas = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.id_agencia + '- ' + self.nombre_paquete
+        return (self.id_agencia) + '- ' + self.nombre_paquete
 
     class Meta:
 
