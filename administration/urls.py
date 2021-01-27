@@ -192,5 +192,7 @@ urlpatterns = [
 
     path('paquete_precio/', paquete_precio, name="paquete_precio"),
     path('paquete_fin/<id>', paquete_fin, name="paquete_fin"),
+    path('paquete_especializacion/<paquete>', paquete_especializacion, name="paquete_especializacion"),
+    path('paquete_esp_fin/<paquete>', paquete_esp_fin, name="paquete_esp_fin"),
 
 ]

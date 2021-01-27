@@ -1,0 +1,33 @@
+{% extends 'base_paquete.html' %}
+
+{% block title %}
+    Paquete
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block content_paquete %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Paquete: Especialidad</h1>
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        {% if messages %}
+          <div class="row mt-3 mb-3">
+              <div class="col-12">                    
+                  {% for message in messages  %}
+                      <div class="alert alert-{{ message.tags }}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}                       
+              </div>
+          </div>           
+        {% endif %}
+        <form action="" method="post" class="mt-2" autocomplete="off">
+            {% csrf_token %}
+            {{form|crispy}}
+            <button type="submit" formaction="{% url 'paquete_esp_fin' paquete %}" class="btn btn-success">Enviar!</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content_paquete %}

@@ -64,3 +64,5 @@ class Form_ventas_instrumento(forms.Form):
     banco =  ModelChoiceField(Bancos.objects.all(), label='Banco', required=False, help_text='No usar en caso de pago Zelle')
     numero = forms.IntegerField(label='Numero Zelle', help_text='Solo pago Zelle', required=False)
     email = forms.EmailField(label='Email Zelle', help_text='Solo pago Zelle', required=False)
+
+

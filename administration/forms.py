@@ -379,3 +379,6 @@ class Form_nuevo_registro_viajero_compra(forms.Form):
     pais = ModelChoiceField(Paises.objects.all(), label='Nacionalidad')
     f_registro = forms.DateField(label='',  widget=DateInput(attrs={'type': 'date'}))
     paquete = ModelChoiceField(Paquetes_contrato.objects.all(), label='')
+
+class Form_paquete_especialidad(forms.Form):
+    especialidad = ModelChoiceField(Areas_de_interes.objects.all(), label='Area de Inters')

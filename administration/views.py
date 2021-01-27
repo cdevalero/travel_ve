@@ -4075,7 +4075,7 @@ def paquete_cal_b(request): #Calendario - Calendario
             return render(request, 'nuevo_paquete/paq_calendario.html',{'form':form})
 
 
-def paquete_precio(request): #Precio - FIN
+def paquete_precio(request): #Precio - Especializacion
     if request.method == 'POST':
             form = Form_nuevo_paquete_precio(request.POST)
 
@@ -4111,7 +4111,28 @@ def paquete_precio(request): #Precio - FIN
             
             #----------------------------------------------------------------------------
 
-            return redirect('paquete_fin',paquete)
+            return redirect('paquete_especializacion',paquete)
+
+def paquete_especializacion(request, paquete):
+    form = Form_paquete_especialidad()
+    return render(request, 'nuevo_paquete/paq_espe.html',{'form':form, 'paquete': paquete})
+    
+
+def paquete_esp_fin(request, paquete):
+    form = Form_paquete_especialidad(request.POST)
+
+    agencia = Paquetes.objects.get(id_paquete=paquete)
+
+    agencia = agencia.id_agencia
+
+    agencia = Agencias_de_viajes.objects.get(nombre= agencia)
+
+    especialidad = form.data['especialidad']
+
+    if Crear_paq_espe(especialidad, paquete, agencia.id_agencia) == 1:
+        return HttpResponse(agencia)
+
+    return redirect('paquete_fin',paquete)
 
 def paquete_fin(request, id):
     paquete = Paquetes.objects.get(id_paquete=id)
