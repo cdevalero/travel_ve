@@ -204,6 +204,8 @@ def ventas_buscar_paquete(request, agente, cliente):
             if personas != '':
                 paquete = paquete.filter(numero_personas= personas)
 
+            no_en = paquete
+
             if ciudad != '':
                 #no_en = paquete
                 try:
