@@ -564,6 +564,10 @@ def ventas_registrar_viajeros(request, contrato, cuenta, numero, tipo, descuento
             messages.error(request, 'Error al registrar viajero')
             return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
+    if Crear_Detalle_viajero(cedula, agencia, contrato) ==1:
+        messages.error(request, 'Error al detalle viajero')
+        return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
+
     cuenta = int(cuenta) + 1
 
     form = Form_nuevo_registro_viajero_compra(initial={'f_registro': date.today(), 'paquete':contrato})
@@ -616,6 +620,11 @@ def ventas_registrar_viajeros_terminar(request, contrato, cuenta, numero, tipo, 
         if Crear_Registro_viajeros(agencia, cedula, f_registro, '1') ==1:
             messages.error(request, 'Error al registrar viajero')
             return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
+
+
+    if Crear_Detalle_viajero(cedula, agencia, contrato) ==1:
+        messages.error(request, 'Error al detalle viajero')
+        return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
     return redirect('ver_contrato', contrato, cuenta, tipo, descuento)
 
