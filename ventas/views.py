@@ -7,7 +7,9 @@ from datetime import timedelta
 from administration.sql_functions import *
 from administration.forms import Form_Instrumentos_de_pago, Form_nuevo_registro_viajero_compra
 from datetime import date, datetime
-
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
 def index(request):
     return render(request, 'index.html')
 
@@ -714,3 +716,128 @@ def Calcular_Descuento(contrato, descuento, fecha):
             porcentaje = int(descuento.porcentaje)/100
             valor = contrato.total_costo_calculado
 
+        pass
+
+#-----------------------------------Punto 4
+
+
+
+def Envio_Email(request, id_contrato):
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    template = render_to_string('venta/email.html', {'id_contrato': int(paq_contrato.numero_factura)})
+    email = EmailMessage(
+        'Valoraciones',
+        template,
+        settings.EMAIL_HOST_USER,
+        [paq_contrato.email_validacion],
+    )
+    email.fail_silently=False
+    email.send()
+    return render(request, 'index.html')
+    
+
+def mostrar_valoracion_pais(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_pais(request.POST)
+        if form.is_valid():
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                pais = form.data['pais']
+            except:
+                pais = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            pais = form.data['pais']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    validacion = Itinerarios.objects.get(id_paquete = paquete, id_pais= pais)
+                except Itinerarios.DoesNotExist:
+                    messages.error(request, 'El pais seleccionado no esta vinculado con el paquete')
+                if Crear_Puntuacion_paises(valoracion, contrato, pais)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+            
+    
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    '''paquete = Paquetes.objects.get(id_paquete=paq_contrato.id_paquete)
+    itinerario = Itinerarios.objects.filter(id_paquete=paquete.id_paquete)'''
+    form = Form_valoracion_pais(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_paises.html',{'form':form})
+ 
+def mostrar_valoracion_ciudad(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_ciudad(request.POST)
+        if form.is_valid():
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                ciudad = form.data['pais']
+            except:
+                ciudad = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            ciudad = form.data['ciudad']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    validacion = Itinerarios.objects.get(id_paquete = paquete, id_ciudad= ciudad)
+                except Itinerarios.DoesNotExist:
+                    messages.error(request, 'La ciudad seleccionada no esta vinculada con el paquete')
+                if Crear_Puntuacion_ciudades(valoracion, contrato, ciudad)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    form = Form_valoracion_ciudad(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_ciudades.html',{'form':form})
+
+def mostrar_valoracion_atraccion(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_atraccion(request.POST)
+        if form.is_valid():
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                atraccion = form.data['atraccion']
+            except:
+                atraccion = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            atraccion = form.data['atraccion']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    it = Itinerarios.objects.get(id_paquete = contrato)
+                    itn = ITN_ATR.objects.get(id_paquete = contrato, id_itinerario= it.orden, id_atraccion = atraccion)
+                except ITN_ATR.DoesNotExist:
+                    messages.error(request, 'La atraccion seleccionada no esta vinculada con el paquete')
+                if Crear_Puntuacion_atracciones(valoracion, contrato, atraccion)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)        
+    form = Form_valoracion_atraccion(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_atracciones.html',{'form':form})

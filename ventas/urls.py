@@ -17,4 +17,8 @@ urlpatterns = [
     path('ventas_registrar_viajeros/<contrato>/<cuenta>/<numero>/<tipo>/<descuento>', ventas_registrar_viajeros, name="ventas_registrar_viajeros"),
     path('ventas_registrar_viajeros_terminar/<contrato>/<cuenta>/<numero>/<tipo>/<descuento>', ventas_registrar_viajeros_terminar, name="ventas_registrar_viajeros_terminar"),
     path('ver_contrato/<id_contrato>/<numero>/<tipo>/<descuento>', ver_contrato, name="ver_contrato"),
+    path('Envio_Email/<id_contrato>', Envio_Email, name= "Envio_Email"),
+    path('mostrar_valoracion_pais/<id_contrato>', mostrar_valoracion_pais, name = "mostrar_valoracion_pais"),
+    path('mostrar_valoracion_ciudad/<id_contrato>', mostrar_valoracion_ciudad, name = "mostrar_valoracion_ciudad"),
+    path('mostrar_valoracion_atraccion/<id_contrato>', mostrar_valoracion_atraccion, name = "mostrar_valoracion_atraccion"),
 ]
