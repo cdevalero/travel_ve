@@ -485,6 +485,18 @@ def Cambiar_paquete_contrato(fecha, viajeros, paquete):
         try:
             cursor.execute ('UPDATE public.cgr_paquetes_contrato SET f_emision=%s, numer_de_viajeros=%s WHERE numero_factura=%s', 
             [fecha, viajeros, paquete])
+        except:
+            return 1
+        return 0
+
+def Crear_paq_espe(especialidad, paquete, agencia):
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_especializaciones(id_especializacion,id_areas_de_interes, id_atraccion, id_ciudad, id_pais, id_agencia, id_paquete, id_agencia_paquete, id_asesor, comentarios) VALUES ((SELECT max(r.id_especializacion) from cgr_especializaciones r) + 1,%s,NULL,NULL,NULL, NULL, %s, %s, NULL, NULL)', 
+            [especialidad, paquete, agencia])
+        except:
+            return 1
+        return 0
 #-----------------------------------------Puntuaciones
 def Crear_Puntuacion_paises(valoracion, id_paquete_contrato, id_pais):
     id_rally = None
@@ -510,11 +522,6 @@ def Crear_Puntuacion_ciudades(valoracion, id_paquete_contrato, id_ciudad):
             return 1
         return 0
 
-def Crear_paq_espe(especialidad, paquete, agencia):
-    with connection.cursor() as cursor:
-        try:
-            cursor.execute ('INSERT INTO public.cgr_especializaciones(id_especializacion,id_areas_de_interes, id_atraccion, id_ciudad, id_pais, id_agencia, id_paquete, id_agencia_paquete, id_asesor, comentarios) VALUES ((SELECT max(r.id_especializacion) from cgr_especializaciones r) + 1,%s,NULL,NULL,NULL, NULL, %s, %s, NULL, NULL)', 
-            [especialidad, paquete, agencia])
 def Crear_Puntuacion_atracciones(valoracion, id_paquete_contrato, id_atraccion):
     id_rally = None
     id_pais = None

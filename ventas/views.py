@@ -722,19 +722,19 @@ def Calcular_Descuento(contrato, descuento, fecha):
 
 
 
-def Envio_Email(request, id_contrato):
-    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
-    template = render_to_string('venta/email.html', {'id_contrato': int(paq_contrato.numero_factura)})
-    email = EmailMessage(
-        'Valoraciones',
-        template,
-        settings.EMAIL_HOST_USER,
-        [paq_contrato.email_validacion],
-    )
-    email.fail_silently=False
-    email.send()
+def Envio_Email(request):
+    paq_contrato = Paquetes_contrato.objects.all()
+    for p in paq_contrato:
+        template = render_to_string('venta/email.html', {'id_contrato': int(p.numero_factura)})
+        email = EmailMessage(
+            'Valoraciones',
+            template,
+            settings.EMAIL_HOST_USER,
+            [p.email_validacion],
+        )
+        email.fail_silently=False
+        email.send()
     return render(request, 'index.html')
-    
 
 def mostrar_valoracion_pais(request, id_contrato):
     if request.method == 'POST':
