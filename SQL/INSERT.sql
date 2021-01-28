@@ -415,12 +415,12 @@ insert into cgr_participantes values (DEFAULT, 2, 1,5899658, 1, 5899658, false ,
 insert into cgr_participantes values (DEFAULT, 2, 1, 44111222, 3, 44111222, true , null); 
 insert into cgr_participantes values (DEFAULT, 2, 7, 47489956, 4, 47489956, true , null); 
 
-insert into cgr_puntuaciones values (DEFAULT, 1, 1, 1, 1, 1); 
-insert into cgr_puntuaciones values (DEFAULT, 1, 1, 1, 1, 1); 
-insert into cgr_puntuaciones values (DEFAULT, 1, 1, 1, 1, 1); 
-insert into cgr_puntuaciones values (DEFAULT, 1, 1, 1, 1, 1); 
-insert into cgr_puntuaciones values (DEFAULT, 7, 5, 5, 10, 3); 
-insert into cgr_puntuaciones values (DEFAULT, 7, 5, 5, 10, 3); 
-insert into cgr_puntuaciones values (DEFAULT, 7, 5, 5, 10, 3); 
-insert into cgr_puntuaciones values (DEFAULT, 7, 5, 5, 10, 3); 
-insert into cgr_puntuaciones values (DEFAULT, 7, 5, 5, 10, 3); 
+insert into cgr_puntuaciones values (DEFAULT, 9, 1, 1, 1, 1, 1); 
+insert into cgr_puntuaciones values (DEFAULT, 8, 1, 1, 1, 1, 1); 
+insert into cgr_puntuaciones values (DEFAULT, 4, 1, 1, 1, 1, 1); 
+insert into cgr_puntuaciones values (DEFAULT, 3, 1, 1, 1, 1, 1); 
+insert into cgr_puntuaciones values (DEFAULT, 7, 7, 5, 5, 10, 3); 
+insert into cgr_puntuaciones values (DEFAULT, 8, 7, 5, 5, 10, 3); 
+insert into cgr_puntuaciones values (DEFAULT, 6, 7, 5, 5, 10, 3); 
+insert into cgr_puntuaciones values (DEFAULT, 5, 7, 5, 5, 10, 3); 
+insert into cgr_puntuaciones values (DEFAULT, 4, 7, 5, 5, 10, 3); 

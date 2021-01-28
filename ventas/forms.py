@@ -68,3 +68,21 @@ class Form_ventas_instrumento(forms.Form):
     email = forms.EmailField(label='Email Zelle', help_text='Solo pago Zelle', required=False)
 
 
+class Form_valoracion_pais(forms.Form): 
+    contrato = forms.IntegerField(label='Factura')
+    paquete = forms.IntegerField(label='Paquete') 
+    valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
+    pais = ModelChoiceField(Paises.objects.all(), label='Pais', help_text='Utilizar solo paises que haya recorrido sino dara error')
+    #pais = ModelChoiceField(Paises.objects.filter(), label='Pais', help_text='Utiliar solo paises que haya recorrido sino dara error')
+
+class Form_valoracion_ciudad(forms.Form): 
+    contrato = forms.IntegerField(label='Factura')
+    paquete = forms.IntegerField(label='Paquete') 
+    valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
+    ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad', help_text='Utilizar solo ciudades que haya recorrido sino dara error')
+
+class Form_valoracion_atraccion(forms.Form): 
+    contrato = forms.IntegerField(label='Factura')
+    paquete = forms.IntegerField(label='Paquete') 
+    valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
+    atraccion = ModelChoiceField(Atracciones.objects.all(), label='Atraccion', help_text='Utilizar solo atracciones a las que haya ido sino dara error')

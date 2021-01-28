@@ -220,7 +220,7 @@ class Form_Participantes(forms.ModelForm):
 class Form_Puntuaciones(forms.ModelForm):
     class Meta:
         model = Puntuaciones;
-        fields = ('id_rally','id_paquete_contrato','id_ciudad','id_pais','id_atraccion')
+        fields = ('valoracion','id_rally','id_paquete_contrato','id_ciudad','id_pais','id_atraccion')
 
 class Form_nuevo_registro_cliente(forms.Form):
     PERSONA = (
