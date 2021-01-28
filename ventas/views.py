@@ -37,6 +37,11 @@ def Buscar_Paquete(request):
             except:
                 fecha = ''
 
+            try:
+                area = form.data['area']
+            except:
+                area = ''
+
             paquete = Paquetes.objects.filter(disponible=True)
             
             if agencia != '':
@@ -44,24 +49,37 @@ def Buscar_Paquete(request):
             if personas != '':
                 paquete = paquete.filter(numero_personas= personas)
 
+            no_en = paquete
+
             if ciudad != '':
-                no_en = paquete 
+                #no_en = paquete
                 try:
                     itinerarios = Itinerarios.objects.filter(id_ciudad=int(ciudad))
                 except Itinerarios.DoesNotExist: 
                     return render(request, 'buscar.html')
                 for i in itinerarios:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
-                paquete = paquete.difference(no_en)#
+                #paquete = paquete.difference(no_en)
 
             if fecha != '':
-                no_en = paquete 
+                #no_en = paquete 
                 try:
                     fechas = Calendarios_anuales.objects.filter(f_salida__range=(form.cleaned_data.get('fecha')-timedelta(days=7),form.cleaned_data.get('fecha')+timedelta(days=7)))
                 except Calendarios_anuales.DoesNotExist: 
                     return render(request, 'buscar.html')
                 for i in fechas:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
+                #paquete = paquete.difference(no_en)
+
+            if area != '':
+                try:
+                    especialidad = Especializaciones.objects.filter(id_areas_de_interes= area)
+                except Especializaciones.DoesNotExist:
+                    return render(request, 'buscar.html')
+                for i in especialidad:
+                    no_en = no_en.exclude(id_paquete= i.id_paquete)
+
+            if fecha != '' or ciudad != '' or area != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()
@@ -84,7 +102,9 @@ def Buscar_Paquete(request):
 def ver_mas_paquete(request, id):
     paquete = Paquetes.objects.get(id_paquete=id)
     precio = Precios_paquetes.objects.filter(id_paquete=id)
+
     calendario = Calendarios_anuales.objects.filter(id_paquete=id)
+    
     itinerario = Itinerarios.objects.filter(id_paquete=id)
     atracciones = ITN_ATR.objects.filter(id_paquete= id)
     detalle = Detalles_servicios.objects.filter(id_paquete= id)
@@ -170,6 +190,12 @@ def ventas_buscar_paquete(request, agente, cliente):
                 fecha = form.data['fecha']
             except:
                 fecha = ''
+
+            try:
+                area = form.data['area']
+            except:
+                area = ''
+
             cliente = form.data['cliente']
             agente = form.data['agente']
 
@@ -180,24 +206,37 @@ def ventas_buscar_paquete(request, agente, cliente):
             if personas != '':
                 paquete = paquete.filter(numero_personas= personas)
 
+            no_en = paquete
+
             if ciudad != '':
-                no_en = paquete 
+                #no_en = paquete
                 try:
                     itinerarios = Itinerarios.objects.filter(id_ciudad=int(ciudad))
                 except Itinerarios.DoesNotExist: 
                     return redirect('ventas_buscar_paquete', agente, cliente)
                 for i in itinerarios:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
-                paquete = paquete.difference(no_en)#
+                #paquete = paquete.difference(no_en)
 
             if fecha != '':
-                no_en = paquete 
+                #no_en = paquete 
                 try:
                     fechas = Calendarios_anuales.objects.filter(f_salida__range=(form.cleaned_data.get('fecha')-timedelta(days=7),form.cleaned_data.get('fecha')+timedelta(days=7)))
                 except Calendarios_anuales.DoesNotExist: 
                     return redirect('ventas_buscar_paquete', agente, cliente)
                 for i in fechas:
                     no_en = no_en.exclude(id_paquete=i.id_paquete)
+                #paquete = paquete.difference(no_en)
+
+            if area != '':
+                try:
+                    especialidad = Especializaciones.objects.filter(id_areas_de_interes= area)
+                except Especializaciones.DoesNotExist:
+                    return render(request, 'buscar.html')
+                for i in especialidad:
+                    no_en = no_en.exclude(id_paquete= i.id_paquete)
+
+            if fecha != '' or ciudad != '' or area != '':
                 paquete = paquete.difference(no_en)
 
             itinerarios = Itinerarios.objects.all()
@@ -291,7 +330,7 @@ def ventas_presupuesto(request, paquete, agente, cliente, precio, fecha, agencia
         for c in a_ciudades:
             if i.id_ciudad == c.id_ciudad:
                 for p in pais:
-                    if c.id_pais == p.id_pais:
+                    if str(c.id_pais) == p.nombre_pais:
                         if p.continente_pais == 'Europa':
                             euro = euro + 1
     if euro >0:
@@ -426,7 +465,7 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
 
     formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
 
-    fecha = paq_contrato.f_emision
+    fecha = paq_contrato.f_viaje
 
     itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
 
@@ -447,14 +486,6 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
     a_ciudades = Ciudades.objects.all() 
     a_alojamiento = Alojamientos.objects.all()
     pais = Paises.objects.all()
-
-    for i in itinerario:
-        for c in a_ciudades:
-            if i.id_ciudad == c.id_ciudad:
-                for p in pais:
-                    if c.id_pais == p.id_pais:
-                        if p.continente_pais == 'Europa':
-                            euro = euro + 1
  
     return render(request, 'venta/presupuesto.html',{     'paq':paquete, #
                                                     'valor': precio, #
@@ -477,15 +508,19 @@ def ventas_ver_presupuesto(request, id_contrato, tipo, descuento):
                                                     'numero': paq_contrato.numer_de_viajeros
     })
 
+#---------------------------------------
+
 def confirmar_presupuesto(request, contrato, numero, tipo, descuento):
-    form = Form_nuevo_registro_viajero(initial={'f_registro': date.today(), 'paquete':contrato})
-    return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+    form = Form_nuevo_registro_viajero_compra(initial={'f_registro': date.today(), 'paquete':contrato})
+    form.fields['f_registro'].widget.attrs['hidden'] = True
+    form.fields['paquete'].widget.attrs['hidden'] = True
+    return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
-def ventas_registrar_viajeros(request, contrato, numero, cuenta, tipo, descuento):
-    if int(cuenta) > int(numero):
-        return redirect('ver_contrato', contrato, cuenta, tipo)
+def ventas_registrar_viajeros(request, contrato, cuenta, numero, tipo, descuento):
+    if int(cuenta) >= int(numero):
+        return redirect('ventas_registrar_viajeros_terminar', contrato, cuenta, numero, tipo, descuento)
 
-    form = Form_nuevo_registro_viajero(request.POST)
+    form = Form_nuevo_registro_viajero_compra(request.POST)
 
     cedula = form.data['cedula']
     nombre1 = form.data['nombre1']
@@ -505,38 +540,92 @@ def ventas_registrar_viajeros(request, contrato, numero, cuenta, tipo, descuento
     agencia = agencia.id_agencia
     f_registro = form.data['f_registro']
 
-    if descuento != '0':
-        Calcular_Descuento(contrato, descuento, f_nacimento)
+    '''if descuento != '0':
+        Calcular_Descuento(contrato, descuento, f_nacimento)'''
 
     try:
         validacion = Viajeros.objects.get(id_de_identidad= cedula)
     except Viajeros.DoesNotExist:
         if Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2) == 1:
             messages.error(request, 'Error al agregar Viajero')
-            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
     try:
         validacion = PAI_VIA.objects.get(id_viajero=cedula, id_pais=pais)
     except PAI_VIA.DoesNotExist:
         if Crear_nuevo_PAI_VIA(cedula, pais, pasaporte) == 1:
             messages.error(request, 'Error al agregar pasaporte viajero')
-            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
     try:
         validacion = Registro_viajeros.objects.get(id_viajero=cedula, id_agencia=agencia)
     except Registro_viajeros.DoesNotExist:
         if Crear_Registro_viajeros(agencia, cedula, f_registro, '1') ==1:
             messages.error(request, 'Error al registrar viajero')
-            return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
     cuenta = int(cuenta) + 1
 
-    form = Form_nuevo_registro_viajero(initial={'f_registro': date.today(), 'paquete':contrato})
-    return render(request, 'ventas_add_viajero.html',{'form':form, 'cuenta':1, 'numero':numero, 'tipo':tipo, 'descuento':descuento})
+    form = Form_nuevo_registro_viajero_compra(initial={'f_registro': date.today(), 'paquete':contrato})
+    form.fields['f_registro'].widget.attrs['hidden'] = True
+    form.fields['paquete'].widget.attrs['hidden'] = True
+    return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
 
-def ver_contrato(request, id_contrato, numero, tipo):
+def ventas_registrar_viajeros_terminar(request, contrato, cuenta, numero, tipo, descuento):
 
-    #### Actualizar
+    form = Form_nuevo_registro_viajero_compra(request.POST)
+
+    cedula = form.data['cedula']
+    nombre1 = form.data['nombre1']
+    nombre2 = form.data['nombre2']
+    apellido1 = form.data['apellido1']
+    apellido2 = form.data['apellido2']
+    sexo = form.data['sexo']
+    f_nacimento = form.data['f_nacimento']
+    ciudad = form.data['ciudad']
+    pais_de_ciudad = Ciudades.objects.get(id_ciudad=ciudad)
+    pais_de_ciudad = Paises.objects.get(nombre_pais=pais_de_ciudad.id_pais)
+    pais_de_ciudad = pais_de_ciudad.id_pais
+    pasaporte = form.data['pasaporte']
+    pais = form.data['pais']
+    paquete = form.data['paquete']
+    agencia = Paquetes_contrato.objects.get(numero_factura=paquete)
+    agencia = agencia.id_agencia
+    f_registro = form.data['f_registro']
+
+    '''if descuento != '0':
+        Calcular_Descuento(contrato, descuento, f_nacimento)'''
+
+    try:
+        validacion = Viajeros.objects.get(id_de_identidad= cedula)
+    except Viajeros.DoesNotExist:
+        if Crear_nuevo_viajero(cedula, ciudad, pais_de_ciudad, paquete, nombre1, apellido1, apellido2, sexo, f_nacimento, nombre2) == 1:
+            messages.error(request, 'Error al agregar Viajero')
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
+
+    try:
+        validacion = PAI_VIA.objects.get(id_viajero=cedula, id_pais=pais)
+    except PAI_VIA.DoesNotExist:
+        if Crear_nuevo_PAI_VIA(cedula, pais, pasaporte) == 1:
+            messages.error(request, 'Error al agregar pasaporte viajero')
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
+
+    try:
+        validacion = Registro_viajeros.objects.get(id_viajero=cedula, id_agencia=agencia)
+    except Registro_viajeros.DoesNotExist:
+        if Crear_Registro_viajeros(agencia, cedula, f_registro, '1') ==1:
+            messages.error(request, 'Error al registrar viajero')
+            return render(request, 'venta/ventas_add_viajero.html',{'form':form, 'cuenta':cuenta, 'numero':numero, 'tipo':tipo, 'descuento':descuento, 'contrato':contrato})
+
+    return redirect('ver_contrato', contrato, cuenta, tipo, descuento)
+
+def ver_contrato(request, id_contrato, numero, tipo, descuento):
+
+    Cambiar_paquete_contrato(date.today(), numero, id_contrato)
+
+    viajero = Viajeros.objects.filter(id_paquete_contrato= id_contrato)
+
+    pasaporte = PAI_VIA.objects.all()
 
     paq_contrato = Paquetes_contrato.objects.get(numero_factura= id_contrato)
 
@@ -550,7 +639,7 @@ def ver_contrato(request, id_contrato, numero, tipo):
 
     formas_pago = Formas_de_pago.objects.filter(id_paquete_contrato= id_contrato)
 
-    fecha = paq_contrato.f_emision
+    fecha = paq_contrato.f_viaje
 
     itinerario = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
 
@@ -560,6 +649,8 @@ def ver_contrato(request, id_contrato, numero, tipo):
 
     alo_det = ALO_DET.objects.filter(id_paquete= paq_contrato.id_paquete)
 
+    registro_cli = Registro_clientes.objects.all()
+
     euro = 0
     instrumento = Instrumentos_de_pago.objects.filter(doc_identidad_cliente=paq_contrato.id_reg_cliente)
     a_atracciones = Atracciones.objects.all()
@@ -567,15 +658,21 @@ def ver_contrato(request, id_contrato, numero, tipo):
     a_alojamiento = Alojamientos.objects.all()
     pais = Paises.objects.all()
 
-    for i in itinerario:
-        for c in a_ciudades:
-            if i.id_ciudad == c.id_ciudad:
-                for p in pais:
-                    if c.id_pais == p.id_pais:
-                        if p.continente_pais == 'Europa':
-                            euro = euro + 1
- 
-    return render(request, 'venta/presupuesto.html',{     'paq':paquete, #
+    if descuento == '0':
+        descuento = None
+
+    prueba_fecha = fecha
+    prueba_dias = Itinerarios.objects.filter(id_paquete=paq_contrato.id_paquete)
+
+    for p in prueba_dias:
+        dia = int(p.tiempo_estadia)
+        if p.orden == 1:
+            p.tiempo_estadia = prueba_fecha
+        else:
+            p.tiempo_estadia = prueba_fecha + timedelta(days=dia)
+        prueba_fecha= prueba_fecha 
+
+    return render(request, 'venta/contrato.html',{     'paq':paquete, #
                                                     'valor': precio, #
                                                     'email': email,
                                                     'cliente': cliente,#
@@ -590,10 +687,24 @@ def ver_contrato(request, id_contrato, numero, tipo):
                                                     'euro':euro,#
                                                     'instrumento':instrumento,#
                                                     'tipo':tipo,#
+                                                    'descuento':descuento,#
+                                                    'pasaporte': pasaporte,
                                                     'contrato':id_contrato,#
                                                     'nombre_alo': a_alojamiento,
-                                                    'numero': paq_contrato.numer_de_viajeros
+                                                    'viajero': viajero,
+                                                    'registro_cli': registro_cli,
+                                                    'numero': paq_contrato.numer_de_viajeros,
+                                                    'prueba_dias': prueba_dias
     })
+
+
+
+def calcular_edad_agnios(fecha_nacimiento):
+    fecha_nacimiento = datetime.strptime(fecha_nacimiento,'%Y-%m-%d')
+    fecha_actual = date.today()
+    resultado = fecha_actual.year - fecha_nacimiento.year
+    resultado -= ((fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day))
+    return resultado
 
 def Calcular_Descuento(contrato, descuento, fecha):
     contrato = Paquetes_contrato.objects.get(numero_factura= contrato)
@@ -624,20 +735,104 @@ def mostrar_valoracion_pais(request, id_contrato):
     if request.method == 'POST':
         form = Form_valoracion_pais(request.POST)
         if form.is_valid():
-            #Crear_puntuacion_pais(nombre_pais, region_pais, continente_pais, nacionalidad, descripcion_pais)
-            pass
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                pais = form.data['pais']
+            except:
+                pais = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            pais = form.data['pais']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    validacion = Itinerarios.objects.get(id_paquete = paquete, id_pais= pais)
+                except Itinerarios.DoesNotExist:
+                    messages.error(request, 'El pais seleccionado no esta vinculado con el paquete')
+                if Crear_Puntuacion_paises(valoracion, contrato, pais)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+            
+    
     paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
+    '''paquete = Paquetes.objects.get(id_paquete=paq_contrato.id_paquete)
+    itinerario = Itinerarios.objects.filter(id_paquete=paquete.id_paquete)'''
     form = Form_valoracion_pais(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
     form.fields['paquete'].widget.attrs['readonly'] = True
     form.fields['contrato'].widget.attrs['readonly'] = True
     return render(request, 'valoracion_paises.html',{'form':form})
  
-def valoraciones_ciudades(request, id_contrato):
+def mostrar_valoracion_ciudad(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_ciudad(request.POST)
+        if form.is_valid():
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                ciudad = form.data['pais']
+            except:
+                ciudad = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            ciudad = form.data['ciudad']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    validacion = Itinerarios.objects.get(id_paquete = paquete, id_ciudad= ciudad)
+                except Itinerarios.DoesNotExist:
+                    messages.error(request, 'La ciudad seleccionada no esta vinculada con el paquete')
+                if Crear_Puntuacion_ciudades(valoracion, contrato, ciudad)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+
     paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)
-    form = Form_valoracion_pais(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form = Form_valoracion_ciudad(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
     form.fields['paquete'].widget.attrs['readonly'] = True
     form.fields['contrato'].widget.attrs['readonly'] = True
-    return render(request, 'valoracion_paises.html',{'form':form})
+    return render(request, 'valoracion_ciudades.html',{'form':form})
 
-def valoracion():
-    pass
+def mostrar_valoracion_atraccion(request, id_contrato):
+    if request.method == 'POST':
+        form = Form_valoracion_atraccion(request.POST)
+        if form.is_valid():
+            try:
+                valoracion = form.data['valoracion']
+            except:
+                valoracion = ''
+            
+            try:
+                atraccion = form.data['atraccion']
+            except:
+                atraccion = ''
+            contrato = form.data['contrato']
+            paquete = form.data['paquete']
+            valoracion = form.data['valoracion']
+            atraccion = form.data['atraccion']
+
+            if int(valoracion)<=10 and int(valoracion)>=1 :
+                try:
+                    it = Itinerarios.objects.get(id_paquete = contrato)
+                    itn = ITN_ATR.objects.get(id_paquete = contrato, id_itinerario= it.orden, id_atraccion = atraccion)
+                except ITN_ATR.DoesNotExist:
+                    messages.error(request, 'La atraccion seleccionada no esta vinculada con el paquete')
+                if Crear_Puntuacion_atracciones(valoracion, contrato, atraccion)==1:
+                    return HttpResponse('error')
+            else:
+                messages.error(request, 'valoracion tiene que estar entre 1 y 10')  
+
+    paq_contrato = Paquetes_contrato.objects.get(numero_factura = id_contrato)        
+    form = Form_valoracion_atraccion(initial={'paquete': int(paq_contrato.id_paquete), 'contrato': int(paq_contrato.numero_factura)})
+    form.fields['paquete'].widget.attrs['readonly'] = True
+    form.fields['contrato'].widget.attrs['readonly'] = True
+    return render(request, 'valoracion_atracciones.html',{'form':form})

@@ -10,6 +10,7 @@ class Form_Buscar_paquerte(forms.Form):
     ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudades', required=False)
     personas = forms.IntegerField(label='Nro Personas', required=False)
     fecha = forms.DateField(label='Fecha Aproximada', required=False , widget=DateInput(attrs={'type': 'date'}))
+    area = ModelChoiceField(Areas_de_interes.objects.all(), label='Area de interes', required=False)
 
 class Form_Seleccionar_agente(forms.Form):
     PERSONA = (
@@ -30,6 +31,7 @@ class Form_ventas_buscar_paquete(forms.Form):
     agente = forms.IntegerField(label='')
     cliente = forms.IntegerField(label='')
     fecha = forms.DateField(label='Fecha Aproximada', required=False , widget=DateInput(attrs={'type': 'date'}))
+    area = ModelChoiceField(Areas_de_interes.objects.all(), label='Area de interes', required=False)
 
 class Form_ventas_descuneto_forma(forms.Form):
     TRAMITES = {
@@ -69,4 +71,17 @@ class Form_valoracion_pais(forms.Form):
     contrato = forms.IntegerField(label='Factura')
     paquete = forms.IntegerField(label='Paquete') 
     valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
-    pais = ModelChoiceField(Paises.objects.all(), label='Pais', help_text='Utiliar solo paises que haya recorrido sino dara error')
+    pais = ModelChoiceField(Paises.objects.all(), label='Pais', help_text='Utilizar solo paises que haya recorrido sino dara error')
+    #pais = ModelChoiceField(Paises.objects.filter(), label='Pais', help_text='Utiliar solo paises que haya recorrido sino dara error')
+
+class Form_valoracion_ciudad(forms.Form): 
+    contrato = forms.IntegerField(label='Factura')
+    paquete = forms.IntegerField(label='Paquete') 
+    valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
+    ciudad = ModelChoiceField(Ciudades.objects.all(), label='Ciudad', help_text='Utilizar solo ciudades que haya recorrido sino dara error')
+
+class Form_valoracion_atraccion(forms.Form): 
+    contrato = forms.IntegerField(label='Factura')
+    paquete = forms.IntegerField(label='Paquete') 
+    valoracion = forms.IntegerField(label='Valoracion', help_text='Del 1 al 10')
+    atraccion = ModelChoiceField(Atracciones.objects.all(), label='Atraccion', help_text='Utilizar solo atracciones a las que haya ido sino dara error')

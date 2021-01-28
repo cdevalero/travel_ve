@@ -164,6 +164,7 @@ def Crear_Detalle_viajero(viajero, agencia, paquete_contrato):
         cursor.execute ('INSERT INTO public.cgr_detalle_viajeros(id_viajero, id_agencia, id_paquete_contrato) VALUES (%s, %s, %s)', 
         [viajero, agencia, paquete_contrato])
 
+
 # Borrar --------------------------------------------------------------------------------------------------------------
 
 def Borrar_Circuito(orden, rally, ciudad, pais):
@@ -475,6 +476,42 @@ def Crear_nuevo_instrumento(cliente, monto, tipo, banco, numero, email):
         try:
             cursor.execute ('INSERT INTO public.cgr_instrumentos_de_pago(id_instrumento, doc_identidad_cliente, monto, tipo_instrumento, id_banco, numero_zelle, email_zelle) VALUES ((SELECT max(r.id_instrumento) from cgr_instrumentos_de_pago r) + 1, %s, %s, %s, %s, %s, %s)', 
             [cliente, monto, tipo, banco, numero, email])
+        except:
+            return 1
+        return 0
+#-----------------------------------------Puntuaciones
+def Crear_Puntuacion_paises(valoracion, id_paquete_contrato, id_pais):
+    id_rally = None
+    id_ciudad = None
+    id_atraccion = None
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_puntuaciones(id_puntuacion, valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion) VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)', 
+            [ valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion])
+        except:
+            return 1
+        return 0
+
+def Crear_Puntuacion_ciudades(valoracion, id_paquete_contrato, id_ciudad):
+    id_rally = None
+    id_pais = None
+    id_atraccion = None
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_puntuaciones(id_puntuacion, valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion) VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)', 
+            [ valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion])
+        except:
+            return 1
+        return 0
+
+def Crear_Puntuacion_atracciones(valoracion, id_paquete_contrato, id_atraccion):
+    id_rally = None
+    id_pais = None
+    id_ciudad = None
+    with connection.cursor() as cursor:
+        try:
+            cursor.execute ('INSERT INTO public.cgr_puntuaciones(id_puntuacion, valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion) VALUES (DEFAULT, %s, %s, %s, %s, %s, %s)', 
+            [ valoracion, id_rally, id_paquete_contrato, id_ciudad, id_pais, id_atraccion])
         except:
             return 1
         return 0
